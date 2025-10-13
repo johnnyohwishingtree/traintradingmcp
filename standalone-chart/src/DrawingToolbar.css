@@ -1,0 +1,171 @@
+/* TradingView-style Drawing Toolbar */
+.drawing-toolbar {
+  position: fixed;
+  left: 0;
+  top: 44px; /* Position below header */
+  width: 48px;
+  height: calc(100vh - 44px); /* Adjust height for header */
+  background: #1e222d;
+  border-right: 1px solid #2a2e39;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 2px;
+  z-index: 1000;
+}
+
+.tool-button {
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #868993;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tool-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #2a2e39;
+  color: #d1d4dc;
+}
+
+.tool-button.active {
+  background: #2962ff;
+  border-color: #2962ff;
+  color: white;
+}
+
+.tool-button.active::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 24px;
+  background: #2962ff;
+  border-radius: 2px;
+}
+
+.tool-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.tool-icon svg {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.toolbar-separator {
+  width: 24px;
+  height: 1px;
+  background: #2a2e39;
+  margin: 4px 0;
+}
+
+/* Line tool dropdown styles */
+.line-tool-container {
+  position: relative;
+}
+
+.line-tool-button {
+  position: relative;
+}
+
+.dropdown-arrow {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: rgba(30, 34, 45, 0.9);
+  border-radius: 2px;
+  padding: 1px 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.dropdown-arrow:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.line-tool-button.active .dropdown-arrow {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.line-dropdown {
+  position: absolute;
+  left: 48px; /* Position to the right of the toolbar */
+  top: 0;
+  background: #1e222d;
+  border: 1px solid #2a2e39;
+  border-radius: 6px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  min-width: 180px;
+  z-index: 1001;
+  padding: 6px 0;
+}
+
+.dropdown-item {
+  width: 100%;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: #d1d4dc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 10px;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dropdown-item.selected {
+  background: rgba(41, 98, 255, 0.15);
+  color: #2962ff;
+}
+
+.dropdown-item.selected:hover {
+  background: rgba(41, 98, 255, 0.25);
+}
+
+.dropdown-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dropdown-icon svg {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+.dropdown-label {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+}

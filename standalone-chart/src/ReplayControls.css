@@ -1,0 +1,230 @@
+.replay-controls-overlay {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: #1e222d;
+  border: 1px solid #363a45;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 16px;
+  min-width: 400px;
+}
+
+.replay-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.replay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #363a45;
+}
+
+.replay-title {
+  color: #d1d4dc;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.replay-exit {
+  background: none;
+  border: none;
+  color: #787b86;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.replay-exit:hover {
+  background: #363a45;
+  color: #ffffff;
+}
+
+.replay-date-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #363a45;
+  margin-bottom: 8px;
+}
+
+.replay-date-picker label {
+  color: #787b86;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.date-input {
+  background: #2a2e39;
+  border: 1px solid #363a45;
+  color: #d1d4dc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.date-input:hover {
+  background: #363a45;
+  border-color: #474d57;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #2962ff;
+}
+
+.current-datetime {
+  color: #2962ff;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.end-datetime {
+  color: #ff9800;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.clear-end-date-btn {
+  background: none;
+  border: none;
+  color: #787b86;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  margin-left: 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.clear-end-date-btn:hover {
+  background: #363a45;
+  color: #ff9800;
+}
+
+.replay-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  color: #787b86;
+  font-size: 12px;
+}
+
+.progress-bar {
+  position: relative;
+  height: 24px;
+  background: #2a2e39;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #2962ff, #1e88e5);
+  transition: width 0.2s ease;
+  pointer-events: none;
+}
+
+.progress-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.replay-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.replay-btn {
+  background: #2a2e39;
+  border: 1px solid #363a45;
+  color: #d1d4dc;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.replay-btn:hover {
+  background: #363a45;
+  border-color: #474d57;
+}
+
+.replay-btn.play-pause {
+  background: #2962ff;
+  border-color: #2962ff;
+  color: white;
+  padding: 8px 20px;
+}
+
+.replay-btn.play-pause:hover {
+  background: #1e88e5;
+  border-color: #1e88e5;
+}
+
+.replay-speed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.replay-speed label {
+  color: #787b86;
+  font-size: 12px;
+}
+
+.speed-selector {
+  background: #2a2e39;
+  border: 1px solid #363a45;
+  color: #d1d4dc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.speed-selector:hover {
+  background: #363a45;
+  border-color: #474d57;
+}
+
+.speed-selector:focus {
+  outline: none;
+  border-color: #2962ff;
+}

@@ -1,0 +1,150 @@
+.symbol-search-container {
+  position: fixed;
+  top: 10px;
+  left: 60px; /* Position next to the drawing toolbar */
+  z-index: 1001;
+}
+
+.symbol-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #1e222d;
+  border: 1px solid #2a2e39;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.symbol-display:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #3a3e49;
+}
+
+.symbol-text {
+  color: #d1d4dc;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.dropdown-arrow {
+  color: #868993;
+  transition: transform 0.2s ease;
+}
+
+.symbol-display:hover .dropdown-arrow {
+  color: #d1d4dc;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 320px;
+  background: #1e222d;
+  border: 1px solid #2a2e39;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #2a2e39;
+  background: #131722;
+}
+
+.search-icon {
+  color: #868993;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #d1d4dc;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.search-input::placeholder {
+  color: #5d606b;
+}
+
+.search-results {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-bottom: 1px solid rgba(42, 46, 57, 0.5);
+}
+
+.search-result-item:hover {
+  background: rgba(41, 98, 255, 0.1);
+}
+
+.symbol-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.result-symbol {
+  color: #d1d4dc;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.result-exchange {
+  color: #5d606b;
+  font-size: 11px;
+  padding: 2px 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+
+.result-name {
+  color: #868993;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  color: #5d606b;
+  font-size: 14px;
+}
+
+/* Custom scrollbar for search results */
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: #131722;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: #2a2e39;
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: #3a3e49;
+}

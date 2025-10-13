@@ -1,0 +1,156 @@
+.chart-indicators-panel {
+  position: absolute;
+  top: 60px;
+  left: 60px; /* Move further right to avoid cutoff */
+  background: rgba(30, 34, 45, 0.95); /* Use dark theme by default */
+  border: 1px solid #2a2e39;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  min-width: 180px;
+  max-width: 220px;
+  z-index: 1000; /* Higher z-index to stay on top */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+}
+
+.indicators-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid #2a2e39;
+  background: #131722;
+  border-radius: 4px 4px 0 0;
+}
+
+.indicators-title {
+  font-weight: 600;
+  color: #d1d4dc;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.indicators-list {
+  padding: 4px 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.indicator-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  transition: background-color 0.2s;
+  cursor: default;
+}
+
+.indicator-row:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.indicator-toggle {
+  background: none;
+  border: none;
+  padding: 2px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+  border-radius: 2px;
+}
+
+.indicator-toggle:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.indicator-label {
+  flex: 1;
+  color: #d1d4dc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+}
+
+.indicator-label.disabled {
+  color: #5d606b;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.indicator-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.indicator-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.indicator-settings {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  border-radius: 2px;
+}
+
+.indicator-settings:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .chart-indicators-panel {
+    background: rgba(30, 34, 45, 0.95);
+    border-color: #2a2e39;
+  }
+  
+  .indicators-header {
+    background: #131722;
+    border-bottom-color: #2a2e39;
+  }
+  
+  .indicators-title {
+    color: #d1d4dc;
+  }
+  
+  .indicator-row:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .indicator-label {
+    color: #d1d4dc;
+  }
+  
+  .indicator-label.disabled {
+    color: #5d606b;
+  }
+}
+
+/* Scrollbar styling */
+.indicators-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.indicators-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.indicators-list::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 3px;
+}
+
+.indicators-list::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}

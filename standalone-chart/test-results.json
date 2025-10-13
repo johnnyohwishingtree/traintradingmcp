@@ -1,0 +1,3344 @@
+{
+  "config": {
+    "configFile": "/Users/johnnyhuang/personal/react-charts/standalone-chart/playwright.config.js",
+    "rootDir": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 8
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 8
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 20000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.55.0",
+    "workers": 8,
+    "webServer": {
+      "command": "npm start",
+      "port": 3000,
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "backend-integration-test.spec.js",
+      "file": "backend-integration-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Backend integration test",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8434,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🔗 BACKEND INTEGRATION TEST\n"
+                    },
+                    {
+                      "text": "  BROWSER: Deletion test loaded\n"
+                    },
+                    {
+                      "text": "  BROWSER: Call window.testDelete() to test deletion manually\n"
+                    },
+                    {
+                      "text": "  BROWSER: [HMR] Waiting for update signal from WDS...\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching SNOW@1day from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📈 TrendLines state changed. New count: 0\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Check if backend is being used\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 1000 points for SNOW@1day from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11674 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $107.13 - $405.00\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 1000 items for SNOW@1day\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Wed Sep 08 2021 17:00:00 GMT-0700 (Pacific Daylight Time), open: 312.9700012207031, high: 321.8900146484375, low: 309.5, close: 319.9700012207031}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Tue Sep 02 2025 17:00:00 GMT-0700 (Pacific Daylight Time), open: 234.85000610351562, high: 236.5, low: 227.843994140625, close: 229.3300018310547}\n"
+                    },
+                    {
+                      "text": "\n🔍 Step 2: Test symbol search via backend\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔍 Searching 'AAPL' via backend...\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Found 1 symbols matching 'AAPL'\n"
+                    },
+                    {
+                      "text": "\n⏰ Step 3: Test interval switching\n"
+                    },
+                    {
+                      "text": "  BROWSER: ⏰ Interval changed to: 1week\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data reload triggered: SNOW@1day → SNOW@1week\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching SNOW@1week from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 261 points for SNOW@1week from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11674 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $107.13 - $429.00\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 261 items for SNOW@1week\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Sun Sep 13 2020 17:00:00 GMT-0700 (Pacific Daylight Time), open: 245, high: 319, low: 215.24000549316406, close: 240}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Tue Sep 02 2025 17:00:00 GMT-0700 (Pacific Daylight Time), open: 234.85000610351562, high: 236.5, low: 227.843994140625, close: 229.3300018310547}\n"
+                    },
+                    {
+                      "text": "\n📈 Step 4: Check chart rendering\n"
+                    },
+                    {
+                      "text": "  Chart canvas visible: true\n"
+                    },
+                    {
+                      "text": "\n✅ BACKEND INTEGRATION TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "Check browser console logs above for:\n"
+                    },
+                    {
+                      "text": "  - \"🔄 Fetching X@Y from backend cache...\" messages\n"
+                    },
+                    {
+                      "text": "  - \"Backend service unavailable\" warnings (if backend down)\n"
+                    },
+                    {
+                      "text": "  - Any successful cache responses\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:04.436Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e093a4c09a5959647499-5cc2e792c3d4219ccbc4",
+          "file": "backend-integration-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "chart-layout-verification.spec.js",
+      "file": "chart-layout-verification.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Chart Layout Verification",
+          "file": "chart-layout-verification.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Verify chart renders with proper dimensions and indicators",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2461,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n📊 CHART LAYOUT VERIFICATION\n"
+                        },
+                        {
+                          "text": "📐 Canvas dimensions: 1270 x 652\n"
+                        },
+                        {
+                          "text": "✅ Canvas width: 1270px (should be > 500)\n"
+                        },
+                        {
+                          "text": "✅ Canvas height: 652px (should be > 400)\n"
+                        },
+                        {
+                          "text": "\n📊 Chart layout verification complete\n"
+                        },
+                        {
+                          "text": "✅ Chart should now display with proper dimensions, EMA/SMA lines, and indicators\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:04.435Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "643d948fc20d3b73b1f2-6bb373dd69c213208835",
+              "file": "chart-layout-verification.spec.js",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "chart-type-test.spec.js",
+      "file": "chart-type-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Chart Type Panel",
+          "file": "chart-type-test.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should open and close chart type panel",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2536,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:04.435Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "faaa92118fc973923e15-38341079ed8f40116f7e",
+              "file": "chart-type-test.spec.js",
+              "line": 11,
+              "column": 3
+            },
+            {
+              "title": "should switch between different chart types",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 2744,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:04.430Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "faaa92118fc973923e15-5d0240c8929a1e7c5eac",
+              "file": "chart-type-test.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "should show correct icons and descriptions for each chart type",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2558,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:04.435Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "faaa92118fc973923e15-caf30e77f16b13226d5a",
+              "file": "chart-type-test.spec.js",
+              "line": 62,
+              "column": 3
+            },
+            {
+              "title": "should close panel when clicking outside",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2700,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:04.437Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "faaa92118fc973923e15-dcbdf3498e4f65e9f5b8",
+              "file": "chart-type-test.spec.js",
+              "line": 82,
+              "column": 3
+            },
+            {
+              "title": "should show checkmark for selected chart type",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 2608,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:04.436Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "faaa92118fc973923e15-b6b494e42920a8257acf",
+              "file": "chart-type-test.spec.js",
+              "line": 95,
+              "column": 3
+            },
+            {
+              "title": "should apply visual selection styling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 2462,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:04.436Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "faaa92118fc973923e15-841760e37728d2687de7",
+              "file": "chart-type-test.spec.js",
+              "line": 111,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "decimal-precision-verification.spec.js",
+      "file": "decimal-precision-verification.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Decimal Precision Verification",
+          "file": "decimal-precision-verification.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should display decimal precision in OHLC tooltip",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3306,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "🔍 Testing OHLC tooltip decimal precision...\n"
+                        },
+                        {
+                          "text": "📊 Price info content: Symbol: SNOW | Last Price: $229.33 | Range: $227.84 - $236.50\n"
+                        },
+                        {
+                          "text": "📊 Found decimal values: [ \u001b[32m'$229.33'\u001b[39m, \u001b[32m'$227.84'\u001b[39m, \u001b[32m'$236.50'\u001b[39m ]\n"
+                        },
+                        {
+                          "text": "❄️ Found SNOW-range decimal prices: [ \u001b[32m'$229.33'\u001b[39m, \u001b[32m'$227.84'\u001b[39m, \u001b[32m'$236.50'\u001b[39m ]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:07.042Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e759b7135c6eb79005ef-de7c7c5673c52c890864",
+              "file": "decimal-precision-verification.spec.js",
+              "line": 10,
+              "column": 3
+            },
+            {
+              "title": "should hover over chart and see decimal precision in crosshair",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 6806,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "🖱️ Testing crosshair decimal precision...\n"
+                        },
+                        {
+                          "text": "📍 After hover, found decimals: [\n  \u001b[32m'$229.33'\u001b[39m, \u001b[32m'$227.84'\u001b[39m,\n  \u001b[32m'$236.50'\u001b[39m, \u001b[32m'145.46'\u001b[39m,\n  \u001b[32m'150.24'\u001b[39m,  \u001b[32m'144.45'\u001b[39m,\n  \u001b[32m'148.82'\u001b[39m,  \u001b[32m'143.65'\u001b[39m,\n  \u001b[32m'146.08'\u001b[39m,  \u001b[32m'1.63'\u001b[39m,\n  \u001b[32m'1.13'\u001b[39m,    \u001b[32m'5.56'\u001b[39m,\n  \u001b[32m'0.39'\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:07.049Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e759b7135c6eb79005ef-28d58f46cde7391b2a2d",
+              "file": "decimal-precision-verification.spec.js",
+              "line": 36,
+              "column": 3
+            },
+            {
+              "title": "should verify Y-axis shows appropriate decimal formatting",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 5334,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m2\u001b[39m\nReceived:   \u001b[31m0\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m2\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/decimal-precision-verification.spec.js:83:33",
+                        "location": {
+                          "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/decimal-precision-verification.spec.js",
+                          "column": 33,
+                          "line": 83
+                        },
+                        "snippet": "  81 |     \n  82 |     // Y-axis should show some numeric labels (more reasonable expectation)\n> 83 |     expect(numericTexts.length).toBeGreaterThan(2);\n     |                                 ^\n  84 |     \n  85 |     // Check if we have some numbers (either whole or decimal)\n  86 |     const validNumbers = numericTexts.filter(text => "
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/decimal-precision-verification.spec.js",
+                            "column": 33,
+                            "line": 83
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m2\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n\n  81 |     \n  82 |     // Y-axis should show some numeric labels (more reasonable expectation)\n> 83 |     expect(numericTexts.length).toBeGreaterThan(2);\n     |                                 ^\n  84 |     \n  85 |     // Check if we have some numbers (either whole or decimal)\n  86 |     const validNumbers = numericTexts.filter(text => \n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/decimal-precision-verification.spec.js:83:33"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "📏 Testing Y-axis formatting...\n"
+                        },
+                        {
+                          "text": "🔢 Found numeric Y-axis labels: []\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:07.120Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/decimal-precision-verifica-7e9bd-ropriate-decimal-formatting-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/decimal-precision-verifica-7e9bd-ropriate-decimal-formatting-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/decimal-precision-verifica-7e9bd-ropriate-decimal-formatting-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/decimal-precision-verification.spec.js",
+                        "column": 33,
+                        "line": 83
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e759b7135c6eb79005ef-1c65ca60a5ea2d796de8",
+              "file": "decimal-precision-verification.spec.js",
+              "line": 61,
+              "column": 3
+            },
+            {
+              "title": "should verify exact SNOW price appears in display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 8379,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "❄️ Testing for exact SNOW price 229.33...\n"
+                        },
+                        {
+                          "text": "💰 Page contains 229.33: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "📄 Sample of content: \n    SNOW1m5m15m30m1h1D1W1MIndicatorsReplaySymbol: SNOW | Last Price: $229.33 | Range: $227.84 - $236.50\n\t.react-financial-charts-grabbing-cursor {\n\t\tpointer-events: all;\n\t\tcursor: -moz-grabbing;\n\t\tcursor: -webkit-grabbing;\n\t\tcursor: grabbing;\n\t}\n\t.react-financial-charts-crosshair-cursor {\n\t\tpointer-events: all;\n\t\tcursor: crosshair;\n\t}\n\t.react-financial-charts-tooltip-hover {\n\t\tpointer-events: all;\n\t\tcursor: pointer;\n\t}\n\t.react-financial-charts-avoid-interaction {\n\t\tpointer-events: none;\n\t}\n\t.re\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:07.139Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e759b7135c6eb79005ef-627b753c5ecd0e6e08a6",
+              "file": "decimal-precision-verification.spec.js",
+              "line": 95,
+              "column": 3
+            },
+            {
+              "title": "should take final verification screenshot",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "timedOut",
+                      "duration": 20363,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/decimal-precision-verification.spec.js",
+                            "column": 16,
+                            "line": 118
+                          },
+                          "message": "Error: page.hover: Test timeout of 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('svg')\u001b[22m\n\u001b[2m    - locator resolved to 12 elements. Proceeding with the first one: <svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\">…</svg>\u001b[22m\n\u001b[2m  - attempting hover action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m      - element is visible and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <svg width=\"1270\" height=\"652\" class=\"react-financial-charts\">…</svg> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying hover action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m      - element is visible and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <svg width=\"1270\" height=\"652\" class=\"react-financial-charts\">…</svg> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying hover action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    27 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m       - element is visible and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <svg width=\"1270\" height=\"652\" class=\"react-financial-charts\">…</svg> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying hover action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n  116 |     \n  117 |     // Highlight the price area by hovering\n> 118 |     await page.hover('svg', { position: { x: 1200, y: 150 } });\n      |                ^\n  119 |     await page.waitForTimeout(1000);\n  120 |     \n  121 |     await page.screenshot({ \n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/decimal-precision-verification.spec.js:118:16"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "📸 Taking verification screenshot...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:07.192Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/decimal-precision-verifica-8e80b-nal-verification-screenshot-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/decimal-precision-verifica-8e80b-nal-verification-screenshot-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/decimal-precision-verifica-8e80b-nal-verification-screenshot-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e759b7135c6eb79005ef-f65bbd48b97580c02bd4",
+              "file": "decimal-precision-verification.spec.js",
+              "line": 112,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "indicators-test.spec.js",
+      "file": "indicators-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Indicators functionality test",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 5,
+                  "status": "passed",
+                  "duration": 6459,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n📊 TESTING INDICATORS FUNCTIONALITY\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Click indicators button\n"
+                    },
+                    {
+                      "text": "  Indicators button found: true\n"
+                    },
+                    {
+                      "text": "  ✅ Indicators button clicked\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Verify indicators panel appears\n"
+                    },
+                    {
+                      "text": "  Indicators panel visible: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot with indicators panel open\n"
+                    },
+                    {
+                      "text": "  Number of indicator items: 11\n"
+                    },
+                    {
+                      "text": "  Currently enabled indicators: 4\n"
+                    },
+                    {
+                      "text": "\n📊 Step 3: Test enabling/disabling indicators\n"
+                    },
+                    {
+                      "text": "  ✅ Toggled SMA 50 days\n"
+                    },
+                    {
+                      "text": "  ✅ Toggled EMA 200 days\n"
+                    },
+                    {
+                      "text": "  ✅ Toggled Bollinger Bands\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after toggling indicators\n"
+                    },
+                    {
+                      "text": "\n📊 Step 4: Close indicators panel\n"
+                    },
+                    {
+                      "text": "  ✅ Closed indicators panel\n"
+                    },
+                    {
+                      "text": "  Panel closed: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot with panel closed (should show new indicators on chart)\n"
+                    },
+                    {
+                      "text": "\n✅ INDICATORS TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/indicators-*.png for visual verification\n"
+                    },
+                    {
+                      "text": "🎯 Indicators functionality tested:\n"
+                    },
+                    {
+                      "text": "   ✅ Indicators button click\n"
+                    },
+                    {
+                      "text": "   ✅ Panel open/close\n"
+                    },
+                    {
+                      "text": "   ✅ Indicator toggling\n"
+                    },
+                    {
+                      "text": "   ✅ Visual feedback\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:07.284Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "69dc487303f121b48daf-3facfe123ef6b9bbb772",
+          "file": "indicators-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "price-alignment-test.spec.js",
+      "file": "price-alignment-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "should have aligned price labels and current price indicator",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "timedOut",
+                  "duration": 20260,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-alignment-test.spec.js",
+                        "column": 18,
+                        "line": 21
+                      },
+                      "message": "Error: locator.hover: Test timeout of 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('svg').first()\u001b[22m\n\u001b[2m    - locator resolved to <svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\">…</svg>\u001b[22m\n\u001b[2m  - attempting hover action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m      - element is visible and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <svg width=\"1270\" height=\"652\" class=\"react-financial-charts\">…</svg> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying hover action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m      - element is visible and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <svg width=\"1270\" height=\"652\" class=\"react-financial-charts\">…</svg> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying hover action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    29 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m       - element is visible and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <svg width=\"1270\" height=\"652\" class=\"react-financial-charts\">…</svg> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying hover action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n  19 |   // Test the positioning by hovering near the price area\n  20 |   const chartSvg = await page.locator('svg').first();\n> 21 |   await chartSvg.hover({ position: { x: 1200, y: 200 } });\n     |                  ^\n  22 |   await page.waitForTimeout(1000);\n  23 |   \n  24 |   // Take another screenshot with mouse coordinate visible\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-alignment-test.spec.js:21:18"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "📐 Testing price label alignment...\n"
+                    },
+                    {
+                      "text": "📸 Screenshot saved for alignment verification\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:07.320Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-alignment-test-shoul-f3340-and-current-price-indicator-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-alignment-test-shoul-f3340-and-current-price-indicator-chromium/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-alignment-test-shoul-f3340-and-current-price-indicator-chromium/error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c6c73f0c57b3e7b3ea33-4f7ed1f818638683a58e",
+          "file": "price-alignment-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "price-precision-test.spec.js",
+      "file": "price-precision-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Price Precision Display",
+          "file": "price-precision-test.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should display decimal prices on right-side Y-axis",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 3276,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js:37:31",
+                        "location": {
+                          "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                          "column": 31,
+                          "line": 37
+                        },
+                        "snippet": "  35 |     \n  36 |     // Verify we found at least one price with 2 decimal places\n> 37 |     expect(foundDecimalPrice).toBe(true);\n     |                               ^\n  38 |     expect(priceTexts.length).toBeGreaterThan(0);\n  39 |   });\n  40 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                            "column": 31,
+                            "line": 37
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  35 |     \n  36 |     // Verify we found at least one price with 2 decimal places\n> 37 |     expect(foundDecimalPrice).toBe(true);\n     |                               ^\n  38 |     expect(priceTexts.length).toBeGreaterThan(0);\n  39 |   });\n  40 |\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js:37:31"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🔍 Testing right-side price axis for decimal precision...\n"
+                        },
+                        {
+                          "text": "📊 Found price texts: []\n"
+                        },
+                        {
+                          "text": "✅ Found decimal prices: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:10.356Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-d6235-prices-on-right-side-Y-axis-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-d6235-prices-on-right-side-Y-axis-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-d6235-prices-on-right-side-Y-axis-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                        "column": 31,
+                        "line": 37
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "afe417d7717a21a60823-549e8532d7994ba48a09",
+              "file": "price-precision-test.spec.js",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "should show decimal precision in mouse coordinates",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 20370,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                            "column": 20,
+                            "line": 46
+                          },
+                          "message": "Error: locator.hover: Test timeout of 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('svg').first()\u001b[22m\n\u001b[2m    - locator resolved to <svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\">…</svg>\u001b[22m\n\u001b[2m  - attempting hover action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m      - element is visible and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <rect width=\"1100\" height=\"608\" class=\"react-financial-charts-crosshair-cursor\"></rect> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying hover action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m      - element is visible and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <rect width=\"1100\" height=\"608\" class=\"react-financial-charts-crosshair-cursor\"></rect> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying hover action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    33 × waiting for element to be visible and stable\u001b[22m\n\u001b[2m       - element is visible and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <rect width=\"1100\" height=\"608\" class=\"react-financial-charts-crosshair-cursor\"></rect> from <div class=\"chart-container\" data-testid=\"main-chart-container\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying hover action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n  44 |     // Find the chart area and hover over it\n  45 |     const chartSvg = await page.locator('svg').first();\n> 46 |     await chartSvg.hover({ position: { x: 400, y: 200 } });\n     |                    ^\n  47 |     \n  48 |     // Wait for mouse coordinates to appear\n  49 |     await page.waitForTimeout(500);\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js:46:20"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🖱️ Testing mouse coordinate precision...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:12.712Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-d5004-cision-in-mouse-coordinates-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-d5004-cision-in-mouse-coordinates-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-d5004-cision-in-mouse-coordinates-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "afe417d7717a21a60823-eedbc3f5c9e3584e3966",
+              "file": "price-precision-test.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "should display current price with decimals in edge indicator",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5312,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js:97:31",
+                        "location": {
+                          "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                          "column": 31,
+                          "line": 97
+                        },
+                        "snippet": "   95 |     \n   96 |     // Should display current price with decimal precision\n>  97 |     expect(foundCurrentPrice).toBe(true);\n      |                               ^\n   98 |   });\n   99 |\n  100 |   test('should verify specific SNOW price precision', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                            "column": 31,
+                            "line": 97
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n   95 |     \n   96 |     // Should display current price with decimal precision\n>  97 |     expect(foundCurrentPrice).toBe(true);\n      |                               ^\n   98 |   });\n   99 |\n  100 |   test('should verify specific SNOW price precision', async ({ page }) => {\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js:97:31"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "💰 Testing current price edge indicator...\n"
+                        },
+                        {
+                          "text": "💲 Found current prices: []\n"
+                        },
+                        {
+                          "text": "✅ Found decimal current price: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:13.014Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-e078e--decimals-in-edge-indicator-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-e078e--decimals-in-edge-indicator-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-e078e--decimals-in-edge-indicator-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                        "column": 31,
+                        "line": 97
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "afe417d7717a21a60823-770c432e9ab2b31651ca",
+              "file": "price-precision-test.spec.js",
+              "line": 72,
+              "column": 3
+            },
+            {
+              "title": "should verify specific SNOW price precision",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 3289,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js:125:28",
+                        "location": {
+                          "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                          "column": 28,
+                          "line": 125
+                        },
+                        "snippet": "  123 |     \n  124 |     // Should find prices in SNOW's range with decimal precision\n> 125 |     expect(foundSnowPrice).toBe(true);\n      |                            ^\n  126 |   });\n  127 |\n  128 |   test('should take screenshot for visual verification', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                            "column": 28,
+                            "line": 125
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  123 |     \n  124 |     // Should find prices in SNOW's range with decimal precision\n> 125 |     expect(foundSnowPrice).toBe(true);\n      |                            ^\n  126 |   });\n  127 |\n  128 |   test('should take screenshot for visual verification', async ({ page }) => {\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js:125:28"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "❄️ Testing SNOW price precision specifically...\n"
+                        },
+                        {
+                          "text": "📈 Current symbol context includes SNOW: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "❄️ Found SNOW-range prices: []\n"
+                        },
+                        {
+                          "text": "✅ Found SNOW decimal prices: \u001b[33mfalse\u001b[39m\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:13.885Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-eac0e-ecific-SNOW-price-precision-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-eac0e-ecific-SNOW-price-precision-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/price-precision-test-Price-eac0e-ecific-SNOW-price-precision-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/price-precision-test.spec.js",
+                        "column": 28,
+                        "line": 125
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "afe417d7717a21a60823-0fdd681e0a2da7aa9d4f",
+              "file": "price-precision-test.spec.js",
+              "line": 100,
+              "column": 3
+            },
+            {
+              "title": "should take screenshot for visual verification",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6332,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📸 Taking screenshot for visual verification...\n"
+                        },
+                        {
+                          "text": "✅ Screenshot saved to tests/screenshots/price-precision-chart.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:13.748Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "afe417d7717a21a60823-78d82a20ac60f3995d6b",
+              "file": "price-precision-test.spec.js",
+              "line": 128,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "refresh-button-test.spec.js",
+      "file": "refresh-button-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Refresh button functionality",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 7,
+                  "status": "passed",
+                  "duration": 7643,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🔄 TESTING REFRESH BUTTON FUNCTIONALITY\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Draw a trendline on the chart\n"
+                    },
+                    {
+                      "text": "📸 Screenshot taken with trendline\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Click refresh button\n"
+                    },
+                    {
+                      "text": "  Refresh button found: true\n"
+                    },
+                    {
+                      "text": "  ✅ Refresh button clicked\n"
+                    },
+                    {
+                      "text": "📸 Screenshot taken after refresh\n"
+                    },
+                    {
+                      "text": "\n✅ REFRESH BUTTON TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/refresh-*.png for visual verification\n"
+                    },
+                    {
+                      "text": "\n📊 Step 3: Test refresh with different drawing tools\n"
+                    },
+                    {
+                      "text": "📸 Screenshot taken with fibonacci\n"
+                    },
+                    {
+                      "text": "  ✅ Refresh action detected in console\n"
+                    },
+                    {
+                      "text": "  ✅ Trendlines cleared successfully\n"
+                    },
+                    {
+                      "text": "📸 Screenshot taken after clearing fibonacci\n"
+                    },
+                    {
+                      "text": "  ✅ All drawings cleared successfully\n"
+                    },
+                    {
+                      "text": "\n✅ ALL REFRESH TESTS PASSED!\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:13.864Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d075729d261cde6cc36b-d53c5c2ad90c09170d7c",
+          "file": "refresh-button-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "replay-drawings-test.spec.js",
+      "file": "replay-drawings-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Replay drawings save and restore test",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "timedOut",
+                  "duration": 20362,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/replay-drawings-test.spec.js",
+                        "column": 25,
+                        "line": 14
+                      },
+                      "message": "Error: locator.click: Test timeout of 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button[title=\"Trendline\"]')\u001b[22m\n\n\n  12 |   // Click the trendline tool\n  13 |   const trendlineButton = await page.locator('button[title=\"Trendline\"]');\n> 14 |   await trendlineButton.click();\n     |                         ^\n  15 |   await page.waitForTimeout(500);\n  16 |   console.log('  ✅ Trendline tool activated');\n  17 |   \n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/replay-drawings-test.spec.js:14:25"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "\n🎨 TESTING REPLAY DRAWINGS SAVE/RESTORE\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Draw a trendline\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:15.525Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/replay-drawings-test-Replay-drawings-save-and-restore-test-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/replay-drawings-test-Replay-drawings-save-and-restore-test-chromium/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/replay-drawings-test-Replay-drawings-save-and-restore-test-chromium/error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "8b8c8fb75b6bd604642f-e401c89b720ce9192a60",
+          "file": "replay-drawings-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "replay-improvements-test.spec.js",
+      "file": "replay-improvements-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Replay improvements: 10x speed and end date functionality",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 10,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 15260,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🚀 TESTING REPLAY IMPROVEMENTS: 10X SPEED & END DATE\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Enter replay mode\n"
+                    },
+                    {
+                      "text": "  ✅ Entered replay mode\n"
+                    },
+                    {
+                      "text": "  ✅ Replay controls visible\n"
+                    },
+                    {
+                      "text": "📸 Screenshot with new UI (start/end dates)\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Test end date picker\n"
+                    },
+                    {
+                      "text": "  📅 Start date label: \"Start Date:\"\n"
+                    },
+                    {
+                      "text": "  📅 End date label: \"End Date:\"\n"
+                    },
+                    {
+                      "text": "  📅 End date set to 2021-12-01\n"
+                    },
+                    {
+                      "text": "📸 Screenshot with end date set\n"
+                    },
+                    {
+                      "text": "\n📊 Step 3: Test 10x speed\n"
+                    },
+                    {
+                      "text": "  ⚡ Speed changed to 10x\n"
+                    },
+                    {
+                      "text": "  ▶️ Started playback at 10x speed\n"
+                    },
+                    {
+                      "text": "  📊 Initial position: Bar 50 / 59\n"
+                    },
+                    {
+                      "text": "  📊 Position after 3s at 10x: Bar 59 / 59\n"
+                    },
+                    {
+                      "text": "  ⏸️ Paused playback\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after 10x speed playback\n"
+                    },
+                    {
+                      "text": "\n📊 Step 4: Test end date limiting\n"
+                    },
+                    {
+                      "text": "  📊 Progress with end date limit: Bar 59 / 59\n"
+                    },
+                    {
+                      "text": "  🗑️ End date limit cleared\n"
+                    },
+                    {
+                      "text": "  📊 Progress after clearing end date: Bar 59 / 1000\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after clearing end date\n"
+                    },
+                    {
+                      "text": "\n📊 Step 5: Test different speed values\n"
+                    },
+                    {
+                      "text": "  ⚡ Tested 5x speed\n"
+                    },
+                    {
+                      "text": "  ⚡ Tested 2x speed\n"
+                    },
+                    {
+                      "text": "\n📊 Step 6: Exit replay mode\n"
+                    },
+                    {
+                      "text": "  ✅ Exited replay mode\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after exiting\n"
+                    },
+                    {
+                      "text": "\n✅ REPLAY IMPROVEMENTS TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/improvements-*.png for verification\n"
+                    },
+                    {
+                      "text": "🎯 Improvements Successfully Tested:\n"
+                    },
+                    {
+                      "text": "   ✅ 10x speed playback (optimized intervals)\n"
+                    },
+                    {
+                      "text": "   ✅ End date picker functionality\n"
+                    },
+                    {
+                      "text": "   ✅ Start/End date labels\n"
+                    },
+                    {
+                      "text": "   ✅ Clear end date button\n"
+                    },
+                    {
+                      "text": "   ✅ Progress tracking with end date limits\n"
+                    },
+                    {
+                      "text": "   ✅ Multiple speed settings (2x, 5x, 10x)\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:17.506Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "684458a44b2dc8945d8c-b0ec65db222aa99aaa7b",
+          "file": "replay-improvements-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "replay-phase2-complete.spec.js",
+      "file": "replay-phase2-complete.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Complete Phase 2 replay functionality test",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 11,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12726,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🎯 TESTING COMPLETE PHASE 2 REPLAY FUNCTIONALITY\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Enter replay mode and verify all UI elements\n"
+                    },
+                    {
+                      "text": "  ✅ Entered replay mode\n"
+                    },
+                    {
+                      "text": "  ✅ Replay controls visible\n"
+                    },
+                    {
+                      "text": "  ✅ Date picker present: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot with full replay UI\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Test keyboard shortcuts\n"
+                    },
+                    {
+                      "text": "  ⌨️ Space bar pressed (play/pause)\n"
+                    },
+                    {
+                      "text": "  ⌨️ Right arrow pressed (step forward)\n"
+                    },
+                    {
+                      "text": "  ⌨️ Left arrow pressed (step backward)\n"
+                    },
+                    {
+                      "text": "  ⌨️ Key \"2\" pressed (2x speed)\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after keyboard controls\n"
+                    },
+                    {
+                      "text": "\n📊 Step 3: Test date picker functionality\n"
+                    },
+                    {
+                      "text": "  📅 Date changed via date picker\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after date change\n"
+                    },
+                    {
+                      "text": "\n📊 Step 4: Test position slider\n"
+                    },
+                    {
+                      "text": "  📊 Slider moved to 80%\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after slider movement\n"
+                    },
+                    {
+                      "text": "\n📊 Step 5: Test play functionality with progress tracking\n"
+                    },
+                    {
+                      "text": "  ▶️ Replay playing - progress should be updating\n"
+                    },
+                    {
+                      "text": "  ⏸️ Replay paused\n"
+                    },
+                    {
+                      "text": "📸 Screenshot during playback\n"
+                    },
+                    {
+                      "text": "\n📊 Step 6: Exit replay and verify restoration\n"
+                    },
+                    {
+                      "text": "  ⌨️ Escaped from replay mode\n"
+                    },
+                    {
+                      "text": "  ✅ Replay controls removed: false\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after exiting replay\n"
+                    },
+                    {
+                      "text": "\n✅ PHASE 2 REPLAY FUNCTIONALITY COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/phase2-*.png for visual verification\n"
+                    },
+                    {
+                      "text": "🎯 Phase 2 Features Successfully Implemented:\n"
+                    },
+                    {
+                      "text": "   ✅ Date/time picker for jump-to-date functionality\n"
+                    },
+                    {
+                      "text": "   ✅ Keyboard shortcuts (Space, Arrows, Escape, Numbers)\n"
+                    },
+                    {
+                      "text": "   ✅ Replay timestamp indicator on chart\n"
+                    },
+                    {
+                      "text": "   ✅ Save and restore drawings after replay\n"
+                    },
+                    {
+                      "text": "   ✅ Replay progress indicator on main chart\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:18.575Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "7f9e8a82cae2fe34daff-05ee44046382ea908bb4",
+          "file": "replay-phase2-complete.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "replay-restore-simple.spec.js",
+      "file": "replay-restore-simple.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Simple replay save/restore functionality test",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 5,
+                  "status": "passed",
+                  "duration": 6387,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🔄 TESTING REPLAY SAVE/RESTORE LOGIC\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Enter replay mode\n"
+                    },
+                    {
+                      "text": "  Replay button found: true\n"
+                    },
+                    {
+                      "text": "  ✅ Entered replay mode\n"
+                    },
+                    {
+                      "text": "  ✅ Replay controls visible\n"
+                    },
+                    {
+                      "text": "📸 Screenshot in replay mode\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Exit replay mode\n"
+                    },
+                    {
+                      "text": "  ✅ Exited replay mode\n"
+                    },
+                    {
+                      "text": "  Replay controls removed: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after exiting replay\n"
+                    },
+                    {
+                      "text": "\n✅ REPLAY SAVE/RESTORE TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/replay-restore-*.png for verification\n"
+                    },
+                    {
+                      "text": "💬 Console logs should show save/restore messages\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:20.086Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e37d7b58296bd5d5b2e8-af154c9644df34d92ca2",
+          "file": "replay-restore-simple.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "replay-test.spec.js",
+      "file": "replay-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Replay functionality test",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 7,
+                  "status": "passed",
+                  "duration": 11127,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🎬 TESTING REPLAY FUNCTIONALITY\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Click replay button to enter replay mode\n"
+                    },
+                    {
+                      "text": "  Replay button found: true\n"
+                    },
+                    {
+                      "text": "  ✅ Replay button clicked\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Verify replay controls appear\n"
+                    },
+                    {
+                      "text": "  ✅ Replay controls visible\n"
+                    },
+                    {
+                      "text": "📸 Screenshot with replay controls\n"
+                    },
+                    {
+                      "text": "\n📊 Step 3: Verify partial data is shown\n"
+                    },
+                    {
+                      "text": "  Progress info: Bar 50 / 100011/16/2021\n"
+                    },
+                    {
+                      "text": "\n📊 Step 4: Test play functionality\n"
+                    },
+                    {
+                      "text": "  ▶️ Play button clicked\n"
+                    },
+                    {
+                      "text": "  Progress after playing: Bar 53 / 100011/21/2021\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after playing\n"
+                    },
+                    {
+                      "text": "\n📊 Step 5: Test pause functionality\n"
+                    },
+                    {
+                      "text": "  ⏸️ Pause button clicked\n"
+                    },
+                    {
+                      "text": "\n📊 Step 6: Test step forward\n"
+                    },
+                    {
+                      "text": "  ⏭ Step forward clicked\n"
+                    },
+                    {
+                      "text": "  Progress after step: Bar 54 / 100011/22/2021\n"
+                    },
+                    {
+                      "text": "\n📊 Step 7: Test step backward\n"
+                    },
+                    {
+                      "text": "  ⏮ Step backward clicked\n"
+                    },
+                    {
+                      "text": "\n📊 Step 8: Test speed change\n"
+                    },
+                    {
+                      "text": "  Speed changed to 2x\n"
+                    },
+                    {
+                      "text": "\n📊 Step 9: Test position slider\n"
+                    },
+                    {
+                      "text": "  📊 Slider moved to 75%\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after moving slider\n"
+                    },
+                    {
+                      "text": "\n📊 Step 10: Test exit replay mode\n"
+                    },
+                    {
+                      "text": "  ✕ Exit button clicked\n"
+                    },
+                    {
+                      "text": "  Replay controls removed: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after exiting replay mode\n"
+                    },
+                    {
+                      "text": "\n✅ REPLAY TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/replay-*.png for visual verification\n"
+                    },
+                    {
+                      "text": "✅ All replay controls functional:\n"
+                    },
+                    {
+                      "text": "   - Enter/exit replay mode\n"
+                    },
+                    {
+                      "text": "   - Play/pause\n"
+                    },
+                    {
+                      "text": "   - Step forward/backward\n"
+                    },
+                    {
+                      "text": "   - Speed control\n"
+                    },
+                    {
+                      "text": "   - Position slider\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:21.513Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "6035522d7b50eb287025-5e32ee9d7c23396a8dc7",
+          "file": "replay-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "resize-indicators.spec.js",
+      "file": "resize-indicators.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Indicator Resize Functionality",
+          "file": "resize-indicators.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should show resize cursor when hovering between chart sections",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3380,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:26.478Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "13b366c410f2f8a62c73-d83ca4e8beb7694c1e2a",
+              "file": "resize-indicators.spec.js",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "should resize Volume indicator when dragging handle",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 3858,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:27.809Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "13b366c410f2f8a62c73-294fb885066bbf1720e3",
+              "file": "resize-indicators.spec.js",
+              "line": 53,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "settings-panel-test.spec.js",
+      "file": "settings-panel-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Settings Panel",
+          "file": "settings-panel-test.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "settings button and zoom control",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 355,
+                      "error": {
+                        "message": "Error: locator.click: Error: strict mode violation: locator('.preset-button:has-text(\"Smooth\")') resolved to 2 elements:\n    1) <button class=\"preset-button \">…</button> aka getByRole('button', { name: 'Very Smooth 1%' })\n    2) <button class=\"preset-button active\">…</button> aka getByRole('button', { name: 'Smooth 3%' })\n\nCall log:\n\u001b[2m  - waiting for locator('.preset-button:has-text(\"Smooth\")')\u001b[22m\n",
+                        "stack": "Error: locator.click: Error: strict mode violation: locator('.preset-button:has-text(\"Smooth\")') resolved to 2 elements:\n    1) <button class=\"preset-button \">…</button> aka getByRole('button', { name: 'Very Smooth 1%' })\n    2) <button class=\"preset-button active\">…</button> aka getByRole('button', { name: 'Smooth 3%' })\n\nCall log:\n\u001b[2m  - waiting for locator('.preset-button:has-text(\"Smooth\")')\u001b[22m\n\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/settings-panel-test.spec.js:27:24",
+                        "location": {
+                          "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/settings-panel-test.spec.js",
+                          "column": 24,
+                          "line": 27
+                        },
+                        "snippet": "  25 |     // Test preset buttons\n  26 |     const smoothButton = await page.locator('.preset-button:has-text(\"Smooth\")');\n> 27 |     await smoothButton.click();\n     |                        ^\n  28 |     \n  29 |     // Verify the zoom value updated\n  30 |     await expect(page.locator('.zoom-value')).toHaveText('3%');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/settings-panel-test.spec.js",
+                            "column": 24,
+                            "line": 27
+                          },
+                          "message": "Error: locator.click: Error: strict mode violation: locator('.preset-button:has-text(\"Smooth\")') resolved to 2 elements:\n    1) <button class=\"preset-button \">…</button> aka getByRole('button', { name: 'Very Smooth 1%' })\n    2) <button class=\"preset-button active\">…</button> aka getByRole('button', { name: 'Smooth 3%' })\n\nCall log:\n\u001b[2m  - waiting for locator('.preset-button:has-text(\"Smooth\")')\u001b[22m\n\n\n  25 |     // Test preset buttons\n  26 |     const smoothButton = await page.locator('.preset-button:has-text(\"Smooth\")');\n> 27 |     await smoothButton.click();\n     |                        ^\n  28 |     \n  29 |     // Verify the zoom value updated\n  30 |     await expect(page.locator('.zoom-value')).toHaveText('3%');\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/settings-panel-test.spec.js:27:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:27.828Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/settings-panel-test-Settin-fe1cb-ngs-button-and-zoom-control-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/settings-panel-test-Settin-fe1cb-ngs-button-and-zoom-control-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/settings-panel-test-Settin-fe1cb-ngs-button-and-zoom-control-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/settings-panel-test.spec.js",
+                        "column": 24,
+                        "line": 27
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0000f0e56104fe67a4bf-d9945ef6d16ff0a1ea12",
+              "file": "settings-panel-test.spec.js",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "simple-chart-type-test.spec.js",
+      "file": "simple-chart-type-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Simple Chart Type Test",
+          "file": "simple-chart-type-test.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "basic chart type functionality",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 478,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Found chart type button!\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:28.503Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f064799706a9f1ffe17a-e0d57e3c37cb8b15f4c8",
+              "file": "simple-chart-type-test.spec.js",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "simple-volume-resize.spec.js",
+      "file": "simple-volume-resize.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Simple Volume Resize Test",
+          "file": "simple-volume-resize.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "volume resize handle should be visible and functional",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3842,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:29.067Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1bed9f638b58e078a668-2e62f65c3ba4fea561b4",
+              "file": "simple-volume-resize.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "volume resize handle should move after resizing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5365,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:29.862Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1bed9f638b58e078a668-dcb1e19338c37d49795b",
+              "file": "simple-volume-resize.spec.js",
+              "line": 65,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "symbol-search-test.spec.js",
+      "file": "symbol-search-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Symbol search functionality",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 11,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3407,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🔍 TESTING SYMBOL SEARCH FUNCTIONALITY\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Check initial symbol display\n"
+                    },
+                    {
+                      "text": "  Initial symbol: SNOW\n"
+                    },
+                    {
+                      "text": "📸 Initial state captured\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Open search dropdown\n"
+                    },
+                    {
+                      "text": "📸 Dropdown opened\n"
+                    },
+                    {
+                      "text": "\n📊 Step 3: Search for \"AAPL\"\n"
+                    },
+                    {
+                      "text": "📸 Search results shown\n"
+                    },
+                    {
+                      "text": "\n📊 Step 4: Select AAPL\n"
+                    },
+                    {
+                      "text": "  New symbol: AAPL\n"
+                    },
+                    {
+                      "text": "📸 Symbol changed to AAPL\n"
+                    },
+                    {
+                      "text": "\n📊 Step 5: Test keyboard navigation\n"
+                    },
+                    {
+                      "text": "  Symbol after keyboard selection: TSLA\n"
+                    },
+                    {
+                      "text": "📸 Keyboard selection worked\n"
+                    },
+                    {
+                      "text": "\n✅ SYMBOL SEARCH TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/symbol-search-*.png for visual verification\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:31.365Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "915c72a8220e57631a87-35f7698073b98147d39d",
+          "file": "symbol-search-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "time-interval-test.spec.js",
+      "file": "time-interval-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Time interval dropdown functionality test",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 12,
+                  "parallelIndex": 6,
+                  "status": "passed",
+                  "duration": 10605,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n⏰ TIME INTERVAL FUNCTIONALITY TEST\n"
+                    },
+                    {
+                      "text": "  BROWSER: Deletion test loaded\n"
+                    },
+                    {
+                      "text": "  BROWSER: Call window.testDelete() to test deletion manually\n"
+                    },
+                    {
+                      "text": "  BROWSER: [HMR] Waiting for update signal from WDS...\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching SNOW@1day from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📈 TrendLines state changed. New count: 0\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 1000 points for SNOW@1day from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11674 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $107.13 - $405.00\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 1000 items for SNOW@1day\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Wed Sep 08 2021 17:00:00 GMT-0700 (Pacific Daylight Time), open: 312.9700012207031, high: 321.8900146484375, low: 309.5, close: 319.9700012207031}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Tue Sep 02 2025 17:00:00 GMT-0700 (Pacific Daylight Time), open: 234.85000610351562, high: 236.5, low: 227.843994140625, close: 229.3300018310547}\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Check initial setup\n"
+                    },
+                    {
+                      "text": "  Initial interval: 1day\n"
+                    },
+                    {
+                      "text": "\n🔍 Step 2: Test daily interval change\n"
+                    },
+                    {
+                      "text": "  BROWSER: ⏰ Interval changed to: 1week\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data reload triggered: SNOW@1day → SNOW@1week\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching SNOW@1week from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 261 points for SNOW@1week from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11674 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $107.13 - $429.00\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 261 items for SNOW@1week\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Sun Sep 13 2020 17:00:00 GMT-0700 (Pacific Daylight Time), open: 245, high: 319, low: 215.24000549316406, close: 240}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Tue Sep 02 2025 17:00:00 GMT-0700 (Pacific Daylight Time), open: 234.85000610351562, high: 236.5, low: 227.843994140625, close: 229.3300018310547}\n"
+                    },
+                    {
+                      "text": "  Changed to: 1week\n"
+                    },
+                    {
+                      "text": "\n📈 Step 3: Test intraday intervals\n"
+                    },
+                    {
+                      "text": "  BROWSER: ⏰ Interval changed to: 5min\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data reload triggered: SNOW@1week → SNOW@5min\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching SNOW@5min from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 391 points for SNOW@5min from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11592 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $196.66 - $249.99\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 391 items for SNOW@5min\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Wed Aug 27 2025 06:30:00 GMT-0700 (Pacific Daylight Time), open: 201.75, high: 202.5, low: 197.8000030517578, close: 199.26499938964844}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Wed Sep 03 2025 13:00:00 GMT-0700 (Pacific Daylight Time), open: 229.3300018310547, high: 229.3300018310547, low: 229.3300018310547, close: 229.3300018310547}\n"
+                    },
+                    {
+                      "text": "  Changed to: 5min\n"
+                    },
+                    {
+                      "text": "\n⚡ Step 4: Test 1-minute interval (highest resolution)\n"
+                    },
+                    {
+                      "text": "  BROWSER: ⏰ Interval changed to: 1min\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data reload triggered: SNOW@5min → SNOW@1min\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching SNOW@1min from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 391 points for SNOW@1min from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11592 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $227.84 - $236.50\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 391 items for SNOW@1min\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Wed Sep 03 2025 06:30:00 GMT-0700 (Pacific Daylight Time), open: 234.85000610351562, high: 236.5, low: 233.94000244140625, close: 233.94000244140625}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Wed Sep 03 2025 13:00:00 GMT-0700 (Pacific Daylight Time), open: 229.3300018310547, high: 229.3300018310547, low: 229.3300018310547, close: 229.3300018310547}\n"
+                    },
+                    {
+                      "text": "  Changed to: 1min\n"
+                    },
+                    {
+                      "text": "\n📊 Step 5: Test monthly interval (longest timeframe)\n"
+                    },
+                    {
+                      "text": "  BROWSER: ⏰ Interval changed to: 1month\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data reload triggered: SNOW@1min → SNOW@1month\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching SNOW@1month from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 62 points for SNOW@1month from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11675 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $107.13 - $429.00\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 62 items for SNOW@1month\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Mon Aug 31 2020 17:00:00 GMT-0700 (Pacific Daylight Time), open: 245, high: 319, low: 208.5500030517578, close: 251}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Tue Sep 02 2025 17:00:00 GMT-0700 (Pacific Daylight Time), open: 234.85000610351562, high: 236.5, low: 227.843994140625, close: 229.3300018310547}\n"
+                    },
+                    {
+                      "text": "  Changed to: 1month\n"
+                    },
+                    {
+                      "text": "\n🔄 Step 6: Test with symbol change\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔍 Searching 'IBM' via backend...\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Found 1 symbols matching 'IBM'\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Symbol changed to: IBM\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data reload triggered: SNOW@1month → IBM@1month\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔄 Fetching IBM@1month from backend cache...\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📈 TrendLines state changed. New count: 0\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔑 Key pressed: Enter Target: INPUT\n"
+                    },
+                    {
+                      "text": "  BROWSER: 🔑 Window key pressed: Enter\n"
+                    },
+                    {
+                      "text": "  BROWSER: ✅ Loaded 61 points for IBM@1month from cache\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Data age: 11674 minutes old\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Price range: $101.26 - $296.16\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Setting new data: 61 items for IBM@1month\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 First data point: {date: Wed Sep 30 2020 17:00:00 GMT-0700 (Pacific Daylight Time), open: 116.97896575927734, high: 129.54110717773438, low: 101.26194763183594, close: 106.74951934814453}\n"
+                    },
+                    {
+                      "text": "  BROWSER: 📊 Last data point: {date: Tue Sep 02 2025 17:00:00 GMT-0700 (Pacific Daylight Time), open: 240.02000427246094, high: 244.25, low: 239.41000366210938, close: 244.10000610351562}\n"
+                    },
+                    {
+                      "text": "  Interval after symbol change: 1month\n"
+                    },
+                    {
+                      "text": "\n📊 Step 7: Verify chart is still displaying\n"
+                    },
+                    {
+                      "text": "  Chart canvas visible: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot saved: test-results/time-interval-functionality.png\n"
+                    },
+                    {
+                      "text": "\n✅ TIME INTERVAL TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "Check browser console logs above for:\n"
+                    },
+                    {
+                      "text": "  - \"⏰ Interval changed to: X\" messages\n"
+                    },
+                    {
+                      "text": "  - \"🔄 Fetching real data for SYMBOL @ INTERVAL\" messages\n"
+                    },
+                    {
+                      "text": "  - Data loading confirmations for each interval\n"
+                    },
+                    {
+                      "text": "  - Different data volumes for different intervals\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:31.765Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f6d8b24568dd6b4dd338-5b6eec5d2b46d1fa883d",
+          "file": "time-interval-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "toolbar-icons-test.spec.js",
+      "file": "toolbar-icons-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Toolbar Icons",
+          "file": "toolbar-icons-test.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Verify new SVG icons display correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 1744,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🎨 TESTING NEW TOOLBAR ICONS\n"
+                        },
+                        {
+                          "text": "\n📊 Checking toolbar elements...\n"
+                        },
+                        {
+                          "text": "Found 4 tool buttons\n"
+                        },
+                        {
+                          "text": "  ✅ Button 1 has SVG icon\n"
+                        },
+                        {
+                          "text": "  📝 Button 1 tooltip: \"Selection Tool - Select and move objects\"\n"
+                        },
+                        {
+                          "text": "  ✅ Button 2 has SVG icon\n"
+                        },
+                        {
+                          "text": "  📝 Button 2 tooltip: \"Trend Line - Draw trend lines between two points\"\n"
+                        },
+                        {
+                          "text": "  ✅ Button 3 has SVG icon\n"
+                        },
+                        {
+                          "text": "  📝 Button 3 tooltip: \"Fibonacci Retracement - Draw Fibonacci retracement levels\"\n"
+                        },
+                        {
+                          "text": "  ✅ Button 4 has SVG icon\n"
+                        },
+                        {
+                          "text": "  📝 Button 4 tooltip: \"Triangle Pattern - Draw triangle chart patterns\"\n"
+                        },
+                        {
+                          "text": "\n🖱️ Testing hover states...\n"
+                        },
+                        {
+                          "text": "  ✅ Button 1 hover works\n"
+                        },
+                        {
+                          "text": "  ✅ Button 2 hover works\n"
+                        },
+                        {
+                          "text": "  ✅ Button 3 hover works\n"
+                        },
+                        {
+                          "text": "  ✅ Button 4 hover works\n"
+                        },
+                        {
+                          "text": "\n🎨 Icon test complete\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:32.644Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "87b4464057cc65bd63eb-e8d41974e3ab6f1a17ae",
+              "file": "toolbar-icons-test.spec.js",
+              "line": 4,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "tradingview-layout-test.spec.js",
+      "file": "tradingview-layout-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "TradingView-style layout test",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 10,
+                  "parallelIndex": 1,
+                  "status": "timedOut",
+                  "duration": 20280,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/johnnyhuang/personal/react-charts/standalone-chart/tests/tradingview-layout-test.spec.js",
+                        "column": 25,
+                        "line": 82
+                      },
+                      "message": "Error: locator.click: Test timeout of 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.timeframe-button:not(.active)').first()\u001b[22m\n\n\n  80 |   console.log('\\n⏰ Step 5: Test timeframe buttons');\n  81 |   const timeframeButton = await page.locator('.timeframe-button:not(.active)').first();\n> 82 |   await timeframeButton.click();\n     |                         ^\n  83 |   await page.waitForTimeout(300);\n  84 |   \n  85 |   await page.screenshot({ path: 'test-results/tradingview-layout-5-timeframe-interaction.png' });\n    at /Users/johnnyhuang/personal/react-charts/standalone-chart/tests/tradingview-layout-test.spec.js:82:25"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "\n📊 TRADINGVIEW-STYLE LAYOUT TEST\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Check header toolbar\n"
+                    },
+                    {
+                      "text": "  Header position: top=0, left=0\n"
+                    },
+                    {
+                      "text": "  Header size: 1280x44\n"
+                    },
+                    {
+                      "text": "  Symbol in header: SNOW\n"
+                    },
+                    {
+                      "text": "\n🎨 Step 2: Check drawing toolbar position\n"
+                    },
+                    {
+                      "text": "  Drawing toolbar position: top=44, left=0\n"
+                    },
+                    {
+                      "text": "  Drawing toolbar should start below header (y >= 44)\n"
+                    },
+                    {
+                      "text": "📸 Layout overview captured\n"
+                    },
+                    {
+                      "text": "\n🔍 Step 3: Test header search\n"
+                    },
+                    {
+                      "text": "📸 Search dropdown captured\n"
+                    },
+                    {
+                      "text": "  Symbol after selection: AAPL\n"
+                    },
+                    {
+                      "text": "📸 Symbol changed captured\n"
+                    },
+                    {
+                      "text": "\n🎨 Step 4: Test drawing tools with new layout\n"
+                    },
+                    {
+                      "text": "📸 Drawing functionality verified\n"
+                    },
+                    {
+                      "text": "\n⏰ Step 5: Test timeframe buttons\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:32.850Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/tradingview-layout-test-TradingView-style-layout-test-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/tradingview-layout-test-TradingView-style-layout-test-chromium/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/johnnyhuang/personal/react-charts/standalone-chart/test-results/tradingview-layout-test-TradingView-style-layout-test-chromium/error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "13394cebcbe916ccb789-6edbbfdb64d050b1ab23",
+          "file": "tradingview-layout-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "undo-redo-test.spec.js",
+      "file": "undo-redo-test.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Undo/Redo functionality - keyboard and buttons",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 20000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 14,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 8291,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n↶↷ TESTING UNDO/REDO FUNCTIONALITY\n"
+                    },
+                    {
+                      "text": "\n📊 Step 1: Draw two trendlines\n"
+                    },
+                    {
+                      "text": "📸 Screenshot with two trendlines\n"
+                    },
+                    {
+                      "text": "\n📊 Step 2: Test keyboard undo (Cmd+Z)\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after keyboard undo (should have 1 trendline)\n"
+                    },
+                    {
+                      "text": "\n📊 Step 3: Test keyboard redo (Cmd+Shift+Z)\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after keyboard redo (should have 2 trendlines again)\n"
+                    },
+                    {
+                      "text": "\n📊 Step 4: Test undo button click\n"
+                    },
+                    {
+                      "text": "  Undo button found: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after button undo\n"
+                    },
+                    {
+                      "text": "  ✅ Undo button clicked successfully\n"
+                    },
+                    {
+                      "text": "\n📊 Step 5: Test redo button click\n"
+                    },
+                    {
+                      "text": "  Redo button found: true\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after button redo\n"
+                    },
+                    {
+                      "text": "  ✅ Redo button clicked successfully\n"
+                    },
+                    {
+                      "text": "\n📊 Step 6: Test multiple undos\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after undoing everything (should be clean chart)\n"
+                    },
+                    {
+                      "text": "\n📊 Step 7: Test multiple redos\n"
+                    },
+                    {
+                      "text": "📸 Screenshot after redoing everything (should have 2 trendlines)\n"
+                    },
+                    {
+                      "text": "\n✅ UNDO/REDO TEST COMPLETE!\n"
+                    },
+                    {
+                      "text": "📁 Check test-results/undo-redo-*.png for visual verification\n"
+                    },
+                    {
+                      "text": "✅ Both keyboard shortcuts (Cmd+Z, Cmd+Shift+Z) and buttons work correctly\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-09-12T05:05:32.915Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f5c0fb265ee24d5b420c-e70a3851ba8354fdd3b0",
+          "file": "undo-redo-test.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "volume-resize-functionality.spec.js",
+      "file": "volume-resize-functionality.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Volume Resize Handle Functionality",
+          "file": "volume-resize-functionality.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should display volume resize handle with correct positioning",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3322,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:33.406Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "094412bb7ea2c8caff27-33e8570d1656f716797d",
+              "file": "volume-resize-functionality.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "should resize volume section when dragging handle",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 4082,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:34.394Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "094412bb7ea2c8caff27-b1ebfb9987e9d3d7a215",
+              "file": "volume-resize-functionality.spec.js",
+              "line": 45,
+              "column": 3
+            },
+            {
+              "title": "should respect volume height constraints",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4332,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:34.777Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "094412bb7ea2c8caff27-bda6a01577a3a2d3dc3c",
+              "file": "volume-resize-functionality.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "should show hover effects on resize handle",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3641,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:35.233Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "094412bb7ea2c8caff27-25a2db71d5f5501b6c9b",
+              "file": "volume-resize-functionality.spec.js",
+              "line": 123,
+              "column": 3
+            },
+            {
+              "title": "should handle multiple resize operations correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4780,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:36.139Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "094412bb7ea2c8caff27-e837cafcac23ab05fe87",
+              "file": "volume-resize-functionality.spec.js",
+              "line": 154,
+              "column": 3
+            },
+            {
+              "title": "should maintain handle position relative to volume chart",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4348,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-12T05:05:36.812Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "094412bb7ea2c8caff27-b821d1f8ad4cd0f11e7f",
+              "file": "volume-resize-functionality.spec.js",
+              "line": 192,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-09-12T05:05:04.146Z",
+    "duration": 49008.092000000004,
+    "expected": 33,
+    "skipped": 0,
+    "unexpected": 10,
+    "flaky": 0
+  }
+}

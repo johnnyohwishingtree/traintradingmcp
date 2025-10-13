@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingView Style Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif;
+            background-color: #131722;
+            color: #d1d4dc;
+        }
+        #root {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <!-- Test deletion functionality -->
+    <script>
+        // Simple deletion test
+        console.log('Deletion test loaded');
+        
+        // Monitor keyboard events
+        document.addEventListener('keydown', (e) => {
+            console.log('🔑 Key pressed:', e.key, 'Target:', e.target.tagName);
+        });
+        
+        window.addEventListener('keydown', (e) => {
+            console.log('🔑 Window key pressed:', e.key);
+        });
+        
+        // Test function to manually trigger deletion
+        window.testDelete = function() {
+            console.log('Manual delete test triggered');
+            const event = new KeyboardEvent('keydown', {
+                key: 'Delete',
+                bubbles: true,
+                cancelable: true
+            });
+            document.dispatchEvent(event);
+            window.dispatchEvent(event);
+        };
+        
+        console.log('Call window.testDelete() to test deletion manually');
+    </script>
+</body>
+</html>

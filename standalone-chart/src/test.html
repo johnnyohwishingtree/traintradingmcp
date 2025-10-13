@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chart Test</title>
+    <script>
+        // Test if we can reach the server
+        fetch('http://localhost:3000')
+            .then(response => response.text())
+            .then(html => {
+                console.log('Server is running');
+                // Now test the bundle
+                const script = document.createElement('script');
+                script.src = 'http://localhost:3000/bundle.js';
+                script.onerror = (e) => {
+                    console.error('Bundle failed to load:', e);
+                };
+                script.onload = () => {
+                    console.log('Bundle loaded successfully');
+                };
+                document.head.appendChild(script);
+            })
+            .catch(err => {
+                console.error('Server error:', err);
+            });
+    </script>
+</head>
+<body>
+    <h1>Testing Chart App</h1>
+    <div id="test-output"></div>
+</body>
+</html>

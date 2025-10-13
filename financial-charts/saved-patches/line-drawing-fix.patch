@@ -1,0 +1,264 @@
+From 83bd85f3ba6e1897902cec0e47ce6f8ad9a478f5 Mon Sep 17 00:00:00 2001
+From: johnny <johnny@ohwishingtree.com>
+Date: Sun, 31 Aug 2025 00:46:03 -0700
+Subject: [PATCH] fix the requirement of needing to use drags to draw lines
+
+---
+ src/interactive/FibonacciRetracement.tsx | 53 ++++++++------
+ src/interactive/TrendLine.tsx            | 68 +++++++++++-------
+ src/interactive/TrianglePattern.tsx      | 88 +++++++++++++++---------
+ 3 files changed, 132 insertions(+), 77 deletions(-)
+
+diff --git a/src/interactive/FibonacciRetracement.tsx b/src/interactive/FibonacciRetracement.tsx
+index bf43406..f5a54b9 100644
+--- a/src/interactive/FibonacciRetracement.tsx
++++ b/src/interactive/FibonacciRetracement.tsx
+@@ -271,27 +271,40 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
+         const { retracements, appearance, type } = this.props;
+         const { current } = this.state;
+ 
+-        if (this.mouseMoved && isDefined(current) && isDefined(current.x1)) {
+-            const newRetracements = retracements.concat({
+-                ...current,
+-                x2: xyValue[0],
+-                y2: xyValue[1],
+-                selected: true,
+-                appearance,
+-                type,
+-            });
++        // For fibonacci completion:
++        // - If we have a current state with first point AND either mouseMoved OR different coordinates, complete it
++        // - This allows both drag and click-click interactions to work
++        if (isDefined(current) && isDefined(current.x1)) {
++            const startX = current.x1;
++            const startY = current.y1;
++            const endX = xyValue[0];
++            const endY = xyValue[1];
++            
++            // Complete fibonacci if mouse moved OR if click is at different coordinates
++            const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
++            
++            if (this.mouseMoved || differentPosition) {
++                const newRetracements = retracements.concat({
++                    ...current,
++                    x2: xyValue[0],
++                    y2: xyValue[1],
++                    selected: true,
++                    appearance,
++                    type,
++                });
+ 
+-            this.setState(
+-                {
+-                    current: null,
+-                },
+-                () => {
+-                    const { onComplete } = this.props;
+-                    if (onComplete !== undefined) {
+-                        onComplete(e, newRetracements, moreProps);
+-                    }
+-                },
+-            );
++                this.setState(
++                    {
++                        current: null,
++                    },
++                    () => {
++                        const { onComplete } = this.props;
++                        if (onComplete !== undefined) {
++                            onComplete(e, newRetracements, moreProps);
++                        }
++                    },
++                );
++            }
+         }
+     };
+ }
+diff --git a/src/interactive/TrendLine.tsx b/src/interactive/TrendLine.tsx
+index 83d9e7e..3813792 100644
+--- a/src/interactive/TrendLine.tsx
++++ b/src/interactive/TrendLine.tsx
+@@ -181,31 +181,51 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
+         const { current } = this.state;
+         const { trends, appearance, type } = this.props;
+ 
+-        // For line completion: if we have a line being drawn (current with start), complete it
+-        // This is more user-friendly than requiring precise mouse movement detection
++        console.log('🏁 TrendLine handleEnd called', { current, xyValue, mouseMoved: this.mouseMoved });
++
++        // For line completion: 
++        // - If we have a current state with start point AND either mouseMoved OR different coordinates, complete it
++        // - This allows both drag and click-click interactions to work
+         if (isDefined(current) && isDefined(current.start)) {
+-            const newTrends = [
+-                ...trends.map((d) => ({ ...d, selected: false })),
+-                {
+-                    start: current.start,
+-                    end: xyValue,
+-                    selected: true,
+-                    appearance,
+-                    type,
+-                },
+-            ];
+-            this.setState(
+-                {
+-                    current: null,
+-                    trends: newTrends,
+-                },
+-                () => {
+-                    const { onComplete } = this.props;
+-                    if (onComplete !== undefined) {
+-                        onComplete(e, newTrends, moreProps);
+-                    }
+-                },
+-            );
++            const startX = current.start[0];
++            const startY = current.start[1];
++            const endX = xyValue[0];
++            const endY = xyValue[1];
++            
++            // Complete line if mouse moved OR if click is at different coordinates
++            const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
++            
++            console.log('  📏 Distance check:', { startX, startY, endX, endY, differentPosition, mouseMoved: this.mouseMoved });
++            
++            if (this.mouseMoved || differentPosition) {
++                console.log('  ✅ Completing trendline!');
++                const newTrends = [
++                    ...trends.map((d) => ({ ...d, selected: false })),
++                    {
++                        start: current.start,
++                        end: xyValue,
++                        selected: true,
++                        appearance,
++                        type,
++                    },
++                ];
++                this.setState(
++                    {
++                        current: null,
++                        trends: newTrends,
++                    },
++                    () => {
++                        const { onComplete } = this.props;
++                        if (onComplete !== undefined) {
++                            onComplete(e, newTrends, moreProps);
++                        }
++                    },
++                );
++            } else {
++                console.log('  ❌ Not completing - no movement detected');
++            }
++        } else {
++            console.log('  ❌ Not completing - no current state or start point');
+         }
+     };
+ 
+diff --git a/src/interactive/TrianglePattern.tsx b/src/interactive/TrianglePattern.tsx
+index 9a028d3..72dbc66 100644
+--- a/src/interactive/TrianglePattern.tsx
++++ b/src/interactive/TrianglePattern.tsx
+@@ -256,45 +256,67 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
+         const { current } = this.state;
+         const { triangles, appearance } = this.props;
+ 
+-        console.log('🔺 Triangle handleEnd called', { current, xyValue, moreProps: moreProps ? 'exists' : 'missing' });
+-        console.log('  📍 Raw xyValue coordinates:', xyValue);
+-        console.log('  📊 MoreProps keys:', moreProps ? Object.keys(moreProps) : 'N/A');
++        console.log('🔺 Triangle handleEnd called', { current, xyValue, mouseMoved: this.mouseMoved });
+ 
+         if (isDefined(current)) {
+             if (isNotDefined(current.point2)) {
+-                // Setting second point
+-                console.log('  📍 Setting point2');
+-                this.setState({
+-                    current: {
+-                        ...current,
+-                        point2: xyValue,
+-                    },
+-                });
++                // Setting second point - only if there was movement or different coordinates
++                const startX = current.point1[0];
++                const startY = current.point1[1];
++                const endX = xyValue[0];
++                const endY = xyValue[1];
++                const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
++                
++                console.log('  📏 Point2 check:', { startX, startY, endX, endY, differentPosition, mouseMoved: this.mouseMoved });
++                
++                if (this.mouseMoved || differentPosition) {
++                    console.log('  📍 Setting point2');
++                    this.setState({
++                        current: {
++                            ...current,
++                            point2: xyValue,
++                        },
++                    });
++                } else {
++                    console.log('  ❌ Not setting point2 - no movement detected');
++                }
+             } else if (isNotDefined(current.point3)) {
+                 // Setting third point - complete the triangle
+-                console.log('  📍 Completing triangle with point3');
+-                const newTriangles = [
+-                    ...triangles.map((d) => ({ ...d, selected: false })),
+-                    {
+-                        point1: current.point1,
+-                        point2: current.point2,
+-                        point3: xyValue,
+-                        selected: true,
+-                        appearance,
+-                    },
+-                ];
++                const startX = current.point2[0];
++                const startY = current.point2[1];
++                const endX = xyValue[0];
++                const endY = xyValue[1];
++                const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
+                 
+-                this.setState(
+-                    {
+-                        current: null,
+-                    },
+-                    () => {
+-                        const { onComplete } = this.props;
+-                        if (onComplete !== undefined) {
+-                            onComplete(e, newTriangles, moreProps);
+-                        }
+-                    },
+-                );
++                console.log('  📏 Point3 check:', { startX, startY, endX, endY, differentPosition, mouseMoved: this.mouseMoved });
++                
++                if (this.mouseMoved || differentPosition) {
++                    console.log('  📍 Completing triangle with point3');
++                    const newTriangles = [
++                        ...triangles.map((d) => ({ ...d, selected: false })),
++                        {
++                            point1: current.point1,
++                            point2: current.point2,
++                            point3: xyValue,
++                            selected: true,
++                            appearance,
++                        },
++                    ];
++                    
++                    this.setState(
++                        {
++                            current: null,
++                        },
++                        () => {
++                            const { onComplete } = this.props;
++                            if (onComplete !== undefined) {
++                                onComplete(e, newTriangles, moreProps);
++                            }
++                        },
++                    );
++                } else {
++                    console.log('  ❌ Not completing triangle - no movement detected');
++                }
+             }
+         }
+     };
+-- 
+2.50.0
+

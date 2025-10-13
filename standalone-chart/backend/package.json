@@ -1,0 +1,28 @@
+{
+  "name": "chart-data-backend",
+  "version": "1.0.0",
+  "description": "Backend service for caching Alpha Vantage data",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "init-db": "node scripts/init-db.js",
+    "migrate": "node scripts/migrate-to-postgres.js",
+    "db:up": "docker-compose up -d postgres",
+    "db:down": "docker-compose down",
+    "db:logs": "docker-compose logs -f postgres"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "https-proxy-agent": "^7.0.6",
+    "node-cron": "^3.0.2",
+    "pg": "^8.16.3",
+    "sqlite3": "^5.1.6",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
