@@ -215,6 +215,7 @@ const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width
 
                     <MouseCoordinateX 
                         rectWidth={100} 
+                        displayFormat={timeFormat("%d %b")}
                         fill="#131722"
                         stroke="#2a2e39"
                         textFill="#d1d4dc"
@@ -222,6 +223,7 @@ const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width
                     
                     <MouseCoordinateY 
                         rectWidth={80} 
+                        displayFormat={format(".2f")}
                         fill="#131722"
                         stroke="#2a2e39"
                         textFill="#d1d4dc"
