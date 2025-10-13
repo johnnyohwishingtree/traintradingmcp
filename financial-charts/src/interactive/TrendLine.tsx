@@ -4,6 +4,14 @@ import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminat
 import { HoverTextNearMouse, MouseLocationIndicator, InteractiveStraightLine } from "./components";
 import { EachTrendLine } from "./wrapper";
 
+export interface MCPElement {
+    readonly id: string;
+    readonly type: string;
+    readonly data: any;
+    readonly appearance?: any;
+    readonly selected?: boolean;
+}
+
 export interface TrendLineProps {
     readonly snap: boolean;
     readonly enabled: boolean;
@@ -30,6 +38,12 @@ export interface TrendLineProps {
         readonly edgeFill: string;
         readonly edgeStroke: string;
     };
+    // MCP Integration Props (optional)
+    readonly onMCPCreate?: (elementType: string, elementData: any, appearance: any) => void;
+    readonly onMCPSelect?: (elementId: string) => void;
+    readonly onMCPModify?: (elementId: string, newData: any) => void;
+    readonly onMCPDelete?: (elementId: string) => void;
+    readonly mcpElements?: MCPElement[]; // MCP-managed elements to display
 }
 
 interface TrendLineState {
@@ -86,6 +100,28 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         this.state = {};
     }
 
+    // Convert MCP elements to trends format for native rendering
+    private convertMCPElementsToTrends(mcpElements: MCPElement[], appearance: any): any[] {
+        if (!mcpElements) return [];
+        
+        return mcpElements
+            .filter(el => el.type === 'trendline')
+            .map(el => ({
+                id: el.id,
+                start: el.data.start,
+                end: el.data.end,
+                appearance: el.appearance || appearance,
+                type: "LINE",
+                selected: el.selected || false,
+                isMCPElement: true // Mark as MCP-managed
+            }));
+    }
+
+    // Generate unique ID for new elements
+    private generateElementId(): string {
+        return `trendline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+
     public render() {
         const {
             appearance,
@@ -100,9 +136,21 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
             snapTo,
             trends,
             type,
+            mcpElements,
         } = this.props;
 
         const { current, override } = this.state;
+
+        // Merge MCP elements with regular trends for unified rendering
+        const mcpTrends = this.convertMCPElementsToTrends(mcpElements, appearance);
+        const allTrends = [...trends, ...mcpTrends];
+        
+        console.log('🎨 TrendLine render:', { 
+            enabled, 
+            regularTrends: trends.length, 
+            mcpTrends: mcpTrends.length,
+            totalTrends: allTrends.length 
+        });
 
         const tempLine =
             isDefined(current) && isDefined(current.end) ? (
@@ -119,7 +167,7 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
 
         return (
             <g>
-                {trends.map((each, idx) => {
+                {allTrends.map((each, idx) => {
                     const eachAppearance = isDefined(each.appearance)
                         ? { ...appearance, ...each.appearance }
                         : appearance;
@@ -199,15 +247,18 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
             
             if (this.mouseMoved || differentPosition) {
                 console.log('  ✅ Completing trendline!');
+                const newTrendlineId = this.generateElementId();
+                const newTrendline = {
+                    id: newTrendlineId,
+                    start: current.start,
+                    end: xyValue,
+                    selected: true,
+                    appearance,
+                    type,
+                };
                 const newTrends = [
                     ...trends.map((d) => ({ ...d, selected: false })),
-                    {
-                        start: current.start,
-                        end: xyValue,
-                        selected: true,
-                        appearance,
-                        type,
-                    },
+                    newTrendline,
                 ];
                 this.setState(
                     {
@@ -215,7 +266,18 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                         trends: newTrends,
                     },
                     () => {
-                        const { onComplete } = this.props;
+                        const { onComplete, onMCPCreate } = this.props;
+                        
+                        // Emit MCP event if handler is provided
+                        if (onMCPCreate) {
+                            console.log('  📡 Emitting MCP create event for trendline:', newTrendlineId);
+                            onMCPCreate('trendline', {
+                                start: current.start,
+                                end: xyValue,
+                                id: newTrendlineId
+                            }, appearance);
+                        }
+                        
                         if (onComplete !== undefined) {
                             onComplete(e, newTrends, moreProps);
                         }
@@ -276,7 +338,10 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         console.log('  Override state:', override);
         
         if (isDefined(override)) {
-            const { trends } = this.props;
+            const { trends, mcpElements } = this.props;
+            const allTrends = [...trends, ...this.convertMCPElementsToTrends(mcpElements, this.props.appearance)];
+            const modifiedTrend = allTrends[override.index];
+            
             const newTrends = trends.map((each, idx) =>
                 idx === override.index
                     ? {
@@ -298,7 +363,17 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                     override: null,
                 },
                 () => {
-                    const { onComplete } = this.props;
+                    const { onComplete, onMCPModify } = this.props;
+                    
+                    // Emit MCP modify event if the modified trend is MCP-managed and handler exists
+                    if (onMCPModify && modifiedTrend && modifiedTrend.isMCPElement) {
+                        console.log('  📡 Emitting MCP modify event for trendline:', modifiedTrend.id);
+                        onMCPModify(modifiedTrend.id, {
+                            start: [override.x1Value, override.y1Value],
+                            end: [override.x2Value, override.y2Value]
+                        });
+                    }
+                    
                     if (onComplete !== undefined) {
                         onComplete(e, newTrends, moreProps);
                     }

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import StockChartWithTools from './StockChartWithTools';
+import MCPTrendLineDemo from './MCPTrendLineDemo';
 import DrawingToolbar from './DrawingToolbar';
 import HeaderToolbar from './HeaderToolbar';
 import ReplayControls from './ReplayControls';
@@ -23,6 +24,7 @@ import './ChartIndicatorsPanel.css';
 import './IndicatorSettingsPanel.css';
 
 const ChartWithData = withOHLCData()(StockChartWithTools);
+const MCPDemoWithData = withOHLCData()(MCPTrendLineDemo);
 
 // Define the history state interface
 interface HistoryState {
@@ -33,6 +35,12 @@ interface HistoryState {
 }
 
 const App = () => {
+  // Add MCP demo mode state
+  const [mcpDemoMode, setMcpDemoMode] = useState(() => {
+    // Check URL for demo mode
+    return window.location.search.includes('demo=mcp');
+  });
+  
   const [currentSymbol, setCurrentSymbol] = useState(() => {
     // Check if there's a preserved symbol from a refresh/delete
     const preserved = localStorage.getItem('chartRefreshSymbol');
@@ -988,6 +996,37 @@ const App = () => {
     interactiveFeaturesManager.handleDeselectAll();
     setLastSelectedObject(null);
   }, [interactiveFeaturesManager]);
+
+  // Render MCP demo if in demo mode
+  if (mcpDemoMode) {
+    return (
+      <div style={{ height: '100vh', background: '#131722' }}>
+        <div style={{ 
+          padding: '10px', 
+          background: '#1e222d', 
+          color: '#d1d4dc',
+          borderBottom: '1px solid #2a2e39'
+        }}>
+          <button 
+            onClick={() => setMcpDemoMode(false)}
+            style={{
+              padding: '5px 10px',
+              background: '#2962ff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '3px',
+              cursor: 'pointer',
+              marginRight: '10px'
+            }}
+          >
+            Exit Demo Mode
+          </button>
+          <strong>MCP TrendLine Integration Demo</strong>
+        </div>
+        <MCPDemoWithData symbol={currentSymbol} />
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
