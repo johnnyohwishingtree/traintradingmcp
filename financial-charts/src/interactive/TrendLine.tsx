@@ -143,11 +143,11 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
 
         // Merge MCP elements with regular trends for unified rendering
         const mcpTrends = this.convertMCPElementsToTrends(mcpElements, appearance);
-        const allTrends = [...trends, ...mcpTrends];
+        const allTrends = [...(trends || []), ...mcpTrends];
         
         console.log('🎨 TrendLine render:', { 
             enabled, 
-            regularTrends: trends.length, 
+            regularTrends: (trends || []).length, 
             mcpTrends: mcpTrends.length,
             totalTrends: allTrends.length 
         });
@@ -257,7 +257,7 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                     type,
                 };
                 const newTrends = [
-                    ...trends.map((d) => ({ ...d, selected: false })),
+                    ...(trends || []).map((d) => ({ ...d, selected: false })),
                     newTrendline,
                 ];
                 this.setState(
@@ -339,10 +339,10 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         
         if (isDefined(override)) {
             const { trends, mcpElements } = this.props;
-            const allTrends = [...trends, ...this.convertMCPElementsToTrends(mcpElements, this.props.appearance)];
+            const allTrends = [...(trends || []), ...this.convertMCPElementsToTrends(mcpElements, this.props.appearance)];
             const modifiedTrend = allTrends[override.index];
             
-            const newTrends = trends.map((each, idx) =>
+            const newTrends = (trends || []).map((each, idx) =>
                 idx === override.index
                     ? {
                           ...each,
