@@ -31,7 +31,7 @@ interface MCPTrendLineDemoProps {
 const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width, ratio }) => {
     const [mcpElements, setMcpElements] = useState<MCPElement[]>([]);
     const [trends, setTrends] = useState<any[]>([]);
-    const [mcpEnabled, setMcpEnabled] = useState(false);
+    const [mcpEnabled, setMcpEnabled] = useState(true);
 
     const margin = { left: 50, right: 80, top: 20, bottom: 24 };
     const xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
@@ -103,15 +103,69 @@ const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width
         setTrends([]);
     };
 
+    // Test MCP functionality by programmatically creating an element
+    const testMCPCreate = () => {
+        // Use actual visible chart data for realistic coordinates
+        const visibleStartIndex = Math.max(0, chartData.length - 100);
+        const visibleEndIndex = chartData.length - 1;
+        
+        const startData = chartData[visibleStartIndex];
+        const endData = chartData[visibleEndIndex];
+        
+        // Use realistic price coordinates from the visible data
+        const startPrice = Math.min(startData.low, startData.open, startData.close);
+        const endPrice = Math.max(endData.high, endData.open, endData.close);
+        
+        // Use xAccessor values for x-coordinates (this is what the chart system expects)
+        const startX = xAccessor(startData);
+        const endX = xAccessor(endData);
+        
+        const testElement: MCPElement = {
+            id: `test_mcp_${Date.now()}`,
+            type: 'trendline',
+            data: {
+                // Use chart's x-accessor values instead of raw dates
+                start: [startX, startPrice],
+                end: [endX, endPrice],
+                id: `test_mcp_${Date.now()}`
+            },
+            appearance: {
+                strokeStyle: '#00ff00',
+                strokeWidth: 3,
+                strokeDasharray: 'Solid',
+                edgeStrokeWidth: 3,
+                edgeFill: '#00ff00',
+                edgeStroke: '#00ff00'
+            },
+            selected: true
+        };
+
+        console.log('🧪 Creating test MCP element with chart coordinates:', testElement);
+        console.log('📊 Chart coordinate mapping:', { 
+            startX: startX,
+            endX: endX,
+            startPrice: startPrice,
+            endPrice: endPrice,
+            xAccessorType: typeof xAccessor,
+            totalPoints: chartData.length 
+        });
+        setMcpElements(prev => [...prev, testElement]);
+    };
+
     return (
         <div style={{ background: "#131722", width: '100%', height: '100%' }}>
             {/* Control Panel */}
             <div style={{ 
-                padding: '10px', 
+                padding: '8px 15px', 
                 background: '#1e222d', 
                 color: '#d1d4dc',
-                fontSize: '14px',
-                borderBottom: '1px solid #2a2e39'
+                fontSize: '12px',
+                borderBottom: '1px solid #2a2e39',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000
             }}>
                 <div style={{ marginBottom: '10px' }}>
                     <strong>MCP TrendLine Demo</strong> - Test MCP Integration
@@ -125,6 +179,19 @@ const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width
                         />
                         Enable MCP Mode
                     </label>
+                    <button 
+                        onClick={testMCPCreate}
+                        style={{ 
+                            padding: '5px 10px', 
+                            background: '#089981', 
+                            color: 'white', 
+                            border: 'none',
+                            borderRadius: '3px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Test MCP Create
+                    </button>
                     <button 
                         onClick={clearAll}
                         style={{ 
@@ -156,22 +223,23 @@ const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width
                 )}
             </div>
 
-            <ChartCanvas
-                height={height}
-                ratio={ratio}
-                width={width}
-                margin={margin}
-                data={chartData}
-                displayXAccessor={displayXAccessor}
-                seriesName="MCP Demo"
-                xScale={xScale}
-                xAccessor={xAccessor}
-                xExtents={xExtents}
-                zoomAnchor={lastVisibleItemBasedZoomAnchor}
-            >
+            <div style={{ marginTop: '80px' }}> {/* Account for fixed header */}
+                <ChartCanvas
+                    height={height - 80}
+                    ratio={ratio}
+                    width={width}
+                    margin={margin}
+                    data={chartData}
+                    displayXAccessor={displayXAccessor}
+                    seriesName="MCP Demo"
+                    xScale={xScale}
+                    xAccessor={xAccessor}
+                    xExtents={xExtents}
+                    zoomAnchor={lastVisibleItemBasedZoomAnchor}
+                >
                 <Chart 
                     id={1} 
-                    height={height - margin.top - margin.bottom}
+                    height={height - 80 - margin.top - margin.bottom}
                     yExtents={(d: IOHLCData) => [d.high, d.low]}
                 >
                     <XAxis showGridLines stroke="#2a2e39" tickStroke="#d1d4dc" />
@@ -210,7 +278,16 @@ const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width
                         onMCPSelect={mcpEnabled ? handleMCPSelect : undefined}
                         onMCPModify={mcpEnabled ? handleMCPModify : undefined}
                         onMCPDelete={mcpEnabled ? handleMCPDelete : undefined}
-                        mcpElements={mcpEnabled ? mcpElements : undefined}
+                        mcpElements={(() => {
+                            const result = mcpEnabled ? mcpElements : undefined;
+                            console.log('🎯 MCPTrendLineDemo passing mcpElements:', { 
+                                mcpEnabled, 
+                                mcpElementsLength: mcpElements.length, 
+                                mcpElements, 
+                                result 
+                            });
+                            return result;
+                        })()}
                     />
 
                     <MouseCoordinateX 
@@ -232,6 +309,7 @@ const MCPTrendLineDemo: React.FC<MCPTrendLineDemoProps> = ({ data, height, width
                 
                 <CrossHairCursor stroke="#2a2e39" />
             </ChartCanvas>
+            </div>
         </div>
     );
 };

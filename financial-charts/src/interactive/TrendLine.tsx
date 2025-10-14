@@ -102,19 +102,30 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
 
     // Convert MCP elements to trends format for native rendering
     private convertMCPElementsToTrends(mcpElements: MCPElement[], appearance: any): any[] {
-        if (!mcpElements) return [];
+        console.log('🔍 convertMCPElementsToTrends called with:', { mcpElements, appearance });
         
-        return mcpElements
-            .filter(el => el.type === 'trendline')
-            .map(el => ({
-                id: el.id,
-                start: el.data.start,
-                end: el.data.end,
-                appearance: el.appearance || appearance,
-                type: "LINE",
-                selected: el.selected || false,
-                isMCPElement: true // Mark as MCP-managed
-            }));
+        if (!mcpElements) {
+            console.log('  ❌ No mcpElements provided, returning []');
+            return [];
+        }
+        
+        console.log('  📊 MCP Elements before filtering:', mcpElements.length, mcpElements);
+        
+        const filtered = mcpElements.filter(el => el.type === 'trendline');
+        console.log('  📊 After filtering for trendlines:', filtered.length, filtered);
+        
+        const converted = filtered.map(el => ({
+            id: el.id,
+            start: el.data.start,
+            end: el.data.end,
+            appearance: el.appearance || appearance,
+            type: "LINE",
+            selected: el.selected || false,
+            isMCPElement: true // Mark as MCP-managed
+        }));
+        
+        console.log('  ✅ Converted trends:', converted.length, converted);
+        return converted;
     }
 
     // Generate unique ID for new elements
@@ -140,6 +151,8 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         } = this.props;
 
         const { current, override } = this.state;
+
+        console.log('🎨 TrendLine render props:', { mcpElements, mcpElementsType: typeof mcpElements, mcpElementsLength: mcpElements?.length });
 
         // Merge MCP elements with regular trends for unified rendering
         const mcpTrends = this.convertMCPElementsToTrends(mcpElements, appearance);

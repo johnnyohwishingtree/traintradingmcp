@@ -1,4 +1,5 @@
 export { TrendLine } from "./TrendLine";
+export type { MCPElement } from "./TrendLine";
 export { FibonacciRetracement } from "./FibonacciRetracement";
 export { TrianglePattern } from "./TrianglePattern";
 export { EquidistantChannel } from "./EquidistantChannel";

@@ -310,7 +310,11 @@ export class EventCapture extends React.Component<EventCaptureProps, EventCaptur
         e.preventDefault();
         const { onContextMenu, onPanEnd } = this.props;
 
-        const mouseXY = mousePosition(e, this.ref.current!.getBoundingClientRect());
+        if (!this.ref.current) {
+            console.warn('EventCapture: ref not available, skipping event');
+            return;
+        }
+        const mouseXY = mousePosition(e, this.ref.current.getBoundingClientRect());
 
         if (this.state.panStart !== undefined) {
             const {
