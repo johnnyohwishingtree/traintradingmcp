@@ -3,13 +3,21 @@ import { isDefined, isNotDefined, noop, strokeDashTypes } from "../core";
 import { getValueFromOverride, isHoverForInteractiveType, saveNodeType, terminate } from "./utils";
 import { HoverTextNearMouse, MouseLocationIndicator, InteractiveStraightLine } from "./components";
 import { EachTrendLine } from "./wrapper";
+import { InteractiveText } from "./InteractiveText";
 
 export interface MCPElement {
     readonly id: string;
-    readonly type: string;
+    readonly type: 'trendline' | 'label';
     readonly data: any;
     readonly appearance?: any;
     readonly selected?: boolean;
+}
+
+export interface MCPLabelData {
+    readonly position: [number, number]; // [x, y] coordinates
+    readonly text: string;
+    readonly direction?: 'up' | 'down' | 'neutral';
+    readonly priority?: 'high' | 'medium' | 'low';
 }
 
 export interface TrendLineProps {
@@ -111,10 +119,10 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         
         console.log('  📊 MCP Elements before filtering:', mcpElements.length, mcpElements);
         
-        const filtered = mcpElements.filter(el => el.type === 'trendline');
-        console.log('  📊 After filtering for trendlines:', filtered.length, filtered);
+        const trendlineElements = mcpElements.filter(el => el.type === 'trendline');
+        console.log('  📊 After filtering for trendlines:', trendlineElements.length, trendlineElements);
         
-        const converted = filtered.map(el => ({
+        const converted = trendlineElements.map(el => ({
             id: el.id,
             start: el.data.start,
             end: el.data.end,
@@ -125,6 +133,30 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         }));
         
         console.log('  ✅ Converted trends:', converted.length, converted);
+        return converted;
+    }
+
+    // Convert MCP label elements to text list for InteractiveText rendering
+    private convertMCPElementsToLabels(mcpElements: MCPElement[]): any[] {
+        if (!mcpElements) return [];
+        
+        const labelElements = mcpElements.filter(el => el.type === 'label');
+        console.log('  📊 MCP Labels found:', labelElements.length, labelElements);
+        
+        const converted = labelElements.map(el => ({
+            id: el.id,
+            position: el.data.position, // [x, y]
+            text: el.data.text,
+            bgFill: el.appearance?.bgFill || '#D3D3D3',
+            bgStroke: el.appearance?.bgStroke || '#000000',
+            textFill: el.appearance?.textFill || '#F10040',
+            fontSize: el.appearance?.fontSize || 12,
+            fontWeight: el.appearance?.fontWeight || 'normal',
+            selected: el.selected || false,
+            isMCPElement: true
+        }));
+        
+        console.log('  ✅ Converted labels:', converted.length, converted);
         return converted;
     }
 
@@ -153,15 +185,20 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         const { current, override } = this.state;
 
         console.log('🎨 TrendLine render props:', { mcpElements, mcpElementsType: typeof mcpElements, mcpElementsLength: mcpElements?.length });
+        console.log('🔧 DEBUG: About to call convertMCPElementsToTrends with mcpElements:', mcpElements);
 
         // Merge MCP elements with regular trends for unified rendering
         const mcpTrends = this.convertMCPElementsToTrends(mcpElements, appearance);
+        const mcpLabels = this.convertMCPElementsToLabels(mcpElements);
+        
+        console.log('🔧 DEBUG: After conversion - mcpTrends:', mcpTrends.length, 'mcpLabels:', mcpLabels.length);
         const allTrends = [...(trends || []), ...mcpTrends];
         
         console.log('🎨 TrendLine render:', { 
             enabled, 
             regularTrends: (trends || []).length, 
             mcpTrends: mcpTrends.length,
+            mcpLabels: mcpLabels.length,
             totalTrends: allTrends.length 
         });
 
@@ -232,6 +269,27 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                         onMouseDown={this.handleStart}
                         onClick={this.handleEnd}
                         onMouseMove={this.handleDrawLine}
+                    />
+                )}
+                {/* Render MCP Labels */}
+                {mcpLabels.length > 0 && (
+                    <InteractiveText
+                        enabled={false} // Labels are read-only for now
+                        onChoosePosition={noop}
+                        textList={mcpLabels}
+                        defaultText={{
+                            bgFill: '#D3D3D3',
+                            bgOpacity: 0.9,
+                            bgStrokeWidth: 1,
+                            bgStroke: '#000000',
+                            textFill: '#F10040',
+                            fontFamily: '-apple-system, system-ui, Roboto, "Helvetica Neue", Ubuntu, sans-serif',
+                            fontWeight: 'normal',
+                            fontStyle: 'normal',
+                            fontSize: 12,
+                            text: 'Label'
+                        }}
+                        hoverText={{}}
                     />
                 )}
             </g>

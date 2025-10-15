@@ -109,7 +109,6 @@ export class InteractiveText extends React.Component<InteractiveTextProps, Inter
                     canvasToDraw={getMouseCanvas}
                     drawOn={["mousemove", "pan"]}
                 />
-                ;
             </g>
         );
     }

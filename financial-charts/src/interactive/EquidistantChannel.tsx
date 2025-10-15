@@ -5,6 +5,15 @@ import { getSlope, getYIntercept } from "./components/InteractiveStraightLine";
 import { isHoverForInteractiveType, saveNodeType, terminate } from "./utils";
 import { EachEquidistantChannel } from "./wrapper";
 
+// MCP Integration Types
+export interface MCPElement {
+    readonly id: string;
+    readonly type: 'channel' | 'label';
+    readonly data: any;
+    readonly appearance?: any;
+    readonly selected?: boolean;
+}
+
 interface EquidistantChannelProps {
     readonly enabled: boolean;
     readonly onStart: () => void;
@@ -29,6 +38,12 @@ interface EquidistantChannelProps {
         readonly edgeStrokeWidth: number;
         readonly r: number;
     };
+    // MCP Integration Props (optional)
+    readonly onMCPCreate?: (elementType: string, elementData: any, appearance: any) => void;
+    readonly onMCPSelect?: (elementId: string) => void;
+    readonly onMCPModify?: (elementId: string, newData: any) => void;
+    readonly onMCPDelete?: (elementId: string) => void;
+    readonly mcpElements?: MCPElement[]; // MCP-managed elements to display
 }
 
 interface EquidistantChannelState {
@@ -82,6 +97,23 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
         this.state = {};
     }
 
+    // MCP Integration Methods
+    private convertMCPElementsToChannels(mcpElements: MCPElement[]): any[] {
+        const channelElements = mcpElements.filter(el => el.type === 'channel');
+        return channelElements.map(el => ({
+            id: el.id,
+            startXY: el.data.startXY,
+            endXY: el.data.endXY,
+            dy: el.data.dy,
+            selected: el.selected || false,
+            appearance: el.appearance
+        }));
+    }
+
+    private generateElementId(): string {
+        return `channel_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+
     public render() {
         const {
             appearance,
@@ -93,7 +125,12 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
             enabled,
             hoverText,
             onDragComplete,
+            mcpElements,
         } = this.props;
+
+        // Merge regular channels with MCP elements
+        const mcpChannels = mcpElements ? this.convertMCPElementsToChannels(mcpElements) : [];
+        const allChannels = [...(channels || []), ...mcpChannels];
 
 
         const { current, override } = this.state;
@@ -102,7 +139,7 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
 
         return (
             <g>
-                {channels.map((each, idx) => {
+                {allChannels.map((each, idx) => {
                     const eachAppearance = isDefined(each.appearance)
                         ? { ...appearance, ...each.appearance }
                         : appearance;
@@ -262,28 +299,42 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
                     const y = m * xyValue[0] + b;
                     const dy = xyValue[1] - y;
                     
-                    const newChannels = [
-                        ...channels.map((d) => ({ ...d, selected: false })),
-                        {
+                    const channelData = {
+                        startXY: current.startXY,
+                        endXY: current.endXY,
+                        dy: dy,
+                        selected: true,
+                        appearance,
+                    };
+
+                    // If MCP mode is active, notify MCP instead of regular completion
+                    const { onMCPCreate } = this.props;
+                    if (onMCPCreate) {
+                        const elementId = this.generateElementId();
+                        const mcpElementData = {
+                            id: elementId,
                             startXY: current.startXY,
                             endXY: current.endXY,
                             dy: dy,
-                            selected: true,
-                            appearance,
-                        },
-                    ];
+                        };
+                        
+                        console.log('🎯 MCP Channel Create:', { elementId, mcpElementData, appearance });
+                        onMCPCreate('channel', mcpElementData, appearance);
+                    } else {
+                        // Regular channel completion
+                        const newChannels = [
+                            ...channels.map((d) => ({ ...d, selected: false })),
+                            channelData,
+                        ];
+                        const { onComplete } = this.props;
+                        if (onComplete !== undefined) {
+                            onComplete(e, newChannels, moreProps);
+                        }
+                    }
                     
-                    this.setState(
-                        {
-                            current: null,
-                        },
-                        () => {
-                            const { onComplete } = this.props;
-                            if (onComplete !== undefined) {
-                                onComplete(e, newChannels, moreProps);
-                            }
-                        },
-                    );
+                    this.setState({
+                        current: null,
+                    });
                 }
             }
         }

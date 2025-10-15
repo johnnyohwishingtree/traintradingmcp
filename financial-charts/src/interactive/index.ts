@@ -1,8 +1,15 @@
 export { TrendLine } from "./TrendLine";
-export type { MCPElement } from "./TrendLine";
+export type { MCPElement, MCPLabelData } from "./TrendLine";
 export { FibonacciRetracement } from "./FibonacciRetracement";
+export type { MCPElement as MCPFibElement } from "./FibonacciRetracement";
 export { TrianglePattern } from "./TrianglePattern";
+export type { MCPElement as MCPTriangleElement } from "./TrianglePattern";
 export { EquidistantChannel } from "./EquidistantChannel";
+export type { MCPElement as MCPChannelElement } from "./EquidistantChannel";
+export { HorizontalLine } from "./HorizontalLine";
+export { VerticalLine } from "./VerticalLine";
+export { HorizontalRay } from "./HorizontalRay";
+export { InfoLine } from "./InfoLine";
 export { StandardDeviationChannel } from "./StandardDeviationChannel";
 export { GannFan } from "./GannFan";
 export { ClickCallback } from "./ClickCallback";

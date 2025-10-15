@@ -4,6 +4,15 @@ import { HoverTextNearMouse, MouseLocationIndicator } from "./components";
 import { isHoverForInteractiveType, saveNodeType, terminate } from "./utils";
 import { EachFibRetracement } from "./wrapper";
 
+// MCP Integration Types
+export interface MCPElement {
+    readonly id: string;
+    readonly type: 'fibonacci' | 'label';
+    readonly data: any;
+    readonly appearance?: any;
+    readonly selected?: boolean;
+}
+
 interface FibonacciRetracementProps {
     readonly enabled: boolean;
     readonly width?: number;
@@ -32,6 +41,12 @@ interface FibonacciRetracementProps {
         readonly edgeStrokeWidth: number;
         readonly r: number;
     };
+    // MCP Integration Props (optional)
+    readonly onMCPCreate?: (elementType: string, elementData: any, appearance: any) => void;
+    readonly onMCPSelect?: (elementId: string) => void;
+    readonly onMCPModify?: (elementId: string, newData: any) => void;
+    readonly onMCPDelete?: (elementId: string) => void;
+    readonly mcpElements?: MCPElement[]; // MCP-managed elements to display
 }
 
 interface FibonacciRetracementState {
@@ -91,6 +106,25 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
         this.state = {};
     }
 
+    // MCP Integration Methods
+    private convertMCPElementsToRetracements(mcpElements: MCPElement[]): any[] {
+        const fibElements = mcpElements.filter(el => el.type === 'fibonacci');
+        return fibElements.map(el => ({
+            id: el.id,
+            x1: el.data.start[0],
+            y1: el.data.start[1],
+            x2: el.data.end[0],
+            y2: el.data.end[1],
+            selected: el.selected || false,
+            appearance: el.appearance,
+            type: el.data.type || this.props.type
+        }));
+    }
+
+    private generateElementId(): string {
+        return `fib_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+
     public render() {
         const { current, override } = this.state;
 
@@ -102,7 +136,12 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
             currentPositionRadius = FibonacciRetracement.defaultProps.currentPositionRadius,
             retracements,
             type,
+            mcpElements,
         } = this.props;
+
+        // Merge regular retracements with MCP elements
+        const mcpRetracements = mcpElements ? this.convertMCPElementsToRetracements(mcpElements) : [];
+        const allRetracements = [...(retracements || []), ...mcpRetracements];
 
         const { enabled, hoverText } = this.props;
         const overrideIndex = isDefined(override) ? override.index : null;
@@ -123,7 +162,7 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
             ) : null;
         return (
             <g>
-                {retracements.map((each, idx) => {
+                {allRetracements.map((each, idx) => {
                     const eachAppearance = isDefined(each.appearance)
                         ? { ...appearance, ...each.appearance }
                         : appearance;
@@ -284,26 +323,40 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
             const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
             
             if (this.mouseMoved || differentPosition) {
-                const newRetracements = retracements.concat({
+                const fibonacciData = {
                     ...current,
                     x2: xyValue[0],
                     y2: xyValue[1],
                     selected: true,
                     appearance,
                     type,
-                });
+                };
 
-                this.setState(
-                    {
-                        current: null,
-                    },
-                    () => {
-                        const { onComplete } = this.props;
-                        if (onComplete !== undefined) {
-                            onComplete(e, newRetracements, moreProps);
-                        }
-                    },
-                );
+                // If MCP mode is active, notify MCP instead of regular completion
+                const { onMCPCreate } = this.props;
+                if (onMCPCreate) {
+                    const elementId = this.generateElementId();
+                    const mcpElementData = {
+                        id: elementId,
+                        start: [current.x1, current.y1],
+                        end: [xyValue[0], xyValue[1]],
+                        type,
+                    };
+                    
+                    console.log('🎯 MCP Fibonacci Create:', { elementId, mcpElementData, appearance });
+                    onMCPCreate('fibonacci', mcpElementData, appearance);
+                } else {
+                    // Regular fibonacci completion
+                    const newRetracements = retracements.concat(fibonacciData);
+                    const { onComplete } = this.props;
+                    if (onComplete !== undefined) {
+                        onComplete(e, newRetracements, moreProps);
+                    }
+                }
+
+                this.setState({
+                    current: null,
+                });
             }
         }
     };

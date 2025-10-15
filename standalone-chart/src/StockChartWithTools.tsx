@@ -32,6 +32,10 @@ import {
     withDeviceRatio,
     withSize,
     TrendLine,
+    HorizontalLine,
+    VerticalLine,
+    HorizontalRay,
+    InfoLine,
     FibonacciRetracement,
     TrianglePattern,
     EquidistantChannel,
@@ -58,19 +62,23 @@ interface StockChartWithToolsProps {
     readonly trendChannels?: any[];
     readonly fibonacciRetracements?: any[];
     readonly trianglePatterns?: any[];
+    readonly labels?: any[];
     readonly selectedTrendLines?: number[];
     readonly selectedChannels?: number[];
     readonly selectedFibs?: number[];
     readonly selectedTriangles?: number[];
+    readonly selectedLabels?: number[];
     readonly onTrendLineComplete?: (trendLines: any[]) => void;
     readonly onTrendChannelComplete?: (channels: any[]) => void;
     readonly onFibonacciComplete?: (fibs: any[]) => void;
     readonly onRefresh?: () => void;
     readonly onTriangleComplete?: (triangles: any[]) => void;
+    readonly onLabelComplete?: (labels: any[]) => void;
     readonly onTrendLineSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onTrendChannelSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onFibonacciSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onTriangleSelect?: (e: React.MouseEvent, interactives: any[]) => void;
+    readonly onLabelSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onDeselectAll?: () => void;
     readonly isReplayMode?: boolean;
     readonly replayPosition?: number;
@@ -235,9 +243,42 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
 
 
             case 'horizontalline':
+                // Horizontal lines need their own props, not trend line data
+                const horizontalLineProps = {
+                    enabled: enableTrendLine,
+                    snap: false,
+                    snapTo: (d: any) => [d.high, d.low],
+                    onStart: () => {},
+                    onComplete: (e: any, newLines: any[], moreProps: any) => {
+                        if (onTrendLineComplete) {
+                            onTrendLineComplete(newLines);
+                        }
+                    },
+                    onDragStart: (e: any, interactives: any[], moreProps: any) => {
+                        if (onTrendLineSelect && interactives.length > 0) {
+                            onTrendLineSelect(e, interactives);
+                        }
+                    },
+                    onDragComplete: (e: any, newLines: any[], moreProps: any) => {
+                        if (newLines.length > 0) {
+                            if (onTrendLineComplete) {
+                                onTrendLineComplete(newLines);
+                            }
+                            if (onTrendLineSelect) {
+                                onTrendLineSelect(e, newLines);
+                            }
+                        }
+                    },
+                    onSelect: onTrendLineSelect,
+                    trends: [], // Empty array - horizontal lines are created new, not from existing trends
+                    hoverText: {
+                        enable: false,
+                    }
+                };
+                
                 return (
-                    <TrendLine
-                        {...commonProps}
+                    <HorizontalLine
+                        {...horizontalLineProps}
                         type="XLINE"
                         appearance={{
                             strokeStyle: "#f44336",
@@ -250,14 +291,12 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                         currentPositionStroke="#f44336"
                         currentPositionStrokeWidth={3}
                         currentPositionRadius={4}
-                        // Force horizontal by overriding the drawing behavior
-                        snapTo={(d: any) => [d.close]}
                     />
                 );
 
             case 'horizontalray':
                 return (
-                    <TrendLine
+                    <HorizontalRay
                         {...commonProps}
                         type="RAY"
                         appearance={{
@@ -276,7 +315,7 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
 
             case 'verticalline':
                 return (
-                    <TrendLine
+                    <VerticalLine
                         {...commonProps}
                         type="XLINE"
                         appearance={{
@@ -295,7 +334,7 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
 
             case 'infoline':
                 return (
-                    <TrendLine
+                    <InfoLine
                         {...commonProps}
                         type="LINE"
                         appearance={{
@@ -466,18 +505,22 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
             trendChannels = [],
             fibonacciRetracements = [],
             trianglePatterns = [],
+            labels = [],
             selectedTrendLines = [],
             selectedChannels = [],
             selectedFibs = [],
             selectedTriangles = [],
+            selectedLabels = [],
             onTrendLineComplete,
             onTrendChannelComplete,
             onFibonacciComplete,
             onTriangleComplete,
+            onLabelComplete,
             onTrendLineSelect,
             onTrendChannelSelect,
             onFibonacciSelect,
             onTriangleSelect,
+            onLabelSelect,
             onDeselectAll,
             enabledIndicators = {
                 ema10: false,
@@ -820,6 +863,61 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                             currentPositionStroke="#9c27b0"
                             currentPositionStrokeWidth={2}
                             currentPositionRadius={4}
+                        />
+
+                        {/* Label Component - Single point text annotations using InteractiveText */}
+                        <InteractiveText
+                            enabled={currentTool === 'label'}
+                            textList={labels?.map((label, index) => ({
+                                ...label,
+                                position: [label.x, label.y],
+                                text: label.text || "Label",
+                                selected: selectedLabels.includes(index)
+                            }))}
+                            onChoosePosition={(e: any, newText: any, moreProps: any) => {
+                                if (onLabelComplete) {
+                                    const newLabel = {
+                                        x: newText.position[0],
+                                        y: newText.position[1],
+                                        text: newText.text,
+                                        selected: true
+                                    };
+                                    onLabelComplete([
+                                        ...labels.map(l => ({ ...l, selected: false })),
+                                        newLabel
+                                    ]);
+                                }
+                            }}
+                            onSelect={onLabelSelect || (() => {})}
+                            onDragComplete={(e: any, newTextList: any[], moreProps: any) => {
+                                if (onLabelComplete && newTextList.length > 0) {
+                                    const newLabels = newTextList.map(text => ({
+                                        x: text.position[0],
+                                        y: text.position[1],
+                                        text: text.text,
+                                        selected: text.selected
+                                    }));
+                                    onLabelComplete(newLabels);
+                                }
+                            }}
+                            defaultText={{
+                                bgFill: "#ffffff",
+                                bgOpacity: 0.9,
+                                bgStrokeWidth: 1,
+                                bgStroke: "#666666",
+                                textFill: "#000000",
+                                fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+                                fontSize: 12,
+                                fontStyle: "normal",
+                                fontWeight: "normal",
+                                text: "Label",
+                            }}
+                            hoverText={{
+                                enable: true,
+                                bgHeight: "auto",
+                                bgWidth: "auto",
+                                text: "Click to place label",
+                            }}
                         />
 
                         {/* Trend Channel Component - Standalone like Triangle */}

@@ -4,6 +4,15 @@ import { HoverTextNearMouse, MouseLocationIndicator } from "./components";
 import { isHoverForInteractiveType, saveNodeType, terminate } from "./utils";
 import { EachTrianglePattern } from "./wrapper";
 
+// MCP Integration Types
+export interface MCPElement {
+    readonly id: string;
+    readonly type: 'triangle' | 'label';
+    readonly data: any;
+    readonly appearance?: any;
+    readonly selected?: boolean;
+}
+
 export interface TrianglePatternProps {
     readonly enabled: boolean;
     readonly onStart?: (moreProps: any) => void;
@@ -26,6 +35,12 @@ export interface TrianglePatternProps {
         readonly edgeStrokeWidth: number;
         readonly r: number;
     };
+    // MCP Integration Props (optional)
+    readonly onMCPCreate?: (elementType: string, elementData: any, appearance: any) => void;
+    readonly onMCPSelect?: (elementId: string) => void;
+    readonly onMCPModify?: (elementId: string, newData: any) => void;
+    readonly onMCPDelete?: (elementId: string) => void;
+    readonly mcpElements?: MCPElement[]; // MCP-managed elements to display
 }
 
 interface TrianglePatternState {
@@ -79,6 +94,23 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
         this.state = {};
     }
 
+    // MCP Integration Methods
+    private convertMCPElementsToTriangles(mcpElements: MCPElement[]): any[] {
+        const triangleElements = mcpElements.filter(el => el.type === 'triangle');
+        return triangleElements.map(el => ({
+            id: el.id,
+            point1: el.data.points[0],
+            point2: el.data.points[1],
+            point3: el.data.points[2],
+            selected: el.selected || false,
+            appearance: el.appearance
+        }));
+    }
+
+    private generateElementId(): string {
+        return `triangle_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+
     public render() {
         const {
             appearance,
@@ -89,13 +121,18 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
             enabled,
             hoverText,
             triangles,
+            mcpElements,
         } = this.props;
+
+        // Merge regular triangles with MCP elements
+        const mcpTriangles = mcpElements ? this.convertMCPElementsToTriangles(mcpElements) : [];
+        const allTriangles = [...(triangles || []), ...mcpTriangles];
 
         const { current, override } = this.state;
 
         return (
             <g>
-                {triangles.map((each, idx) => {
+                {allTriangles.map((each, idx) => {
                     const eachAppearance = isDefined(each.appearance)
                         ? { ...appearance, ...each.appearance }
                         : appearance;
@@ -304,28 +341,41 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
                 
                 if (this.mouseMoved || differentPosition) {
                     console.log('  📍 Completing triangle with point3');
-                    const newTriangles = [
-                        ...triangles.map((d) => ({ ...d, selected: false })),
-                        {
-                            point1: current.point1,
-                            point2: current.point2,
-                            point3: xyValue,
-                            selected: true,
-                            appearance,
-                        },
-                    ];
                     
-                    this.setState(
-                        {
-                            current: null,
-                        },
-                        () => {
-                            const { onComplete } = this.props;
-                            if (onComplete !== undefined) {
-                                onComplete(e, newTriangles, moreProps);
-                            }
-                        },
-                    );
+                    const triangleData = {
+                        point1: current.point1,
+                        point2: current.point2,
+                        point3: xyValue,
+                        selected: true,
+                        appearance,
+                    };
+
+                    // If MCP mode is active, notify MCP instead of regular completion
+                    const { onMCPCreate } = this.props;
+                    if (onMCPCreate) {
+                        const elementId = this.generateElementId();
+                        const mcpElementData = {
+                            id: elementId,
+                            points: [current.point1, current.point2, xyValue],
+                        };
+                        
+                        console.log('🎯 MCP Triangle Create:', { elementId, mcpElementData, appearance });
+                        onMCPCreate('triangle', mcpElementData, appearance);
+                    } else {
+                        // Regular triangle completion
+                        const newTriangles = [
+                            ...triangles.map((d) => ({ ...d, selected: false })),
+                            triangleData,
+                        ];
+                        const { onComplete } = this.props;
+                        if (onComplete !== undefined) {
+                            onComplete(e, newTriangles, moreProps);
+                        }
+                    }
+                    
+                    this.setState({
+                        current: null,
+                    });
                 } else {
                     console.log('  ❌ Not completing triangle - no movement detected');
                 }

@@ -136,6 +136,20 @@ const TextIcon = () => (
   </svg>
 );
 
+const LabelIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    {/* Label background */}
+    <rect x="2" y="6" width="12" height="6" rx="2" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+    {/* Label text lines */}
+    <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" strokeWidth="1"/>
+    <line x1="4" y1="10" x2="10" y2="10" stroke="currentColor" strokeWidth="1"/>
+    {/* Anchor point */}
+    <circle cx="8" cy="4" r="1.5" fill="currentColor"/>
+    {/* Connection line from anchor to label */}
+    <line x1="8" y1="4" x2="8" y2="6" stroke="currentColor" strokeWidth="1"/>
+  </svg>
+);
+
 const MeasureIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <line x1="3" y1="11" x2="13" y2="5" stroke="currentColor" strokeWidth="1.5"/>
@@ -168,6 +182,7 @@ const DrawingToolbar: React.FC<DrawingToolbarProps> = ({ currentTool, onToolSele
     { id: 'trendchannel', icon: <TrendChannelIcon />, title: 'Trend Channel - Draw parallel trend lines' },
     { id: 'fibonacci', icon: <FibonacciIcon />, title: 'Fibonacci Retracement - Draw Fibonacci retracement levels' },
     { id: 'patterns', icon: <TrianglePatternIcon />, title: 'Triangle Pattern - Draw triangle chart patterns' },
+    { id: 'label', icon: <LabelIcon />, title: 'Label - Add text annotations with anchor point' },
   ];
 
   // Close dropdown when clicking outside

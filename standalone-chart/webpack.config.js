@@ -12,6 +12,7 @@ module.exports = {
     alias: {
       'react': path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+      '@slowclap/financial-charts': path.resolve(__dirname, 'node_modules/@slowclap/financial-charts/lib'),
     },
   },
   module: {

@@ -32,6 +32,7 @@ interface HistoryState {
   trendChannels: any[];
   fibonacciRetracements: any[];
   trianglePatterns: any[];
+  labels: any[];
 }
 
 const App = () => {
@@ -68,10 +69,12 @@ const App = () => {
   const [trendChannels, setTrendChannels] = useState<any[]>([]);
   const [fibonacciRetracements, setFibonacciRetracements] = useState<any[]>([]);
   const [trianglePatterns, setTrianglePatterns] = useState<any[]>([]);
+  const [labels, setLabels] = useState<any[]>([]);
   const [selectedTrendLines, setSelectedTrendLines] = useState<number[]>([]);
   const [selectedChannels, setSelectedChannels] = useState<number[]>([]);
   const [selectedFibs, setSelectedFibs] = useState<number[]>([]);
   const [selectedTriangles, setSelectedTriangles] = useState<number[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
   const [lastSelectedObject, setLastSelectedObject] = useState<{type: 'trendline' | 'trendchannel' | 'fibonacci' | 'triangle', index: number} | null>(null);
 
   // Register interactive features with unified manager
@@ -171,7 +174,8 @@ const App = () => {
     trendLines: [],
     trendChannels: [],
     fibonacciRetracements: [],
-    trianglePatterns: []
+    trianglePatterns: [],
+    labels: []
   }]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
@@ -336,7 +340,8 @@ const App = () => {
       trendLines,
       trendChannels,
       fibonacciRetracements,
-      trianglePatterns
+      trianglePatterns,
+      labels
     };
     
     const previousCount = currentState[getStateKey(featureType)].length;
@@ -396,7 +401,8 @@ const App = () => {
       trendLines,
       trendChannels,
       fibonacciRetracements,
-      trianglePatterns
+      trianglePatterns,
+      labels
     };
     
     const selectedIndices = interactiveFeaturesManager.handleSelection(
@@ -445,8 +451,10 @@ const App = () => {
     // Reset history when changing symbols
     const newInitialState = {
       trendLines: [],
+      trendChannels: [],
       fibonacciRetracements: [],
-      trianglePatterns: []
+      trianglePatterns: [],
+      labels: []
     };
     setHistory([newInitialState]);
     setHistoryIndex(0);
@@ -460,8 +468,10 @@ const App = () => {
     // Reset history for new symbol
     setHistory([{
       trendLines: [],
+      trendChannels: [],
       fibonacciRetracements: [],
-      trianglePatterns: []
+      trianglePatterns: [],
+      labels: []
     }]);
     setHistoryIndex(0);
   };
@@ -826,6 +836,11 @@ const App = () => {
     handleFeatureCompletion('triangle', newTriangles);
   };
 
+  const handleLabelComplete = (newLabels: any[]) => {
+    console.log('🏷️ Label completion:', newLabels);
+    setLabels(newLabels);
+  };
+
   // SIMPLIFIED SELECTION HANDLERS using unified system
   const handleTrendLineSelect = (e: React.MouseEvent, interactives: any[]) => {
     handleFeatureSelection('trendline', interactives);
@@ -841,6 +856,13 @@ const App = () => {
 
   const handleTriangleSelect = (e: React.MouseEvent, interactives: any[]) => {
     handleFeatureSelection('triangle', interactives);
+  };
+
+  const handleLabelSelect = (e: React.MouseEvent, interactives: any[]) => {
+    console.log('🏷️ Label selection:', interactives);
+    // Simple selection handling for labels
+    const selectedIndices = interactives.map((_, index) => index);
+    setSelectedLabels(selectedIndices);
   };
 
 
@@ -889,7 +911,8 @@ const App = () => {
           !Array.isArray(currentState.trendLines) ||
           !Array.isArray(currentState.fibonacciRetracements) ||
           !Array.isArray(currentState.trianglePatterns) ||
-          !Array.isArray(currentState.trendChannels)) {
+          !Array.isArray(currentState.trendChannels) ||
+          !Array.isArray(currentState.labels)) {
         console.log('⚠️ handleKeyDown: currentState or arrays not ready, skipping');
         return;
       }
@@ -1088,18 +1111,22 @@ const App = () => {
           trendChannels={trendChannels}
           fibonacciRetracements={fibonacciRetracements}
           trianglePatterns={trianglePatterns}
+          labels={labels}
           selectedTrendLines={selectedTrendLines}
           selectedChannels={selectedChannels}
           selectedFibs={selectedFibs}
           selectedTriangles={selectedTriangles}
+          selectedLabels={selectedLabels}
           onTrendLineComplete={handleTrendLineComplete}
           onTrendChannelComplete={handleTrendChannelComplete}
           onFibonacciComplete={handleFibonacciComplete}
           onTriangleComplete={handleTriangleComplete}
+          onLabelComplete={handleLabelComplete}
           onTrendLineSelect={handleTrendLineSelect}
           onTrendChannelSelect={handleTrendChannelSelect}
           onFibonacciSelect={handleFibonacciSelect}
           onTriangleSelect={handleTriangleSelect}
+          onLabelSelect={handleLabelSelect}
           onDeselectAll={handleDeselectAll}
           onRefresh={handleRefresh}
           isReplayMode={isReplayMode}
