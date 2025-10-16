@@ -4,6 +4,7 @@ import { getXValue } from "../../core/utils/ChartDataUtil";
 import { isHover, saveNodeType } from "../utils";
 import { ClickableCircle, HoverTextNearMouse, InteractiveStraightLine, generateLine, Text } from "../components";
 import { getNewXY } from "./EachTrendLine";
+import { InteractiveBo } from "./InteractiveBo";
 
 export interface EachFibRetracementProps {
     readonly x1: any;
@@ -109,6 +110,9 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
         const lineType = type === "EXTEND" ? "XLINE" : type === "BOUND" ? "LINE" : "RAY";
         const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 
+        // Use InteractiveBo utility for control point visibility
+        const showControlPoints = InteractiveBo.shouldShowControlPoints(this);
+
         return (
             <g>
                 {lines.map((line, j) => {
@@ -194,7 +198,7 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
                             </Text>
                             <ClickableCircle
                                 ref={this.saveNodeType("edge1")}
-                                show={selected || hover}
+                                show={showControlPoints}
                                 cx={line.x1}
                                 cy={line.y}
                                 r={r}
@@ -207,7 +211,7 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
                             />
                             <ClickableCircle
                                 ref={this.saveNodeType("edge2")}
-                                show={selected || hover}
+                                show={showControlPoints}
                                 cx={line.x2}
                                 cy={line.y}
                                 r={r}
@@ -327,84 +331,40 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
         };
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleHover
     private readonly handleHover = (_: React.MouseEvent, moreProps: any) => {
-        if (this.state.hover !== moreProps.hovering) {
-            this.setState({
-                hover: moreProps.hovering,
-            });
-        }
+        InteractiveBo.handleHover(this, moreProps);
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleClick
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
-        const { index, onSelect, x1, y1, x2, y2, type } = this.props;
+        InteractiveBo.handleClick(this, e, moreProps, this.checkIfHovered, this.getSelectionData);
+    };
 
-        // Use proper hover detection like TrendLine
-        const isActuallyHovered = this.checkIfHovered(moreProps);
+    // ✅ NEW: Extracted selection data logic for reuse
+    private readonly getSelectionData = (): any[] => {
+        const { index, x1, y1, x2, y2, type } = this.props;
 
-        console.log(
-            "📈 EachFibRetracement clicked, index:",
-            index,
-            "isActuallyHovered:",
-            isActuallyHovered,
-            "coords:",
+        return [
             {
+                index,
                 start: [x1, y1],
                 end: [x2, y2],
+                x1,
+                y1,
+                x2,
+                y2,
+                selected: true,
+                type,
             },
-        );
-
-        // Only process the click if this fibonacci is actually being hovered
-        if (onSelect && isActuallyHovered) {
-            const selectionData = [
-                {
-                    index,
-                    start: [x1, y1],
-                    end: [x2, y2],
-                    x1,
-                    y1,
-                    x2,
-                    y2,
-                    selected: true,
-                    type,
-                },
-            ];
-
-            onSelect(e, selectionData, moreProps);
-        }
+        ];
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleDragComplete
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
         console.log("🏁 EachFibRetracement handleDragComplete called");
 
-        const { onDragComplete, onSelect, index, x1, y1, x2, y2, type } = this.props;
-
-        // First call onDragComplete to update the position
-        if (onDragComplete !== undefined) {
-            onDragComplete(e, moreProps);
-        }
-
-        // Then select this fibonacci after dragging
-        if (onSelect !== undefined) {
-            console.log("  📈 Selecting fibonacci after drag, index:", index);
-            const selectionData = [
-                {
-                    index,
-                    start: [x1, y1],
-                    end: [x2, y2],
-                    x1,
-                    y1,
-                    x2,
-                    y2,
-                    selected: true,
-                    type,
-                },
-            ];
-
-            // Use a small timeout to ensure drag complete finishes first
-            setTimeout(() => {
-                onSelect(e, selectionData, moreProps);
-            }, 50);
-        }
+        InteractiveBo.handleDragComplete(this, e, moreProps, this.getSelectionData);
     };
 
     private readonly checkIfHovered = (moreProps: any) => {

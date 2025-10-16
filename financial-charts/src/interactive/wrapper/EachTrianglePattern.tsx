@@ -2,6 +2,7 @@ import * as React from "react";
 import { isDefined, noop } from "../../core";
 import { ClickableCircle, HoverTextNearMouse, TriangleWithArea } from "../components";
 import { getNewXY } from "./EachTrendLine";
+import { InteractiveBo } from "./InteractiveBo";
 
 interface EachTrianglePatternProps {
     readonly index: number;
@@ -70,6 +71,9 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
         const hoverTextUnselected = isDefined(hoverText) && hoverText.text;
         const hoverTextSelected = isDefined(hoverText) && hoverText.selectedText;
 
+        // Use InteractiveBo utility for control point visibility
+        const showControlPoints = InteractiveBo.shouldShowControlPoints(this);
+
         return (
             <g>
                 {/* Triangle area with drag support - modeled after ChannelWithArea */}
@@ -93,7 +97,7 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
                 />
 
                 {/* Control points (circles) - use data coordinates directly */}
-                {(selected || hover) && (
+                {showControlPoints && (
                     <>
                         <ClickableCircle
                             show={true}
@@ -103,7 +107,7 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
                             fillStyle={anchor === "point1" ? strokeStyle : edgeFill}
                             strokeStyle={edgeStroke}
                             strokeWidth={edgeStrokeWidth}
-                            onDragStart={this.handlePoint1DragStart}
+                            onDragStart={InteractiveBo.createAnchorDragStartHandler(this, "point1")}
                             onDrag={this.handlePoint1Drag}
                             onDragComplete={this.handleDragComplete}
                         />
@@ -115,7 +119,7 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
                             fillStyle={anchor === "point2" ? strokeStyle : edgeFill}
                             strokeStyle={edgeStroke}
                             strokeWidth={edgeStrokeWidth}
-                            onDragStart={this.handlePoint2DragStart}
+                            onDragStart={InteractiveBo.createAnchorDragStartHandler(this, "point2")}
                             onDrag={this.handlePoint2Drag}
                             onDragComplete={this.handleDragComplete}
                         />
@@ -127,7 +131,7 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
                             fillStyle={anchor === "point3" ? strokeStyle : edgeFill}
                             strokeStyle={edgeStroke}
                             strokeWidth={edgeStrokeWidth}
-                            onDragStart={this.handlePoint3DragStart}
+                            onDragStart={InteractiveBo.createAnchorDragStartHandler(this, "point3")}
                             onDrag={this.handlePoint3Drag}
                             onDragComplete={this.handleDragComplete}
                         />
@@ -143,170 +147,46 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
         );
     }
 
+    // ✅ REFACTORED: Use InteractiveBo.handleHover
     private readonly handleHover = (e: React.MouseEvent, moreProps: any) => {
-        if (this.state.hover !== moreProps.hovering) {
-            this.setState({
-                hover: moreProps.hovering,
-            });
-        }
+        InteractiveBo.handleHover(this, moreProps);
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleClick
     private readonly handleTriangleClick = (e: React.MouseEvent, moreProps: any) => {
-        const { index, onSelect, point1, point2, point3 } = this.props;
+        InteractiveBo.handleClick(this, e, moreProps, this.checkIfHovered, this.getSelectionData);
+    };
 
-        // Use proper hover detection like TrendLine
-        const isActuallyHovered = this.checkIfHovered(moreProps);
+    // ✅ NEW: Extracted selection data logic for reuse
+    private readonly getSelectionData = (): any[] => {
+        const { index, point1, point2, point3 } = this.props;
 
-        console.log(
-            "🔺 EachTrianglePattern clicked, index:",
-            index,
-            "isActuallyHovered:",
-            isActuallyHovered,
-            "coordinates:",
+        return [
             {
+                index,
                 point1,
                 point2,
                 point3,
+                selected: true,
             },
-        );
-
-        // Only process the click if this triangle is actually being hovered
-        if (onSelect && isActuallyHovered) {
-            const selectionData = [
-                {
-                    index,
-                    point1,
-                    point2,
-                    point3,
-                    selected: true,
-                },
-            ];
-
-            onSelect(e, selectionData, moreProps);
-        }
+        ];
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.isHoveringTriangle
     private readonly checkIfHovered = (moreProps: any) => {
-        const { point1, point2, point3, index } = this.props;
-        const { mouseXY, xScale } = moreProps;
-        const {
-            chartConfig: { yScale },
-        } = moreProps;
+        const { point1, point2, point3 } = this.props;
 
-        const tolerance = 20; // Triangle area tolerance
-
-        // Convert triangle coordinates to screen coordinates
-        const p1 = [xScale(point1[0]), yScale(point1[1])];
-        const p2 = [xScale(point2[0]), yScale(point2[1])];
-        const p3 = [xScale(point3[0]), yScale(point3[1])];
-
-        const [mouseX, mouseY] = mouseXY;
-
-        // Check if point is inside triangle using barycentric coordinates
-        const isInsideTriangle = this.pointInTriangle([mouseX, mouseY], p1, p2, p3);
-
-        if (isInsideTriangle) {
-            console.log(`🔺 EachTrianglePattern[${index}] hover detected inside triangle area`);
-            return true;
-        }
-
-        // Check if mouse is near any triangle edge
-        const edgeDistance1 = this.distanceToLineSegment([mouseX, mouseY], p1, p2);
-        const edgeDistance2 = this.distanceToLineSegment([mouseX, mouseY], p2, p3);
-        const edgeDistance3 = this.distanceToLineSegment([mouseX, mouseY], p3, p1);
-
-        const minDistance = Math.min(edgeDistance1, edgeDistance2, edgeDistance3);
-
-        if (minDistance <= tolerance) {
-            console.log(`🔺 EachTrianglePattern[${index}] hover detected on edge, distance: ${minDistance}`);
-            return true;
-        }
-
-        return false;
+        return InteractiveBo.isHoveringTriangle(moreProps, [point1, point2, point3] as [number, number][], 20);
     };
 
-    private pointInTriangle(point: number[], v1: number[], v2: number[], v3: number[]): boolean {
-        const [x, y] = point;
-        const [x1, y1] = v1;
-        const [x2, y2] = v2;
-        const [x3, y3] = v3;
-
-        const denominator = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
-        if (Math.abs(denominator) < 1e-10) {
-            return false;
-        }
-
-        const a = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / denominator;
-        const b = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / denominator;
-        const c = 1 - a - b;
-
-        return a >= 0 && b >= 0 && c >= 0;
-    }
-
-    private distanceToLineSegment(point: number[], lineStart: number[], lineEnd: number[]): number {
-        const [x, y] = point;
-        const [x1, y1] = lineStart;
-        const [x2, y2] = lineEnd;
-
-        const A = x - x1;
-        const B = y - y1;
-        const C = x2 - x1;
-        const D = y2 - y1;
-
-        const dot = A * C + B * D;
-        const lenSq = C * C + D * D;
-
-        if (lenSq === 0) {
-            return Math.sqrt(A * A + B * B);
-        }
-
-        const param = dot / lenSq;
-
-        let xx, yy;
-        if (param < 0) {
-            xx = x1;
-            yy = y1;
-        } else if (param > 1) {
-            xx = x2;
-            yy = y2;
-        } else {
-            xx = x1 + param * C;
-            yy = y1 + param * D;
-        }
-
-        const dx = x - xx;
-        const dy = y - yy;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
+    // ✅ REFACTORED: Use InteractiveBo.handleDragComplete
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
         console.log("🏁 EachTrianglePattern handleDragComplete called");
 
-        const { onDragComplete, onSelect, index, point1, point2, point3 } = this.props;
+        // Clear anchor state
+        this.setState({ anchor: undefined });
 
-        // First call onDragComplete to update the position
-        if (onDragComplete !== undefined) {
-            onDragComplete(e, moreProps);
-        }
-
-        // Then select this triangle after dragging
-        if (onSelect !== undefined) {
-            console.log("  🔺 Selecting triangle after drag, index:", index);
-            const selectionData = [
-                {
-                    index,
-                    point1,
-                    point2,
-                    point3,
-                    selected: true,
-                },
-            ];
-
-            // Use a small timeout to ensure drag complete finishes first
-            setTimeout(() => {
-                onSelect(e, selectionData, moreProps);
-            }, 50);
-        }
+        InteractiveBo.handleDragComplete(this, e, moreProps, this.getSelectionData);
     };
 
     // Triangle area drag - move entire triangle
@@ -327,24 +207,6 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
             // TriangleWithArea passes the new triangle coordinates directly
             onDrag(e, index, newTriangleData);
         }
-    };
-
-    private readonly handlePoint1DragStart = () => {
-        this.setState({
-            anchor: "point1",
-        });
-    };
-
-    private readonly handlePoint2DragStart = () => {
-        this.setState({
-            anchor: "point2",
-        });
-    };
-
-    private readonly handlePoint3DragStart = () => {
-        this.setState({
-            anchor: "point3",
-        });
     };
 
     private readonly handlePoint1Drag = (e: React.MouseEvent, moreProps: any) => {

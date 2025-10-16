@@ -18,6 +18,11 @@ import {
   createComplexAreaFeature,
   HistoryState as ImportedHistoryState
 } from './InteractiveFeaturesManager';
+import {
+  InteractiveElementBO,
+  InteractiveElementFactory,
+  MCPElement
+} from './bo';
 import './App.css';
 import './PineScriptImporter.css';
 import './ChartIndicatorsPanel.css';
@@ -78,6 +83,9 @@ const App = () => {
   const [selectedHorizontalRays, setSelectedHorizontalRays] = useState<number[]>([]);
   const [selectedVerticalLines, setSelectedVerticalLines] = useState<number[]>([]);
   const [lastSelectedObject, setLastSelectedObject] = useState<{type: 'trendline' | 'trendchannel' | 'fibonacci' | 'triangle', index: number} | null>(null);
+
+  // MCP unified state - holds both user-created and MCP-created elements
+  const [interactiveElements, setInteractiveElements] = useState<InteractiveElementBO[]>([]);
 
   // Register interactive features with unified manager
   React.useEffect(() => {
@@ -255,7 +263,10 @@ const App = () => {
     trendChannels: [],
     fibonacciRetracements: [],
     trianglePatterns: [],
-    labels: []
+    labels: [],
+    horizontalLines: [],
+    horizontalRays: [],
+    verticalLines: []
   }]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
@@ -381,12 +392,18 @@ const App = () => {
       setTrendChannels(prevState.trendChannels);
       setFibonacciRetracements(prevState.fibonacciRetracements);
       setTrianglePatterns(prevState.trianglePatterns);
+      setHorizontalLines(prevState.horizontalLines);
+      setHorizontalRays(prevState.horizontalRays);
+      setVerticalLines(prevState.verticalLines);
       setHistoryIndex(historyIndex - 1);
       // Clear selections when undoing
       setSelectedTrendLines([]);
       setSelectedChannels([]);
       setSelectedFibs([]);
       setSelectedTriangles([]);
+      setSelectedHorizontalLines([]);
+      setSelectedHorizontalRays([]);
+      setSelectedVerticalLines([]);
       setLastSelectedObject(null);
     } else {
       console.log('↶ Cannot undo: Already at the beginning of history');
@@ -402,12 +419,18 @@ const App = () => {
       setTrendChannels(nextState.trendChannels);
       setFibonacciRetracements(nextState.fibonacciRetracements);
       setTrianglePatterns(nextState.trianglePatterns);
+      setHorizontalLines(nextState.horizontalLines);
+      setHorizontalRays(nextState.horizontalRays);
+      setVerticalLines(nextState.verticalLines);
       setHistoryIndex(historyIndex + 1);
       // Clear selections when redoing
       setSelectedTrendLines([]);
       setSelectedChannels([]);
       setSelectedFibs([]);
       setSelectedTriangles([]);
+      setSelectedHorizontalLines([]);
+      setSelectedHorizontalRays([]);
+      setSelectedVerticalLines([]);
       setLastSelectedObject(null);
     } else {
       console.log('↷ Cannot redo: Already at the end of history');
@@ -809,6 +832,189 @@ const App = () => {
     setZoomMultiplier(value);
   };
 
+  // MCP Handlers - Programmatic element creation/modification/deletion
+  const handleMCPCreate = useCallback((mcpElement: MCPElement) => {
+    console.log('🤖 MCP Create element:', mcpElement);
+
+    // Convert MCP element to BO format
+    const newElement = InteractiveElementFactory.fromMCPAction(mcpElement);
+
+    // Add to unified state
+    setInteractiveElements(prev => [...prev, newElement]);
+
+    // Sync to legacy state arrays for backward compatibility
+    syncMCPElementToLegacyState(newElement);
+
+    console.log('✅ MCP element created and synced to legacy state');
+  }, []);
+
+  const handleMCPSelect = useCallback((elementId: string) => {
+    console.log('🤖 MCP Select element:', elementId);
+
+    // Update unified state
+    setInteractiveElements(prev => prev.map(el => ({
+      ...el,
+      selected: el.id === elementId
+    })));
+
+    // Also update legacy selection arrays
+    const element = interactiveElements.find(el => el.id === elementId);
+    if (element) {
+      syncMCPSelectionToLegacyState(element);
+    }
+  }, [interactiveElements]);
+
+  const handleMCPModify = useCallback((elementId: string, newData: any) => {
+    console.log('🤖 MCP Modify element:', elementId, newData);
+
+    // Update unified state
+    setInteractiveElements(prev => prev.map(el =>
+      el.id === elementId
+        ? InteractiveElementFactory.updateBOFromComponentData(el, newData)
+        : el
+    ));
+
+    // Sync to legacy state
+    const updatedElement = interactiveElements.find(el => el.id === elementId);
+    if (updatedElement) {
+      syncMCPElementToLegacyState(updatedElement);
+    }
+  }, [interactiveElements]);
+
+  const handleMCPDelete = useCallback((elementId: string) => {
+    console.log('🤖 MCP Delete element:', elementId);
+
+    // Remove from unified state
+    const elementToDelete = interactiveElements.find(el => el.id === elementId);
+    setInteractiveElements(prev => prev.filter(el => el.id !== elementId));
+
+    // Remove from legacy state
+    if (elementToDelete) {
+      removeMCPElementFromLegacyState(elementToDelete);
+    }
+
+    console.log('✅ MCP element deleted from all states');
+  }, [interactiveElements]);
+
+  // Sync helper: Add MCP element to appropriate legacy state array
+  const syncMCPElementToLegacyState = (element: InteractiveElementBO) => {
+    switch (element.type) {
+      case 'trendline':
+        const trendlineProps = InteractiveElementFactory.toTrendLineProps(element, -1);
+        setTrendLines(prev => [...prev, trendlineProps]);
+        break;
+      case 'fibonacci':
+        const fibProps = InteractiveElementFactory.toFibonacciProps(element, -1);
+        setFibonacciRetracements(prev => [...prev, fibProps]);
+        break;
+      case 'triangle':
+        const triangleProps = InteractiveElementFactory.toTriangleProps(element, -1);
+        setTrianglePatterns(prev => [...prev, triangleProps]);
+        break;
+      case 'trendchannel':
+        const channelProps = InteractiveElementFactory.toChannelProps(element, -1);
+        setTrendChannels(prev => [...prev, channelProps]);
+        break;
+      case 'horizontalline':
+        const hLineProps = InteractiveElementFactory.toHorizontalLineProps(element, -1);
+        setHorizontalLines(prev => [...prev, hLineProps]);
+        break;
+      case 'horizontalray':
+        const hRayProps = InteractiveElementFactory.toHorizontalLineProps(element, -1);
+        setHorizontalRays(prev => [...prev, hRayProps]);
+        break;
+      case 'verticalline':
+        const vLineProps = InteractiveElementFactory.toVerticalLineProps(element, -1);
+        setVerticalLines(prev => [...prev, vLineProps]);
+        break;
+      case 'label':
+        const labelProps = InteractiveElementFactory.toInteractiveTextProps(element, -1);
+        setLabels(prev => [...prev, labelProps]);
+        break;
+      default:
+        console.warn('⚠️ Unknown element type:', element.type);
+    }
+  };
+
+  // Sync helper: Update legacy selection state
+  const syncMCPSelectionToLegacyState = (element: InteractiveElementBO) => {
+    // For now, just clear all selections and select the MCP element
+    // In future, could maintain proper selection tracking
+    setSelectedTrendLines([]);
+    setSelectedFibs([]);
+    setSelectedTriangles([]);
+    setSelectedChannels([]);
+    setSelectedHorizontalLines([]);
+    setSelectedHorizontalRays([]);
+    setSelectedVerticalLines([]);
+    setSelectedLabels([]);
+
+    // Set lastSelectedObject for unified handling
+    setLastSelectedObject({
+      type: element.type as 'trendline' | 'trendchannel' | 'fibonacci' | 'triangle',
+      index: 0
+    });
+  };
+
+  // Sync helper: Remove MCP element from legacy state
+  const removeMCPElementFromLegacyState = (element: InteractiveElementBO) => {
+    // For now, just remove the last element of matching type
+    // In future, could track by ID for precise removal
+    switch (element.type) {
+      case 'trendline':
+        setTrendLines(prev => prev.slice(0, -1));
+        break;
+      case 'fibonacci':
+        setFibonacciRetracements(prev => prev.slice(0, -1));
+        break;
+      case 'triangle':
+        setTrianglePatterns(prev => prev.slice(0, -1));
+        break;
+      case 'trendchannel':
+        setTrendChannels(prev => prev.slice(0, -1));
+        break;
+      case 'horizontalline':
+        setHorizontalLines(prev => prev.slice(0, -1));
+        break;
+      case 'horizontalray':
+        setHorizontalRays(prev => prev.slice(0, -1));
+        break;
+      case 'verticalline':
+        setVerticalLines(prev => prev.slice(0, -1));
+        break;
+      case 'label':
+        setLabels(prev => prev.slice(0, -1));
+        break;
+    }
+  };
+
+  // Test MCP Integration - Quick validation button
+  const testMCPDraw = useCallback(() => {
+    console.log('🧪 Testing MCP trendline creation');
+
+    // Place the line in the visible range (approximately recent data)
+    // Chart typically shows last 100 points, so use indices near the end
+    const testElement: MCPElement = {
+      id: `test_mcp_${Date.now()}`,
+      type: 'trendline',
+      data: {
+        start: [1200, 210],  // Recent data range
+        end: [1250, 240],    // Recent data range
+        type: 'LINE'
+      },
+      appearance: {
+        strokeStyle: '#00ff00',  // Green to distinguish MCP-created
+        strokeWidth: 3,
+        edgeStrokeWidth: 2,
+        edgeStroke: '#00ff00',
+        edgeFill: '#ffffff'
+      },
+      selected: false
+    };
+
+    handleMCPCreate(testElement);
+  }, [handleMCPCreate]);
+
   // Recalculate imported indicators when chart data changes (timeframe change, symbol change, etc.)
   const lastChartDataLength = React.useRef(0);
   const lastSymbol = React.useRef(currentSymbol);
@@ -1191,6 +1397,7 @@ const App = () => {
         onChartTypeClick={handleChartTypeClick}
         onSettingsClick={handleSettingsClick}
         onPineScriptImport={handlePineScriptImport}
+        onTestMCP={testMCPDraw}
       />
       <DrawingToolbar 
         currentTool={currentTool}

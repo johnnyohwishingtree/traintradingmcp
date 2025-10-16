@@ -14,6 +14,7 @@ interface HeaderToolbarProps {
   onChartTypeClick?: () => void;
   onSettingsClick?: () => void;
   onPineScriptImport?: () => void;
+  onTestMCP?: () => void;
 }
 
 // Extended stock symbols for better search
@@ -45,7 +46,7 @@ const POPULAR_SYMBOLS = [
   { symbol: 'PLTR', shortName: 'Palantir Technologies Inc.', typeDisp: 'Stock', exchange: 'NYSE' },
 ];
 
-const HeaderToolbar: React.FC<HeaderToolbarProps> = ({ currentSymbol, onSymbolChange, currentInterval, onIntervalChange, onUndo, onRedo, onReplay, onIndicatorsClick, onChartTypeClick, onSettingsClick, onPineScriptImport }) => {
+const HeaderToolbar: React.FC<HeaderToolbarProps> = ({ currentSymbol, onSymbolChange, currentInterval, onIntervalChange, onUndo, onRedo, onReplay, onIndicatorsClick, onChartTypeClick, onSettingsClick, onPineScriptImport, onTestMCP }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredSymbols, setFilteredSymbols] = useState(POPULAR_SYMBOLS);
@@ -268,6 +269,17 @@ const HeaderToolbar: React.FC<HeaderToolbarProps> = ({ currentSymbol, onSymbolCh
           </svg>
           <span>PineScript</span>
         </button>
+
+        {/* MCP Test Button */}
+        {onTestMCP && (
+          <button className="mcp-test-button" title="Test MCP Integration" onClick={onTestMCP} data-testid="mcp-test-button">
+            <svg width="18" height="18" viewBox="0 0 18 18">
+              <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+              <path d="M6 9L8 11L12 7" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+            </svg>
+            <span>🤖 Test MCP</span>
+          </button>
+        )}
       </div>
 
       <div className="header-right">

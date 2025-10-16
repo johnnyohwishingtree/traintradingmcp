@@ -4,6 +4,7 @@ import { noop, strokeDashTypes } from "../../core";
 import { getXValue } from "../../core/utils/ChartDataUtil";
 import { isHover, saveNodeType } from "../utils";
 import { ClickableCircle, HoverTextNearMouse, InteractiveStraightLine, isHovering } from "../components";
+import { InteractiveBo } from "./InteractiveBo";
 
 export interface EachVerticalLineTrendProps {
     readonly x1Value: any;
@@ -96,6 +97,9 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
         // For XLINE type, show control point at midpoint
         const controlPointY = type === "RAY" ? y1Value : midY;
 
+        // Use InteractiveBo utility for control point visibility
+        const showControlPoints = InteractiveBo.shouldShowControlPoints(this);
+
         // Debug logging
         if (selected) {
             console.log("🎯 EachVerticalLineTrend rendering SELECTED:", {
@@ -134,7 +138,7 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
                 {/* Control point: at start for RAY, at middle for XLINE */}
                 <ClickableCircle
                     ref={this.saveNodeType("controlPoint")}
-                    show={selected || hover}
+                    show={showControlPoints}
                     cx={verticalX}
                     cy={controlPointY}
                     r={r || 6}
@@ -146,19 +150,6 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
                     onDrag={this.handleControlPointDrag}
                     onDragComplete={this.handleDragComplete}
                 />
-                {/* Debug: Always show a small indicator when selected */}
-                {selected && (
-                    <circle
-                        cx={verticalX}
-                        cy={controlPointY}
-                        r={10}
-                        fill="blue"
-                        fillOpacity={0.5}
-                        stroke="white"
-                        strokeWidth={2}
-                        pointerEvents="none"
-                    />
-                )}
                 <HoverTextNearMouse
                     show={hoverTextEnabled && hover}
                     {...restHoverTextProps}
@@ -168,30 +159,29 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
         );
     }
 
+    // ✅ REFACTORED: Use InteractiveBo.handleHover
     private readonly handleHover = (_: React.MouseEvent, moreProps: any) => {
-        if (this.state.hover !== moreProps.hovering) {
-            this.setState({
-                hover: moreProps.hovering,
-            });
-        }
+        InteractiveBo.handleHover(this, moreProps);
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleClick
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
-        const { index, onSelect, x1Value, y1Value, x2Value, y2Value } = this.props;
+        // Vertical lines are always "hovered" if we get a click (simplified hover detection)
+        InteractiveBo.handleClick(this, e, moreProps, () => true, this.getSelectionData);
+    };
 
-        console.log("📌 EachVerticalLineTrend clicked, index:", index);
+    // ✅ NEW: Extracted selection data logic for reuse
+    private readonly getSelectionData = (): any[] => {
+        const { index, x1Value, y1Value, x2Value, y2Value } = this.props;
 
-        if (onSelect) {
-            const selectionData = [
-                {
-                    index,
-                    start: [x1Value, y1Value],
-                    end: [x2Value, y2Value],
-                    selected: true,
-                },
-            ];
-            onSelect(e, selectionData, moreProps);
-        }
+        return [
+            {
+                index,
+                start: [x1Value, y1Value],
+                end: [x2Value, y2Value],
+                selected: true,
+            },
+        ];
     };
 
     private readonly handleDragStart = () => {
@@ -283,11 +273,10 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
         }
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleDragComplete
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
         console.log("🏁 Vertical line drag complete");
-        const { onDragComplete } = this.props;
-        if (onDragComplete) {
-            onDragComplete(e, moreProps);
-        }
+
+        InteractiveBo.handleDragComplete(this, e, moreProps, this.getSelectionData);
     };
 }

@@ -4,6 +4,7 @@ import { noop, strokeDashTypes } from "../../core";
 import { getXValue } from "../../core/utils/ChartDataUtil";
 import { isHover, saveNodeType } from "../utils";
 import { ClickableCircle, HoverTextNearMouse, InteractiveStraightLine, isHovering } from "../components";
+import { InteractiveBo } from "./InteractiveBo";
 
 export interface EachTrendLineProps {
     readonly x1Value: any;
@@ -115,6 +116,9 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
 
         const { hover, anchor } = this.state;
 
+        // Use InteractiveBo utility for control point visibility
+        const showControlPoints = InteractiveBo.shouldShowControlPoints(this);
+
         return (
             <g>
                 <InteractiveStraightLine
@@ -138,7 +142,7 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
                 />
                 <ClickableCircle
                     ref={this.saveNodeType("edge1")}
-                    show={selected || hover}
+                    show={showControlPoints}
                     cx={x1Value}
                     cy={y1Value}
                     r={r}
@@ -146,13 +150,13 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
                     strokeStyle={anchor === "edge1" ? strokeStyle : edgeStroke}
                     strokeWidth={edgeStrokeWidth}
                     interactiveCursorClass={edgeInteractiveCursor}
-                    onDragStart={this.handleEdge1DragStart}
+                    onDragStart={InteractiveBo.createAnchorDragStartHandler(this, "edge2")}
                     onDrag={this.handleEdge1Drag}
                     onDragComplete={this.handleDragComplete}
                 />
                 <ClickableCircle
                     ref={this.saveNodeType("edge2")}
-                    show={selected || hover}
+                    show={showControlPoints}
                     cx={x2Value}
                     cy={y2Value}
                     r={r}
@@ -160,7 +164,7 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
                     strokeStyle={anchor === "edge2" ? strokeStyle : edgeStroke}
                     strokeWidth={edgeStrokeWidth}
                     interactiveCursorClass={edgeInteractiveCursor}
-                    onDragStart={this.handleEdge2DragStart}
+                    onDragStart={InteractiveBo.createAnchorDragStartHandler(this, "edge1")}
                     onDrag={this.handleEdge2Drag}
                     onDragComplete={this.handleDragComplete}
                 />
@@ -173,43 +177,33 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
         );
     }
 
+    // ✅ REFACTORED: Use InteractiveBo.handleHover
     private readonly handleHover = (_: React.MouseEvent, moreProps: any) => {
-        if (this.state.hover !== moreProps.hovering) {
-            this.setState({
-                hover: moreProps.hovering,
-            });
-        }
+        InteractiveBo.handleHover(this, moreProps);
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleClick
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
-        const { index, onSelect, x1Value, y1Value, x2Value, y2Value, type } = this.props;
+        InteractiveBo.handleClick(this, e, moreProps, this.checkIfHovered, this.getSelectionData);
+    };
 
-        // Use the same hover detection logic as InteractiveStraightLine
-        const isActuallyHovered = this.checkIfHovered(moreProps);
+    // ✅ NEW: Extracted selection data logic for reuse
+    private readonly getSelectionData = (): any[] => {
+        const { index, x1Value, y1Value, x2Value, y2Value, type } = this.props;
 
-        console.log("📌 EachTrendLine clicked, index:", index, "isActuallyHovered:", isActuallyHovered, "coords:", {
-            start: [x1Value, y1Value],
-            end: [x2Value, y2Value],
-        });
-
-        // Only process the click if this line is actually being hovered
-        if (onSelect && isActuallyHovered) {
-            const selectionData = [
-                {
-                    index,
-                    start: [x1Value, y1Value],
-                    end: [x2Value, y2Value],
-                    x1Value,
-                    y1Value,
-                    x2Value,
-                    y2Value,
-                    selected: true,
-                    type: this.props.type,
-                },
-            ];
-
-            onSelect(e, selectionData, moreProps);
-        }
+        return [
+            {
+                index,
+                start: [x1Value, y1Value],
+                end: [x2Value, y2Value],
+                x1Value,
+                y1Value,
+                x2Value,
+                y2Value,
+                selected: true,
+                type,
+            },
+        ];
     };
 
     private readonly handleEdge2Drag = (e: React.MouseEvent, moreProps: any) => {
@@ -238,54 +232,11 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
         });
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.handleDragComplete
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
         console.log("🏁 EachTrendLine handleDragComplete called");
 
-        this.setState({
-            anchor: undefined,
-        });
-
-        const { onDragComplete, onSelect, index, x1Value, y1Value, x2Value, y2Value, type } = this.props;
-
-        // First call onDragComplete to update the position
-        if (onDragComplete !== undefined) {
-            onDragComplete(e, moreProps);
-        }
-
-        // Then select this line after dragging
-        if (onSelect !== undefined) {
-            console.log("  📌 Selecting line after drag, index:", index);
-            const selectionData = [
-                {
-                    index,
-                    start: [x1Value, y1Value],
-                    end: [x2Value, y2Value],
-                    x1Value,
-                    y1Value,
-                    x2Value,
-                    y2Value,
-                    selected: true,
-                    type,
-                },
-            ];
-
-            // Use a small timeout to ensure drag complete finishes first
-            setTimeout(() => {
-                onSelect(e, selectionData, moreProps);
-            }, 50);
-        }
-    };
-
-    private readonly handleEdge2DragStart = () => {
-        this.setState({
-            anchor: "edge1",
-        });
-    };
-
-    private readonly handleEdge1DragStart = () => {
-        this.setState({
-            anchor: "edge2",
-        });
+        InteractiveBo.handleDragComplete(this, e, moreProps, this.getSelectionData);
     };
 
     private readonly handleLineDrag = (e: React.MouseEvent, moreProps: any) => {
@@ -333,70 +284,11 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
         };
     };
 
+    // ✅ REFACTORED: Use InteractiveBo.isHoveringLine
     private readonly checkIfHovered = (moreProps: any) => {
-        const { x1Value, x2Value, y1Value, y2Value, type, index } = this.props;
-        const { mouseXY, xScale } = moreProps;
-        const {
-            chartConfig: { yScale },
-        } = moreProps;
+        const { x1Value, y1Value, x2Value, y2Value } = this.props;
 
-        const tolerance = 50; // Increased tolerance for easier selection
-
-        // Convert line coordinates to screen coordinates
-        const x1Screen = xScale(x1Value);
-        const x2Screen = xScale(x2Value);
-        const y1Screen = yScale(y1Value);
-        const y2Screen = yScale(y2Value);
-
-        const [mouseX, mouseY] = mouseXY;
-
-        // Calculate distance from mouse to line segment
-        // Using point-to-line-segment distance formula
-        const A = mouseX - x1Screen;
-        const B = mouseY - y1Screen;
-        const C = x2Screen - x1Screen;
-        const D = y2Screen - y1Screen;
-
-        const dot = A * C + B * D;
-        const lenSq = C * C + D * D;
-
-        let param = -1;
-        if (lenSq !== 0) {
-            param = dot / lenSq;
-        }
-
-        let xx, yy;
-        if (param < 0) {
-            xx = x1Screen;
-            yy = y1Screen;
-        } else if (param > 1) {
-            xx = x2Screen;
-            yy = y2Screen;
-        } else {
-            xx = x1Screen + param * C;
-            yy = y1Screen + param * D;
-        }
-
-        const dx = mouseX - xx;
-        const dy = mouseY - yy;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        const result = distance <= tolerance;
-
-        console.log("🎯 Line hover check:", {
-            index,
-            mouseXY: [mouseX, mouseY],
-            lineScreenCoords: [
-                [x1Screen, y1Screen],
-                [x2Screen, y2Screen],
-            ],
-            closestPoint: [xx, yy],
-            distance: distance.toFixed(1),
-            tolerance,
-            result,
-        });
-
-        return result;
+        return InteractiveBo.isHoveringLine(moreProps, [x1Value, y1Value], [x2Value, y2Value], 50);
     };
 }
 
