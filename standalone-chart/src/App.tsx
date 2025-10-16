@@ -33,6 +33,9 @@ interface HistoryState {
   fibonacciRetracements: any[];
   trianglePatterns: any[];
   labels: any[];
+  horizontalLines?: any[];
+  horizontalRays?: any[];
+  verticalLines?: any[];
 }
 
 const App = () => {
@@ -70,11 +73,17 @@ const App = () => {
   const [fibonacciRetracements, setFibonacciRetracements] = useState<any[]>([]);
   const [trianglePatterns, setTrianglePatterns] = useState<any[]>([]);
   const [labels, setLabels] = useState<any[]>([]);
+  const [horizontalLines, setHorizontalLines] = useState<any[]>([]);
+  const [horizontalRays, setHorizontalRays] = useState<any[]>([]);
+  const [verticalLines, setVerticalLines] = useState<any[]>([]);
   const [selectedTrendLines, setSelectedTrendLines] = useState<number[]>([]);
   const [selectedChannels, setSelectedChannels] = useState<number[]>([]);
   const [selectedFibs, setSelectedFibs] = useState<number[]>([]);
   const [selectedTriangles, setSelectedTriangles] = useState<number[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
+  const [selectedHorizontalLines, setSelectedHorizontalLines] = useState<number[]>([]);
+  const [selectedHorizontalRays, setSelectedHorizontalRays] = useState<number[]>([]);
+  const [selectedVerticalLines, setSelectedVerticalLines] = useState<number[]>([]);
   const [lastSelectedObject, setLastSelectedObject] = useState<{type: 'trendline' | 'trendchannel' | 'fibonacci' | 'triangle', index: number} | null>(null);
 
   // Register interactive features with unified manager
@@ -132,7 +141,61 @@ const App = () => {
       logPrefix: '🔺',
       hasAreaFill: true
     }));
-    
+
+    // Register Horizontal Lines
+    interactiveFeaturesManager.registerFeature(createSimpleLineFeature({
+      type: 'horizontalline',
+      displayName: 'Horizontal Lines',
+      items: horizontalLines,
+      selectedIndices: selectedHorizontalLines,
+      setItems: setHorizontalLines,
+      setSelectedIndices: setSelectedHorizontalLines,
+      logPrefix: '➖',
+      findMatchingIndex: (item: any, interactives: any[]) => {
+        const interactive = interactives[0];
+        return (item.start?.[0] === interactive.start?.[0] &&
+                item.start?.[1] === interactive.start?.[1] &&
+                item.end?.[0] === interactive.end?.[0] &&
+                item.end?.[1] === interactive.end?.[1]) ? 0 : -1;
+      }
+    }));
+
+    // Register Horizontal Rays
+    interactiveFeaturesManager.registerFeature(createSimpleLineFeature({
+      type: 'horizontalray',
+      displayName: 'Horizontal Rays',
+      items: horizontalRays,
+      selectedIndices: selectedHorizontalRays,
+      setItems: setHorizontalRays,
+      setSelectedIndices: setSelectedHorizontalRays,
+      logPrefix: '➡️',
+      findMatchingIndex: (item: any, interactives: any[]) => {
+        const interactive = interactives[0];
+        return (item.start?.[0] === interactive.start?.[0] &&
+                item.start?.[1] === interactive.start?.[1] &&
+                item.end?.[0] === interactive.end?.[0] &&
+                item.end?.[1] === interactive.end?.[1]) ? 0 : -1;
+      }
+    }));
+
+    // Register Vertical Lines
+    interactiveFeaturesManager.registerFeature(createSimpleLineFeature({
+      type: 'verticalline',
+      displayName: 'Vertical Lines',
+      items: verticalLines,
+      selectedIndices: selectedVerticalLines,
+      setItems: setVerticalLines,
+      setSelectedIndices: setSelectedVerticalLines,
+      logPrefix: '📏',
+      findMatchingIndex: (item: any, interactives: any[]) => {
+        const interactive = interactives[0];
+        return (item.start?.[0] === interactive.start?.[0] &&
+                item.start?.[1] === interactive.start?.[1] &&
+                item.end?.[0] === interactive.end?.[0] &&
+                item.end?.[1] === interactive.end?.[1]) ? 0 : -1;
+      }
+    }));
+
     console.log('✅ Interactive features registered:', interactiveFeaturesManager.getRegisteredFeatures());
   }, []); // Only register once
 
@@ -168,6 +231,30 @@ const App = () => {
       triangleFeature.selectedIndices = selectedTriangles;
     }
   }, [trianglePatterns, selectedTriangles]);
+
+  React.useEffect(() => {
+    const horizontalLineFeature = interactiveFeaturesManager.getFeature('horizontalline');
+    if (horizontalLineFeature) {
+      horizontalLineFeature.items = horizontalLines;
+      horizontalLineFeature.selectedIndices = selectedHorizontalLines;
+    }
+  }, [horizontalLines, selectedHorizontalLines]);
+
+  React.useEffect(() => {
+    const horizontalRayFeature = interactiveFeaturesManager.getFeature('horizontalray');
+    if (horizontalRayFeature) {
+      horizontalRayFeature.items = horizontalRays;
+      horizontalRayFeature.selectedIndices = selectedHorizontalRays;
+    }
+  }, [horizontalRays, selectedHorizontalRays]);
+
+  React.useEffect(() => {
+    const verticalLineFeature = interactiveFeaturesManager.getFeature('verticalline');
+    if (verticalLineFeature) {
+      verticalLineFeature.items = verticalLines;
+      verticalLineFeature.selectedIndices = selectedVerticalLines;
+    }
+  }, [verticalLines, selectedVerticalLines]);
 
   // Undo/Redo history management
   const [history, setHistory] = useState<HistoryState[]>([{
@@ -341,7 +428,10 @@ const App = () => {
       trendChannels,
       fibonacciRetracements,
       trianglePatterns,
-      labels
+      labels,
+      horizontalLines,
+      horizontalRays,
+      verticalLines
     };
     
     const previousCount = currentState[getStateKey(featureType)].length;
@@ -392,6 +482,9 @@ const App = () => {
       case 'trendchannel': return 'trendChannels';
       case 'fibonacci': return 'fibonacciRetracements';
       case 'triangle': return 'trianglePatterns';
+      case 'horizontalline': return 'horizontalLines';
+      case 'horizontalray': return 'horizontalRays';
+      case 'verticalline': return 'verticalLines';
       default: throw new Error(`Unknown feature type: ${featureType}`);
     }
   };
@@ -402,7 +495,10 @@ const App = () => {
       trendChannels,
       fibonacciRetracements,
       trianglePatterns,
-      labels
+      labels,
+      horizontalLines,
+      horizontalRays,
+      verticalLines
     };
     
     const selectedIndices = interactiveFeaturesManager.handleSelection(
@@ -841,6 +937,18 @@ const App = () => {
     setLabels(newLabels);
   };
 
+  const handleHorizontalLineComplete = (newLines: any[]) => {
+    handleFeatureCompletion('horizontalline', newLines);
+  };
+
+  const handleHorizontalRayComplete = (newRays: any[]) => {
+    handleFeatureCompletion('horizontalray', newRays);
+  };
+
+  const handleVerticalLineComplete = (newLines: any[]) => {
+    handleFeatureCompletion('verticalline', newLines);
+  };
+
   // SIMPLIFIED SELECTION HANDLERS using unified system
   const handleTrendLineSelect = (e: React.MouseEvent, interactives: any[]) => {
     handleFeatureSelection('trendline', interactives);
@@ -865,8 +973,17 @@ const App = () => {
     setSelectedLabels(selectedIndices);
   };
 
+  const handleHorizontalLineSelect = (e: React.MouseEvent, interactives: any[]) => {
+    handleFeatureSelection('horizontalline', interactives);
+  };
 
+  const handleHorizontalRaySelect = (e: React.MouseEvent, interactives: any[]) => {
+    handleFeatureSelection('horizontalray', interactives);
+  };
 
+  const handleVerticalLineSelect = (e: React.MouseEvent, interactives: any[]) => {
+    handleFeatureSelection('verticalline', interactives);
+  };
 
 
 
@@ -879,11 +996,18 @@ const App = () => {
     selectedFibs,
     selectedTriangles,
     selectedChannels,
+    selectedHorizontalLines,
+    selectedHorizontalRays,
+    selectedVerticalLines,
     lastSelectedObject,
     trendLines,
     fibonacciRetracements,
     trianglePatterns,
-    trendChannels
+    trendChannels,
+    horizontalLines,
+    horizontalRays,
+    verticalLines,
+    labels
   });
 
   // Update ref on every render
@@ -893,11 +1017,18 @@ const App = () => {
       selectedFibs,
       selectedTriangles,
       selectedChannels,
+      selectedHorizontalLines,
+      selectedHorizontalRays,
+      selectedVerticalLines,
       lastSelectedObject,
       trendLines,
       fibonacciRetracements,
       trianglePatterns,
-      trendChannels
+      trendChannels,
+      horizontalLines,
+      horizontalRays,
+      verticalLines,
+      labels
     };
   });
 
@@ -1093,13 +1224,13 @@ const App = () => {
           />
         )}
         
-        <ChartWithData 
+        <ChartWithData
           symbol={currentSymbol}
           interval={currentInterval}
-          dateTimeFormat={currentInterval.includes('min') ? 
-            (displayTimezone === 'et' ? "%b %d %I:%M %p" : 
-             displayTimezone === 'utc' ? "%b %d %H:%M UTC" : 
-             "%b %d %I:%M %p") : 
+          dateTimeFormat={currentInterval.includes('min') ?
+            (displayTimezone === 'et' ? "%b %d %I:%M %p" :
+             displayTimezone === 'utc' ? "%b %d %H:%M UTC" :
+             "%b %d %I:%M %p") :
             "%d %b"}
           displayTimezone={displayTimezone}
           currentTool={currentTool}
@@ -1112,21 +1243,33 @@ const App = () => {
           fibonacciRetracements={fibonacciRetracements}
           trianglePatterns={trianglePatterns}
           labels={labels}
+          horizontalLines={horizontalLines}
+          horizontalRays={horizontalRays}
+          verticalLines={verticalLines}
           selectedTrendLines={selectedTrendLines}
           selectedChannels={selectedChannels}
           selectedFibs={selectedFibs}
           selectedTriangles={selectedTriangles}
           selectedLabels={selectedLabels}
+          selectedHorizontalLines={selectedHorizontalLines}
+          selectedHorizontalRays={selectedHorizontalRays}
+          selectedVerticalLines={selectedVerticalLines}
           onTrendLineComplete={handleTrendLineComplete}
           onTrendChannelComplete={handleTrendChannelComplete}
           onFibonacciComplete={handleFibonacciComplete}
           onTriangleComplete={handleTriangleComplete}
           onLabelComplete={handleLabelComplete}
+          onHorizontalLineComplete={handleHorizontalLineComplete}
+          onHorizontalRayComplete={handleHorizontalRayComplete}
+          onVerticalLineComplete={handleVerticalLineComplete}
           onTrendLineSelect={handleTrendLineSelect}
           onTrendChannelSelect={handleTrendChannelSelect}
           onFibonacciSelect={handleFibonacciSelect}
           onTriangleSelect={handleTriangleSelect}
           onLabelSelect={handleLabelSelect}
+          onHorizontalLineSelect={handleHorizontalLineSelect}
+          onHorizontalRaySelect={handleHorizontalRaySelect}
+          onVerticalLineSelect={handleVerticalLineSelect}
           onDeselectAll={handleDeselectAll}
           onRefresh={handleRefresh}
           isReplayMode={isReplayMode}

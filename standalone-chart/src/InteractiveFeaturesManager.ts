@@ -43,6 +43,9 @@ export interface HistoryState {
   trendChannels: any[];
   fibonacciRetracements: any[];
   trianglePatterns: any[];
+  horizontalLines?: any[];
+  horizontalRays?: any[];
+  verticalLines?: any[];
 }
 
 export class InteractiveFeaturesManager {
@@ -228,7 +231,10 @@ export class InteractiveFeaturesManager {
       trendLines: currentState.trendLines,
       trendChannels: currentState.trendChannels,
       fibonacciRetracements: currentState.fibonacciRetracements,
-      trianglePatterns: currentState.trianglePatterns
+      trianglePatterns: currentState.trianglePatterns,
+      horizontalLines: currentState.horizontalLines || [],
+      horizontalRays: currentState.horizontalRays || [],
+      verticalLines: currentState.verticalLines || []
     };
 
     // Update the specific feature's data
@@ -244,6 +250,15 @@ export class InteractiveFeaturesManager {
         break;
       case 'triangle':
         newState.trianglePatterns = newItems;
+        break;
+      case 'horizontalline':
+        newState.horizontalLines = newItems;
+        break;
+      case 'horizontalray':
+        newState.horizontalRays = newItems;
+        break;
+      case 'verticalline':
+        newState.verticalLines = newItems;
         break;
     }
 

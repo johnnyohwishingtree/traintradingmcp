@@ -2,7 +2,11 @@ import { isDefined, isNotDefined, mapObject } from "../core";
 
 export function getValueFromOverride(override: any, index: any, key: any, defaultValue: any) {
     if (isDefined(override) && override.index === index) {
-        return override[key];
+        // Only use override value if it's actually defined
+        const overrideValue = override[key];
+        if (isDefined(overrideValue)) {
+            return overrideValue;
+        }
     }
     return defaultValue;
 }

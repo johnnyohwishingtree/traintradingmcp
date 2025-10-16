@@ -62,10 +62,11 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
         const allLines = trends || lines || []; // Prefer trends for compatibility
 
         // For drawing preview - single line from click point
+        // Apply constraints for the preview line (important for horizontal/vertical rays)
         const tempLine =
             isDefined(current) && isDefined(current.end) ? (
                 <InteractiveStraightLine
-                    type={type}
+                    type={type || "LINE"}
                     x1Value={current.start[0]}
                     y1Value={current.start[1]}
                     x2Value={current.end[0]}
@@ -82,7 +83,7 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
                 {enabled && (
                     <MouseLocationIndicator
                         enabled={enabled}
-                        snap={snap}
+                        snap={snap || false}
                         shouldDisableSnap={shouldDisableSnap}
                         snapTo={snapTo}
                         r={currentPositionRadius}
@@ -239,6 +240,7 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
         
         // Implementation for control point dragging
         const { lines } = this.props;
+        if (!lines || !lines[index]) return;
         const line = lines[index];
         
         const handleDrag = (dragEvent: MouseEvent) => {
@@ -294,14 +296,41 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
     // Drag handlers required by wrapper components
     protected readonly handleDragLine = (e: React.MouseEvent, index: number | undefined, moreProps: any) => {
         const allLines = this.props.trends || this.props.lines || [];
-        
+
         if (index !== undefined) {
-            console.log('🖱️ Line drag start, index:', index);
-            this.setState({
-                override: {
-                    index,
-                },
-            } as Partial<BaseLineState>);
+            // Check if moreProps contains coordinate updates from wrapper components
+            // (e.g., EachHorizontalLineTrend passes { x1Value, y1Value, x2Value, y2Value })
+            const hasCoordinates = typeof moreProps === 'object' && moreProps !== null &&
+                                 ('x1Value' in moreProps || 'y1Value' in moreProps ||
+                                  'x2Value' in moreProps || 'y2Value' in moreProps);
+
+            if (hasCoordinates) {
+                // Wrapper component is providing new coordinates - use them
+                console.log('🖱️ Line drag with coordinates, index:', index, 'coords:', {
+                    x1: moreProps.x1Value,
+                    y1: moreProps.y1Value,
+                    x2: moreProps.x2Value,
+                    y2: moreProps.y2Value,
+                });
+
+                this.setState({
+                    override: {
+                        index,
+                        x1Value: moreProps.x1Value,
+                        y1Value: moreProps.y1Value,
+                        x2Value: moreProps.x2Value,
+                        y2Value: moreProps.y2Value,
+                    },
+                } as Partial<BaseLineState>);
+            } else {
+                // Legacy behavior - just set index
+                console.log('🖱️ Line drag (legacy), index:', index);
+                this.setState({
+                    override: {
+                        index,
+                    },
+                } as Partial<BaseLineState>);
+            }
         }
     };
 

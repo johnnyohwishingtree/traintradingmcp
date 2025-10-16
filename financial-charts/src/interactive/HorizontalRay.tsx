@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BaseLine, BaseLineProps } from "./BaseLine";
-import { EachTrendLine } from "./wrapper/EachTrendLine";
+import { EachHorizontalLineTrend } from "./wrapper/EachHorizontalLineTrend";
 import { getValueFromOverride } from "./utils";
 import { isDefined } from "../core";
 
@@ -20,21 +20,20 @@ export class HorizontalRay extends BaseLine {
         return "horizontalRays";
     }
 
-    // Override to apply horizontal constraint: lock Y-axis, ray goes horizontally
+    // Override to apply horizontal constraint: lock Y-axis, allow X movement only
     protected applyConstraints(startPoint: any, endPoint: any): any {
         if (!startPoint || !endPoint) return endPoint;
-        
-        // Keep Y coordinate fixed at startPoint, allow X to change for direction
+
+        // Keep Y coordinate fixed at startPoint, allow X to change
         return [endPoint[0], startPoint[1]];
     }
 
-    // Override rendering to show horizontal ray with price label
+    // Override rendering to use EachHorizontalLineTrend wrapper for proper interaction
     protected renderLineItem(line: any, index: number, override: any, appearance: any, hoverText: any): React.ReactNode {
-        const y1Value = line.start[1]; // Fixed Y coordinate
-        const y2Value = line.start[1]; // Force same Y for horizontal ray
-        const x1Value = line.start[0];
-        const x2Value = line.end[0];
-        
+        const y = line.start[1]; // Fixed Y coordinate for horizontal ray
+        const x1 = Math.min(line.start[0], line.end[0]);
+        const x2 = Math.max(line.start[0], line.end[0]);
+
         const eachAppearance = isDefined(line.appearance)
             ? { ...appearance, ...line.appearance }
             : appearance;
@@ -43,58 +42,69 @@ export class HorizontalRay extends BaseLine {
             ...HorizontalRay.defaultProps.hoverText,
             ...hoverText,
         };
-        
+
         return (
-            <g key={index}>
-                <EachTrendLine
-                    ref={this.saveNodeType(index)}
-                    index={index}
-                    type="RAY" // Ray type for infinite extension
-                    x1Value={x1Value}
-                    y1Value={y1Value}
-                    x2Value={x2Value}
-                    y2Value={y2Value} // Same as y1Value for horizontal
-                    strokeStyle={eachAppearance.strokeStyle}
-                    strokeWidth={eachAppearance.strokeWidth}
-                    strokeOpacity={eachAppearance.strokeOpacity}
-                    strokeDasharray={eachAppearance.strokeDasharray}
-                    edgeStroke={eachAppearance.edgeStroke}
-                    edgeFill={eachAppearance.edgeFill}
-                    edgeStrokeWidth={eachAppearance.edgeStrokeWidth}
-                    r={eachAppearance.r}
-                    hoverText={hoverTextWithDefault}
-                    onSelect={this.props.onSelect}
-                    onDragComplete={this.handleDragLineComplete}
-                    selected={line.selected}
-                    edgeInteractiveCursor="react-financial-charts-move-cursor"
-                    lineInteractiveCursor="react-financial-charts-move-cursor"
-                />
-                
-                {/* Price label at the start point */}
-                {line.selected && (
-                    <g>
-                        <rect
-                            x={x1Value - 30}
-                            y={y1Value - 15}
-                            width={60}
-                            height={20}
-                            fill={eachAppearance.strokeStyle}
-                            opacity={0.9}
-                            rx={3}
-                        />
-                        <text
-                            x={x1Value}
-                            y={y1Value}
-                            fill="white"
-                            fontSize={11}
-                            textAnchor="middle"
-                            dy={4}
-                        >
-                            {y1Value.toFixed(2)}
-                        </text>
-                    </g>
-                )}
-            </g>
+            <EachHorizontalLineTrend
+                key={index}
+                ref={this.saveNodeType(index)}
+                index={index}
+                type="RAY" // Ray type for infinite extension in one direction
+                selected={line.selected}
+                x1Value={getValueFromOverride(override, index, "x1Value", x1)}
+                y1Value={getValueFromOverride(override, index, "y1Value", y)}
+                x2Value={getValueFromOverride(override, index, "x2Value", x2)}
+                y2Value={getValueFromOverride(override, index, "y2Value", y)} // Force same Y for horizontal
+                strokeStyle={eachAppearance.strokeStyle}
+                strokeWidth={eachAppearance.strokeWidth}
+                strokeOpacity={eachAppearance.strokeOpacity}
+                strokeDasharray={eachAppearance.strokeDasharray}
+                edgeStroke={eachAppearance.edgeStroke}
+                edgeFill={eachAppearance.edgeFill}
+                edgeStrokeWidth={eachAppearance.edgeStrokeWidth}
+                r={eachAppearance.r}
+                hoverText={hoverTextWithDefault}
+                onSelect={this.props.onSelect}
+                onDrag={this.handleDragLine}
+                onDragComplete={this.handleDragLineComplete}
+                edgeInteractiveCursor="react-financial-charts-move-cursor"
+                lineInteractiveCursor="react-financial-charts-move-cursor"
+            />
         );
     }
+
+    // Override handleEnd for single-click ray placement
+    protected readonly handleEnd = (e: React.MouseEvent, xyValue: any, moreProps: any) => {
+        const { current } = this.state;
+        const allLines = this.props.trends || this.props.lines || [];
+        const { appearance } = this.props;
+
+        if (current && current.start) {
+            // For horizontal rays, complete immediately on first click
+            const x = current.start[0]; // X coordinate from click
+            const y = current.start[1]; // Fixed Y coordinate
+
+            const newLines = [
+                ...allLines.map((d) => ({ ...d, selected: false })),
+                {
+                    start: [x, y],
+                    end: [x + 100, y], // End point to the right for ray direction
+                    selected: true,
+                    appearance,
+                    type: "RAY",
+                },
+            ];
+
+            this.setState(
+                {
+                    current: null,
+                },
+                () => {
+                    const { onComplete } = this.props;
+                    if (onComplete !== undefined) {
+                        onComplete(e, newLines, moreProps);
+                    }
+                },
+            );
+        }
+    };
 }

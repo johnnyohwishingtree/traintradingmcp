@@ -63,22 +63,34 @@ interface StockChartWithToolsProps {
     readonly fibonacciRetracements?: any[];
     readonly trianglePatterns?: any[];
     readonly labels?: any[];
+    readonly horizontalLines?: any[];
+    readonly horizontalRays?: any[];
+    readonly verticalLines?: any[];
     readonly selectedTrendLines?: number[];
     readonly selectedChannels?: number[];
     readonly selectedFibs?: number[];
     readonly selectedTriangles?: number[];
     readonly selectedLabels?: number[];
+    readonly selectedHorizontalLines?: number[];
+    readonly selectedHorizontalRays?: number[];
+    readonly selectedVerticalLines?: number[];
     readonly onTrendLineComplete?: (trendLines: any[]) => void;
     readonly onTrendChannelComplete?: (channels: any[]) => void;
     readonly onFibonacciComplete?: (fibs: any[]) => void;
     readonly onRefresh?: () => void;
     readonly onTriangleComplete?: (triangles: any[]) => void;
     readonly onLabelComplete?: (labels: any[]) => void;
+    readonly onHorizontalLineComplete?: (lines: any[]) => void;
+    readonly onHorizontalRayComplete?: (rays: any[]) => void;
+    readonly onVerticalLineComplete?: (lines: any[]) => void;
     readonly onTrendLineSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onTrendChannelSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onFibonacciSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onTriangleSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onLabelSelect?: (e: React.MouseEvent, interactives: any[]) => void;
+    readonly onHorizontalLineSelect?: (e: React.MouseEvent, interactives: any[]) => void;
+    readonly onHorizontalRaySelect?: (e: React.MouseEvent, interactives: any[]) => void;
+    readonly onVerticalLineSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onDeselectAll?: () => void;
     readonly isReplayMode?: boolean;
     readonly replayPosition?: number;
@@ -148,12 +160,16 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
             enableTrendChannel,
             trendLines = [],
             trendChannels = [],
+            horizontalLines = [],
             selectedTrendLines = [],
             selectedChannels = [],
+            selectedHorizontalLines = [],
             onTrendLineComplete,
             onTrendChannelComplete,
+            onHorizontalLineComplete,
             onTrendLineSelect,
-            onTrendChannelSelect
+            onTrendChannelSelect,
+            onHorizontalLineSelect
         } = this.props;
 
         const tvColors = this.getTradingViewColors();
@@ -243,94 +259,16 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
 
 
             case 'horizontalline':
-                // Horizontal lines need their own props, not trend line data
-                const horizontalLineProps = {
-                    enabled: enableTrendLine,
-                    snap: false,
-                    snapTo: (d: any) => [d.high, d.low],
-                    onStart: () => {},
-                    onComplete: (e: any, newLines: any[], moreProps: any) => {
-                        if (onTrendLineComplete) {
-                            onTrendLineComplete(newLines);
-                        }
-                    },
-                    onDragStart: (e: any, interactives: any[], moreProps: any) => {
-                        if (onTrendLineSelect && interactives.length > 0) {
-                            onTrendLineSelect(e, interactives);
-                        }
-                    },
-                    onDragComplete: (e: any, newLines: any[], moreProps: any) => {
-                        if (newLines.length > 0) {
-                            if (onTrendLineComplete) {
-                                onTrendLineComplete(newLines);
-                            }
-                            if (onTrendLineSelect) {
-                                onTrendLineSelect(e, newLines);
-                            }
-                        }
-                    },
-                    onSelect: onTrendLineSelect,
-                    trends: [], // Empty array - horizontal lines are created new, not from existing trends
-                    hoverText: {
-                        enable: false,
-                    }
-                };
-                
-                return (
-                    <HorizontalLine
-                        {...horizontalLineProps}
-                        type="XLINE"
-                        appearance={{
-                            strokeStyle: "#f44336",
-                            strokeWidth: 2,
-                            strokeDasharray: "Solid",
-                            edgeStrokeWidth: 2,
-                            edgeFill: "#f44336",
-                            edgeStroke: "#f44336",
-                        }}
-                        currentPositionStroke="#f44336"
-                        currentPositionStrokeWidth={3}
-                        currentPositionRadius={4}
-                    />
-                );
+                // Horizontal lines are now handled by the standalone persistent component
+                return null;
 
             case 'horizontalray':
-                return (
-                    <HorizontalRay
-                        {...commonProps}
-                        type="RAY"
-                        appearance={{
-                            strokeStyle: "#795548",
-                            strokeWidth: 2,
-                            strokeDasharray: "Solid",
-                            edgeStrokeWidth: 2,
-                            edgeFill: "#795548",
-                            edgeStroke: "#795548",
-                        }}
-                        currentPositionStroke="#795548"
-                        currentPositionStrokeWidth={3}
-                        currentPositionRadius={4}
-                    />
-                );
+                // Horizontal rays are now handled by the standalone persistent component
+                return null;
 
             case 'verticalline':
-                return (
-                    <VerticalLine
-                        {...commonProps}
-                        type="XLINE"
-                        appearance={{
-                            strokeStyle: "#e91e63",
-                            strokeWidth: 2,
-                            strokeDasharray: "Solid",
-                            edgeStrokeWidth: 2,
-                            edgeFill: "#e91e63",
-                            edgeStroke: "#e91e63",
-                        }}
-                        currentPositionStroke="#e91e63"
-                        currentPositionStrokeWidth={3}
-                        currentPositionRadius={4}
-                    />
-                );
+                // Vertical lines are now handled by the standalone persistent component
+                return null;
 
             case 'infoline':
                 return (
@@ -669,13 +607,23 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                     zoomAnchor={lastVisibleItemBasedZoomAnchor}
                     zoomMultiplier={zoomMultiplier}
                     onClick={(e: any, moreProps: any) => {
+                        // List of drawing tools that should not trigger deselect on click
+                        const drawingTools = ['trendline', 'ray', 'extendedline', 'infoline', 'horizontalline', 'horizontalray', 'verticalline', 'label'];
+                        const isDrawingMode = drawingTools.includes(currentTool || '');
+
                         // Handle patterns mode
                         if (enablePatterns) {
                             console.log('📊 Patterns mode active - clicked at:', moreProps);
                             // TODO: Implement pattern drawing functionality
                             return;
                         }
-                        
+
+                        // Skip deselect if we're in drawing mode - let the drawing component handle the click
+                        if (isDrawingMode) {
+                            console.log(`📊 Drawing mode active (${currentTool}) - letting drawing component handle click`);
+                            return;
+                        }
+
                         // Clear all selections when clicking on empty chart area using unified handler
                         if (onDeselectAll) {
                             console.log('📊 Empty chart area clicked - calling unified deselect');
@@ -988,9 +936,10 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                                 }
                             }}
                             onSelect={onTrendLineSelect}
-                            trends={trendLines.filter(trend => 
-                                // Only include regular trend lines, not channel data
-                                !trend.channelType
+                            trends={trendLines.filter(trend =>
+                                // Only include regular trend lines, not channel data or horizontal rays
+                                // Horizontal rays have identical Y coordinates (start[1] === end[1])
+                                !trend.channelType && !(trend.start?.[1] === trend.end?.[1])
                             ).map((trend, index) => ({
                                 ...trend,
                                 selected: selectedTrendLines.includes(index)
@@ -998,7 +947,7 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                             hoverText={{
                                 enable: true,
                                 bgHeight: "auto",
-                                bgWidth: "auto", 
+                                bgWidth: "auto",
                                 text: "Click to select trend line",
                                 selectedText: "Trend line selected",
                             }}
@@ -1012,6 +961,155 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                                 edgeStroke: "#2196f3",
                             }}
                             currentPositionStroke="#2196f3"
+                            currentPositionStrokeWidth={3}
+                            currentPositionRadius={4}
+                        />
+
+                        {/* Horizontal Line Component - Persistent Display */}
+                        <HorizontalLine
+                            enabled={currentTool === 'horizontalline'} // Only enable drawing when horizontal line tool is active
+                            snap={false}
+                            snapTo={(d: any) => [d.high, d.low]}
+                            onStart={() => {}}
+                            onComplete={(e: any, newLines: any[], moreProps: any) => {
+                                if (this.props.onHorizontalLineComplete && newLines.length > 0) {
+                                    this.props.onHorizontalLineComplete(newLines);
+                                }
+                            }}
+                            onDragStart={(e: any, interactives: any[], moreProps: any) => {
+                                if (this.props.onHorizontalLineSelect && interactives.length > 0) {
+                                    this.props.onHorizontalLineSelect(e, interactives);
+                                }
+                            }}
+                            onDragComplete={(e: any, newLines: any[], moreProps: any) => {
+                                if (this.props.onHorizontalLineComplete && newLines.length > 0) {
+                                    this.props.onHorizontalLineComplete(newLines);
+                                }
+                                if (this.props.onHorizontalLineSelect && newLines.length > 0) {
+                                    this.props.onHorizontalLineSelect(e, newLines);
+                                }
+                            }}
+                            onSelect={this.props.onHorizontalLineSelect}
+                            trends={(this.props.horizontalLines || []).map((line, index) => ({
+                                ...line,
+                                selected: (this.props.selectedHorizontalLines || []).includes(index)
+                            }))}
+                            hoverText={{
+                                enable: true,
+                                bgHeight: "auto",
+                                bgWidth: "auto",
+                                text: "Click to select horizontal line",
+                                selectedText: "Horizontal line selected",
+                            }}
+                            type="XLINE"
+                            appearance={{
+                                strokeStyle: "#f44336", // Red for horizontal lines
+                                strokeWidth: 2,
+                                strokeDasharray: "Solid",
+                                edgeStrokeWidth: 2,
+                                edgeFill: "#f44336",
+                                edgeStroke: "#f44336",
+                            }}
+                            currentPositionStroke="#f44336"
+                            currentPositionStrokeWidth={3}
+                            currentPositionRadius={4}
+                        />
+
+                        {/* Horizontal Ray Component - Persistent Display */}
+                        <HorizontalRay
+                            enabled={currentTool === 'horizontalray'} // Only enable drawing when horizontal ray tool is active
+                            snap={false}
+                            snapTo={(d: any) => [d.high, d.low]}
+                            onStart={() => {}}
+                            onComplete={(e: any, newRays: any[], moreProps: any) => {
+                                if (this.props.onHorizontalRayComplete && newRays.length > 0) {
+                                    this.props.onHorizontalRayComplete(newRays);
+                                }
+                            }}
+                            onDragStart={(e: any, interactives: any[], moreProps: any) => {
+                                if (this.props.onHorizontalRaySelect && interactives.length > 0) {
+                                    this.props.onHorizontalRaySelect(e, interactives);
+                                }
+                            }}
+                            onDragComplete={(e: any, newRays: any[], moreProps: any) => {
+                                if (this.props.onHorizontalRayComplete && newRays.length > 0) {
+                                    this.props.onHorizontalRayComplete(newRays);
+                                }
+                                if (this.props.onHorizontalRaySelect && newRays.length > 0) {
+                                    this.props.onHorizontalRaySelect(e, newRays);
+                                }
+                            }}
+                            onSelect={this.props.onHorizontalRaySelect}
+                            trends={(this.props.horizontalRays || []).map((ray, index) => ({
+                                ...ray,
+                                selected: (this.props.selectedHorizontalRays || []).includes(index)
+                            }))}
+                            hoverText={{
+                                enable: true,
+                                bgHeight: "auto",
+                                bgWidth: "auto",
+                                text: "Click to select horizontal ray",
+                                selectedText: "Horizontal ray selected",
+                            }}
+                            type="RAY"
+                            appearance={{
+                                strokeStyle: "#795548", // Brown for horizontal rays
+                                strokeWidth: 2,
+                                strokeDasharray: "Solid",
+                                edgeStrokeWidth: 2,
+                                edgeFill: "#795548",
+                                edgeStroke: "#795548",
+                            }}
+                            currentPositionStroke="#795548"
+                            currentPositionStrokeWidth={3}
+                            currentPositionRadius={4}
+                        />
+
+                        {/* Vertical Line Component - Persistent Display */}
+                        <VerticalLine
+                            enabled={currentTool === 'verticalline'} // Only enable drawing when vertical line tool is active
+                            snap={false}
+                            onStart={() => {}}
+                            onComplete={(e: any, newLines: any[], moreProps: any) => {
+                                if (this.props.onVerticalLineComplete && newLines.length > 0) {
+                                    this.props.onVerticalLineComplete(newLines);
+                                }
+                            }}
+                            onDragStart={(e: any, interactives: any[], moreProps: any) => {
+                                if (this.props.onVerticalLineSelect && interactives.length > 0) {
+                                    this.props.onVerticalLineSelect(e, interactives);
+                                }
+                            }}
+                            onDragComplete={(e: any, newLines: any[], moreProps: any) => {
+                                if (this.props.onVerticalLineComplete && newLines.length > 0) {
+                                    this.props.onVerticalLineComplete(newLines);
+                                }
+                                if (this.props.onVerticalLineSelect && newLines.length > 0) {
+                                    this.props.onVerticalLineSelect(e, newLines);
+                                }
+                            }}
+                            onSelect={this.props.onVerticalLineSelect}
+                            trends={(this.props.verticalLines || []).map((line, index) => ({
+                                ...line,
+                                selected: (this.props.selectedVerticalLines || []).includes(index)
+                            }))}
+                            hoverText={{
+                                enable: true,
+                                bgHeight: "auto",
+                                bgWidth: "auto",
+                                text: "Click to select vertical line",
+                                selectedText: "Vertical line selected",
+                            }}
+                            type="XLINE"
+                            appearance={{
+                                strokeStyle: "#e91e63", // Pink for vertical lines
+                                strokeWidth: 2,
+                                strokeDasharray: "Solid",
+                                edgeStrokeWidth: 2,
+                                edgeFill: "#e91e63",
+                                edgeStroke: "#e91e63",
+                            }}
+                            currentPositionStroke="#e91e63"
                             currentPositionStrokeWidth={3}
                             currentPositionRadius={4}
                         />

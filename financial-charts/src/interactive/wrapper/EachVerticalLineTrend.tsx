@@ -92,6 +92,25 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
         const verticalX = x1Value;
         const midY = (y1Value + y2Value) / 2;
 
+        // For RAY type, show control point at start (origin)
+        // For XLINE type, show control point at midpoint
+        const controlPointY = type === "RAY" ? y1Value : midY;
+
+        // Debug logging
+        if (selected) {
+            console.log('🎯 EachVerticalLineTrend rendering SELECTED:', {
+                type,
+                selected,
+                hover,
+                verticalX,
+                controlPointY,
+                y1Value,
+                y2Value,
+                x1Value,
+                showCircle: selected || hover
+            });
+        }
+
         return (
             <g>
                 <InteractiveStraightLine
@@ -112,21 +131,34 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
                     x2Value={verticalX}
                     y2Value={y2Value}
                 />
-                {/* Single control point in the middle for vertical movement */}
+                {/* Control point: at start for RAY, at middle for XLINE */}
                 <ClickableCircle
-                    ref={this.saveNodeType("midpoint")}
+                    ref={this.saveNodeType("controlPoint")}
                     show={selected || hover}
                     cx={verticalX}
-                    cy={midY}
-                    r={r}
-                    fillStyle={edgeFill}
-                    strokeStyle={edgeStroke}
-                    strokeWidth={edgeStrokeWidth}
+                    cy={controlPointY}
+                    r={r || 6}
+                    fillStyle={edgeFill || "#FFFFFF"}
+                    strokeStyle={edgeStroke || "#000000"}
+                    strokeWidth={edgeStrokeWidth || 2}
                     interactiveCursorClass={edgeInteractiveCursor}
-                    onDragStart={this.handleMidpointDragStart}
-                    onDrag={this.handleMidpointDrag}
+                    onDragStart={this.handleControlPointDragStart}
+                    onDrag={this.handleControlPointDrag}
                     onDragComplete={this.handleDragComplete}
                 />
+                {/* Debug: Always show a small indicator when selected */}
+                {selected && (
+                    <circle
+                        cx={verticalX}
+                        cy={controlPointY}
+                        r={10}
+                        fill="blue"
+                        fillOpacity={0.5}
+                        stroke="white"
+                        strokeWidth={2}
+                        pointerEvents="none"
+                    />
+                )}
                 <HoverTextNearMouse
                     show={hoverTextEnabled && hover}
                     {...restHoverTextProps}
@@ -165,20 +197,48 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
     };
 
     private readonly handleLineDrag = (e: React.MouseEvent, moreProps: any) => {
-        // For vertical lines, only allow Y movement - dragging the line moves it vertically
-        const { index, onDrag, x1Value } = this.props;
-        const { mouseXY } = moreProps;
-        
-        // Keep X coordinate fixed, use mouse Y
-        const newX = x1Value; // Fixed X coordinate for vertical line
-        const deltaY = mouseXY[1];
-        
+        // For vertical lines, dragging moves the X coordinate horizontally
+        // The Y coordinates stay the same (infinite vertical line)
+        const { index, onDrag, y1Value, y2Value } = this.props;
+
+        // Extract mouseXY and xScale from moreProps
+        const { mouseXY, xScale } = moreProps;
+
+        // Convert screen X coordinate to data X value
+        const newXValue = xScale.invert(mouseXY[0]);
+
+        // For XLINE type, keep the same Y range, only move X
         if (onDrag) {
             onDrag(e, index, {
-                x1Value: newX,
-                y1Value: deltaY - 50, // Offset for line height
-                x2Value: newX,
-                y2Value: deltaY + 50,
+                x1Value: newXValue,
+                y1Value: y1Value,
+                x2Value: newXValue,
+                y2Value: y2Value,
+            });
+        }
+    };
+
+    private readonly handleMidpointDragBothAxes = (e: React.MouseEvent, moreProps: any) => {
+        // For vertical rays, allow moving both X and Y position while maintaining vertical orientation
+        const { index, onDrag, y1Value, y2Value } = this.props;
+
+        // Extract mouseXY, xScale, and yScale from moreProps
+        const { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
+
+        // Convert screen coordinates to data values
+        const newXValue = xScale.invert(mouseXY[0]);
+        const newYValue = yScale.invert(mouseXY[1]);
+
+        // Calculate the delta to shift both y1 and y2
+        const deltaY = newYValue - y1Value;
+
+        // For RAY type, move both endpoints vertically while keeping X the same
+        if (onDrag) {
+            onDrag(e, index, {
+                x1Value: newXValue,
+                y1Value: y1Value + deltaY,
+                x2Value: newXValue,
+                y2Value: y2Value + deltaY,
             });
         }
     };
@@ -188,8 +248,33 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
     };
 
     private readonly handleMidpointDrag = (e: React.MouseEvent, moreProps: any) => {
-        // For vertical lines, dragging the midpoint moves the entire line vertically
-        this.handleLineDrag(e, moreProps);
+        const { type } = this.props;
+
+        // For RAY type, allow moving in both directions
+        // For XLINE type (infinite vertical line), only allow horizontal movement
+        if (type === "RAY") {
+            this.handleMidpointDragBothAxes(e, moreProps);
+        } else {
+            // For XLINE, dragging the midpoint moves the entire line horizontally only
+            this.handleLineDrag(e, moreProps);
+        }
+    };
+
+    private readonly handleControlPointDragStart = () => {
+        console.log('🖱️ Control point drag start');
+    };
+
+    private readonly handleControlPointDrag = (e: React.MouseEvent, moreProps: any) => {
+        const { type } = this.props;
+
+        // For RAY type, allow moving in both directions
+        // For XLINE type (infinite vertical line), only allow horizontal movement
+        if (type === "RAY") {
+            this.handleMidpointDragBothAxes(e, moreProps);
+        } else {
+            // For XLINE, dragging the control point moves the entire line horizontally only
+            this.handleLineDrag(e, moreProps);
+        }
     };
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {

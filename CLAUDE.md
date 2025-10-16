@@ -3,7 +3,7 @@
 ## Testing and Compilation Requirements
 
 ### CRITICAL: Always Verify Compilation After Changes
-**MANDATORY WORKFLOW**: After ANY change to files in `melnicorn-financial-charts/src/`:
+**MANDATORY WORKFLOW**: After ANY change to files in `financial-charts/src/`:
 
 1. **IMMEDIATELY build the library** - Do not proceed without confirming compilation succeeds
 2. **IMMEDIATELY restart the dev server** - Kill and restart to pick up changes
@@ -15,17 +15,29 @@
 
 ### Build and Link Process
 
+**Quick Restart (Recommended):**
+```bash
+# Use the automated restart script (builds, links, and starts both servers)
+./restart-servers.sh
+```
+
+**Manual Process:**
 ```bash
 # 1. Build the library
-cd /Users/johnnyhuang/personal/react-charts/melnicorn-financial-charts
+cd /Users/johnnyhuang/personal/traintradingmcp/financial-charts
 npm run build
 
 # 2. Re-link the library to the standalone app
-cd /Users/johnnyhuang/personal/react-charts/standalone-chart
-npm link ../melnicorn-financial-charts
+cd /Users/johnnyhuang/personal/traintradingmcp/standalone-chart
+npm link ../financial-charts
 
-# 3. Start the development server
-npm start
+# 3. Start the backend server
+cd /Users/johnnyhuang/personal/traintradingmcp/standalone-chart/backend
+node server.js &
+
+# 4. Start the frontend development server
+cd /Users/johnnyhuang/personal/traintradingmcp/standalone-chart
+NODE_OPTIONS='--openssl-legacy-provider' npm start
 ```
 
 ### Common Issues and Solutions
@@ -37,19 +49,24 @@ If you see: `Module not found: Error: Can't resolve '@slowclap/financial-charts'
 
 **Solution**:
 ```bash
+# Quick fix: Run the restart script
+./restart-servers.sh
+
+# OR manually:
 # Check if lib directory exists
-ls /Users/johnnyhuang/personal/react-charts/melnicorn-financial-charts/lib
+ls /Users/johnnyhuang/personal/traintradingmcp/financial-charts/lib
 
 # If missing, rebuild
-cd /Users/johnnyhuang/personal/react-charts/melnicorn-financial-charts
+cd /Users/johnnyhuang/personal/traintradingmcp/financial-charts
 npm run build
 
 # Re-link to standalone app
-cd /Users/johnnyhuang/personal/react-charts/standalone-chart
-npm link ../melnicorn-financial-charts
+cd /Users/johnnyhuang/personal/traintradingmcp/standalone-chart
+npm link ../financial-charts
 
-# Restart dev server
-npm start
+# Restart servers
+cd backend && node server.js &
+cd .. && NODE_OPTIONS='--openssl-legacy-provider' npm start
 ```
 
 ### Test Requirements
@@ -150,8 +167,8 @@ Before marking any task complete:
 ### Current Project Structure
 
 ```
-react-charts/
-├── melnicorn-financial-charts/     # Library source code
+traintradingmcp/
+├── financial-charts/               # Library source code
 │   ├── src/                        # TypeScript source
 │   ├── lib/                        # Compiled JavaScript (auto-generated)
 │   └── package.json
@@ -168,14 +185,14 @@ react-charts/
 - **Problem**: Clicking first trendline selected second trendline instead
 - **Root Cause**: Both `EachTrendLine` components received click events
 - **Solution**: Implemented Y-coordinate aware click detection in `EachTrendLine.tsx`
-- **File**: `/melnicorn-financial-charts/src/interactive/wrapper/EachTrendLine.tsx:309-331`
+- **File**: `/financial-charts/src/interactive/wrapper/EachTrendLine.tsx:309-331`
 - **Test**: `tests/trendline-selection-debug.spec.js` validates fix
 
 #### Line Completion Issue (Fixed)  
 - **Problem**: Lines wouldn't complete when drawn with automated testing
 - **Root Cause**: Required `mouseMoved` flag wasn't set during programmatic interactions
 - **Solution**: Removed `mouseMoved` requirement from completion logic
-- **File**: `/melnicorn-financial-charts/src/interactive/TrendLine.tsx:315`
+- **File**: `/financial-charts/src/interactive/TrendLine.tsx:315`
 
 #### Weekly OHLC Data Mapping Issue (Fixed)
 - **Problem**: Weekly candles showing wrong colors (September 8th should be red, September 15th should be green)
@@ -402,9 +419,14 @@ If automated tests fail but manual testing works:
 
 1. **Build and Link** (Critical - Required by CLAUDE.md):
    ```bash
-   cd melnicorn-financial-charts && npm run build
-   cd ../standalone-chart && npm link ../melnicorn-financial-charts
-   NODE_OPTIONS='--openssl-legacy-provider' npm start
+   # Quick method: Use restart script
+   ./restart-servers.sh
+
+   # OR manually:
+   cd financial-charts && npm run build
+   cd ../standalone-chart && npm link ../financial-charts
+   cd backend && node server.js &
+   cd .. && NODE_OPTIONS='--openssl-legacy-provider' npm start
    ```
 
 2. **Runtime Error Check** - Before testing functionality, verify no runtime errors:
