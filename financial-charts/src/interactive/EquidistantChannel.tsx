@@ -8,7 +8,7 @@ import { EachEquidistantChannel } from "./wrapper";
 // MCP Integration Types
 export interface MCPElement {
     readonly id: string;
-    readonly type: 'channel' | 'label';
+    readonly type: "channel" | "label";
     readonly data: any;
     readonly appearance?: any;
     readonly selected?: boolean;
@@ -99,14 +99,14 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
 
     // MCP Integration Methods
     private convertMCPElementsToChannels(mcpElements: MCPElement[]): any[] {
-        const channelElements = mcpElements.filter(el => el.type === 'channel');
-        return channelElements.map(el => ({
+        const channelElements = mcpElements.filter((el) => el.type === "channel");
+        return channelElements.map((el) => ({
             id: el.id,
             startXY: el.data.startXY,
             endXY: el.data.endXY,
             dy: el.data.dy,
             selected: el.selected || false,
-            appearance: el.appearance
+            appearance: el.appearance,
         }));
     }
 
@@ -131,7 +131,6 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
         // Merge regular channels with MCP elements
         const mcpChannels = mcpElements ? this.convertMCPElementsToChannels(mcpElements) : [];
         const allChannels = [...(channels || []), ...mcpChannels];
-
 
         const { current, override } = this.state;
 
@@ -159,16 +158,18 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
                         />
                     );
                 })}
-                
+
                 {/* Current drawing preview using GenericChartComponent */}
                 {isDefined(current) && (
                     <GenericChartComponent
                         canvasToDraw={getMouseCanvas}
-                        canvasDraw={(ctx: CanvasRenderingContext2D, moreProps: any) => this.drawCurrentChannelOnCanvas(ctx, moreProps, current, appearance)}
+                        canvasDraw={(ctx: CanvasRenderingContext2D, moreProps: any) =>
+                            this.drawCurrentChannelOnCanvas(ctx, moreProps, current, appearance)
+                        }
                         drawOn={["mousemove", "pan", "drag"]}
                     />
                 )}
-                
+
                 {enabled && (
                     <MouseLocationIndicator
                         enabled={enabled}
@@ -202,9 +203,7 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
         if (isDefined(override)) {
             const { index, ...rest } = override;
             const newChannels = channels.map((each, idx) =>
-                idx === index 
-                    ? { ...each, ...rest, selected: true }
-                    : { ...each, selected: false },
+                idx === index ? { ...each, ...rest, selected: true } : { ...each, selected: false },
             );
 
             if (onDragComplete !== undefined) {
@@ -216,21 +215,24 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
     public componentDidUpdate(prevProps: EquidistantChannelProps) {
         const { override } = this.state;
         const { channels } = this.props;
-        
+
         // Clear override when props update with the new channel positions
         if (override && prevProps.channels !== channels) {
             const { index } = override;
             const updatedChannel = channels[index];
-            
+
             // Check if the channel props now match our override (drag was successful)
-            if (updatedChannel && 
-                updatedChannel.startXY && updatedChannel.endXY && updatedChannel.dy !== undefined &&
-                (Math.abs(updatedChannel.startXY[0] - override.startXY[0]) < 0.01 &&
-                 Math.abs(updatedChannel.startXY[1] - override.startXY[1]) < 0.01 &&
-                 Math.abs(updatedChannel.endXY[0] - override.endXY[0]) < 0.01 &&
-                 Math.abs(updatedChannel.endXY[1] - override.endXY[1]) < 0.01 &&
-                 Math.abs(updatedChannel.dy - override.dy) < 0.01)) {
-                
+            if (
+                updatedChannel &&
+                updatedChannel.startXY &&
+                updatedChannel.endXY &&
+                updatedChannel.dy !== undefined &&
+                Math.abs(updatedChannel.startXY[0] - override.startXY[0]) < 0.01 &&
+                Math.abs(updatedChannel.startXY[1] - override.startXY[1]) < 0.01 &&
+                Math.abs(updatedChannel.endXY[0] - override.endXY[0]) < 0.01 &&
+                Math.abs(updatedChannel.endXY[1] - override.endXY[1]) < 0.01 &&
+                Math.abs(updatedChannel.dy - override.dy) < 0.01
+            ) {
                 this.setState({ override: null });
             }
         }
@@ -238,7 +240,6 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
 
     private readonly handleStart = (e: React.MouseEvent, xyValue: any, moreProps: any) => {
         const { current } = this.state;
-        
 
         if (isNotDefined(current) || isNotDefined(current.startXY)) {
             this.mouseMoved = false;
@@ -265,7 +266,6 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
         const { current } = this.state;
         const { channels, appearance } = this.props;
 
-
         if (isDefined(current)) {
             if (isNotDefined(current.endXY)) {
                 // Setting second point (end of base ray) - only if there was movement
@@ -274,7 +274,7 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
                 const endX = xyValue[0];
                 const endY = xyValue[1];
                 const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
-                
+
                 if (this.mouseMoved || differentPosition) {
                     this.setState({
                         current: {
@@ -290,15 +290,14 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
                 const endX = xyValue[0];
                 const endY = xyValue[1];
                 const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
-                
+
                 if (this.mouseMoved || differentPosition) {
-                    
                     // Calculate dy based on the perpendicular distance
                     const m = getSlope(current.startXY, current.endXY);
                     const b = getYIntercept(m, current.endXY);
                     const y = m * xyValue[0] + b;
                     const dy = xyValue[1] - y;
-                    
+
                     const channelData = {
                         startXY: current.startXY,
                         endXY: current.endXY,
@@ -317,21 +316,18 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
                             endXY: current.endXY,
                             dy: dy,
                         };
-                        
-                        console.log('🎯 MCP Channel Create:', { elementId, mcpElementData, appearance });
-                        onMCPCreate('channel', mcpElementData, appearance);
+
+                        console.log("🎯 MCP Channel Create:", { elementId, mcpElementData, appearance });
+                        onMCPCreate("channel", mcpElementData, appearance);
                     } else {
                         // Regular channel completion
-                        const newChannels = [
-                            ...channels.map((d) => ({ ...d, selected: false })),
-                            channelData,
-                        ];
+                        const newChannels = [...channels.map((d) => ({ ...d, selected: false })), channelData];
                         const { onComplete } = this.props;
                         if (onComplete !== undefined) {
                             onComplete(e, newChannels, moreProps);
                         }
                     }
-                    
+
                     this.setState({
                         current: null,
                     });
@@ -342,10 +338,10 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
 
     private readonly handleDrawChannel = (_: React.MouseEvent, xyValue: any) => {
         const { current } = this.state;
-        
+
         if (isDefined(current)) {
             this.mouseMoved = true;
-            
+
             if (isDefined(current.startXY) && isNotDefined(current.endXY)) {
                 // Drawing line from startXY to current mouse position
                 this.setState({
@@ -360,7 +356,7 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
                 const b = getYIntercept(m, current.endXY);
                 const y = m * xyValue[0] + b;
                 const dy = xyValue[1] - y;
-                
+
                 this.setState({
                     current: {
                         ...current,
@@ -371,9 +367,14 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
         }
     };
 
-    private readonly drawCurrentChannelOnCanvas = (ctx: CanvasRenderingContext2D, moreProps: any, current: any, appearance: any) => {
+    private readonly drawCurrentChannelOnCanvas = (
+        ctx: CanvasRenderingContext2D,
+        moreProps: any,
+        current: any,
+        appearance: any,
+    ) => {
         const { startXY, endXY, dy, tempEndXY, tempDy } = current;
-        
+
         if (!isDefined(startXY)) {
             return;
         }
@@ -386,7 +387,7 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
         // Convert first point to screen coordinates
         const x1 = xScale(startXY[0]);
         const y1 = yScale(startXY[1]);
-        
+
         // Stage 1: Just startXY - show a dot
         if (isNotDefined(endXY) && isNotDefined(tempEndXY)) {
             ctx.fillStyle = appearance.stroke;
@@ -396,13 +397,13 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
             ctx.fill();
             return;
         }
-        
+
         // Stage 2: startXY and tempEndXY (or endXY) - show a ray line
         const endXYCoords = isDefined(endXY) ? endXY : tempEndXY;
-        if (isDefined(endXYCoords) && (isNotDefined(dy) && isNotDefined(tempDy))) {
+        if (isDefined(endXYCoords) && isNotDefined(dy) && isNotDefined(tempDy)) {
             const x2 = xScale(endXYCoords[0]);
             const y2 = yScale(endXYCoords[1]);
-            
+
             // Draw line
             ctx.strokeStyle = appearance.stroke;
             ctx.lineWidth = appearance.strokeWidth;
@@ -412,7 +413,7 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
             ctx.stroke();
-            
+
             // Draw points
             ctx.setLineDash([]);
             ctx.fillStyle = appearance.stroke;
@@ -424,17 +425,17 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
             ctx.fill();
             return;
         }
-        
+
         // Stage 3: All points - show channel preview with parallel rays and fill
         const dyValue = isDefined(dy) ? dy : tempDy;
         if (isDefined(endXYCoords) && isDefined(dyValue)) {
             const x2 = xScale(endXYCoords[0]);
             const y2 = yScale(endXYCoords[1]);
-            
+
             // Calculate parallel line coordinates
             const y1Parallel = yScale(startXY[1] + dyValue);
             const y2Parallel = yScale(endXYCoords[1] + dyValue);
-            
+
             // Draw channel fill
             ctx.fillStyle = appearance.fill;
             ctx.globalAlpha = (appearance.fillOpacity || 0.1) * 0.5;
@@ -445,25 +446,25 @@ export class EquidistantChannel extends React.Component<EquidistantChannelProps,
             ctx.lineTo(x1, y1Parallel);
             ctx.closePath();
             ctx.fill();
-            
+
             // Draw both ray lines
             ctx.strokeStyle = appearance.stroke;
             ctx.lineWidth = appearance.strokeWidth;
             ctx.setLineDash([5, 5]);
             ctx.globalAlpha = 0.7;
-            
+
             // First ray
             ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
             ctx.stroke();
-            
+
             // Parallel ray
             ctx.beginPath();
             ctx.moveTo(x1, y1Parallel);
             ctx.lineTo(x2, y2Parallel);
             ctx.stroke();
-            
+
             // Draw points
             ctx.setLineDash([]);
             ctx.fillStyle = appearance.stroke;

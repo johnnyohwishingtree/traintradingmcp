@@ -48,7 +48,10 @@ interface EachHorizontalLineTrendState {
     hover?: boolean;
 }
 
-export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineTrendProps, EachHorizontalLineTrendState> {
+export class EachHorizontalLineTrend extends React.Component<
+    EachHorizontalLineTrendProps,
+    EachHorizontalLineTrendState
+> {
     private saveNodeType: any;
 
     public constructor(props: EachHorizontalLineTrendProps) {
@@ -98,7 +101,7 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
 
         // Debug logging
         if (selected) {
-            console.log('🎯 EachHorizontalLineTrend rendering SELECTED:', {
+            console.log("🎯 EachHorizontalLineTrend rendering SELECTED:", {
                 type,
                 selected,
                 hover,
@@ -107,7 +110,7 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
                 x1Value,
                 x2Value,
                 y1Value,
-                showCircle: selected || hover
+                showCircle: selected || hover,
             });
         }
 
@@ -178,22 +181,24 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
 
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
         const { index, onSelect, x1Value, y1Value, x2Value, y2Value } = this.props;
-        
-        console.log('📌 EachHorizontalLineTrend clicked, index:', index);
-        
+
+        console.log("📌 EachHorizontalLineTrend clicked, index:", index);
+
         if (onSelect) {
-            const selectionData = [{
-                index,
-                start: [x1Value, y1Value],
-                end: [x2Value, y2Value],
-                selected: true,
-            }];
+            const selectionData = [
+                {
+                    index,
+                    start: [x1Value, y1Value],
+                    end: [x2Value, y2Value],
+                    selected: true,
+                },
+            ];
             onSelect(e, selectionData, moreProps);
         }
     };
 
     private readonly handleDragStart = () => {
-        console.log('🖱️ Horizontal line drag start');
+        console.log("🖱️ Horizontal line drag start");
     };
 
     private readonly handleLineDrag = (e: React.MouseEvent, moreProps: any) => {
@@ -202,7 +207,10 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
         const { index, onDrag, x1Value, x2Value } = this.props;
 
         // Extract mouseXY and yScale from moreProps
-        const { mouseXY, chartConfig: { yScale } } = moreProps;
+        const {
+            mouseXY,
+            chartConfig: { yScale },
+        } = moreProps;
 
         // Convert screen Y coordinate to data Y value
         const newYValue = yScale.invert(mouseXY[1]);
@@ -223,7 +231,12 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
         const { index, onDrag, x1Value, x2Value } = this.props;
 
         // Extract mouseXY, xScale, and yScale from moreProps
-        const { mouseXY, chartConfig: { yScale }, xAccessor, plotData } = moreProps;
+        const {
+            mouseXY,
+            chartConfig: { yScale },
+            xAccessor,
+            plotData,
+        } = moreProps;
 
         // Convert screen coordinates to data values
         const newYValue = yScale.invert(mouseXY[1]);
@@ -255,7 +268,7 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
     };
 
     private readonly handleMidpointDragStart = () => {
-        console.log('🖱️ Horizontal line midpoint drag start');
+        console.log("🖱️ Horizontal line midpoint drag start");
     };
 
     private readonly handleMidpointDrag = (e: React.MouseEvent, moreProps: any) => {
@@ -272,7 +285,7 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
     };
 
     private readonly handleControlPointDragStart = () => {
-        console.log('🖱️ Control point drag start');
+        console.log("🖱️ Control point drag start");
     };
 
     private readonly handleControlPointDrag = (e: React.MouseEvent, moreProps: any) => {
@@ -289,7 +302,7 @@ export class EachHorizontalLineTrend extends React.Component<EachHorizontalLineT
     };
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🏁 Horizontal line drag complete');
+        console.log("🏁 Horizontal line drag complete");
         const { onDragComplete } = this.props;
         if (onDragComplete) {
             onDragComplete(e, moreProps);

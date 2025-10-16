@@ -1,14 +1,6 @@
 import { format } from "d3-format";
 import * as React from "react";
-import {
-    first,
-    functor,
-    getAxisCanvas,
-    GenericChartComponent,
-    last,
-    noop,
-    strokeDashTypes,
-} from "../core";
+import { first, functor, getAxisCanvas, GenericChartComponent, last, noop, strokeDashTypes } from "../core";
 import { drawOnCanvas } from "./EdgeCoordinateV3";
 
 export interface EdgeIndicatorProps {

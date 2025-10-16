@@ -1,10 +1,4 @@
-import {
-    getStrokeDasharrayCanvas,
-    getMouseCanvas,
-    GenericChartComponent,
-    noop,
-    strokeDashTypes,
-} from "../../core";
+import { getStrokeDasharrayCanvas, getMouseCanvas, GenericChartComponent, noop, strokeDashTypes } from "../../core";
 import * as React from "react";
 
 export interface StraightLineProps {

@@ -34,14 +34,8 @@ const parseData = () => {
     };
 };
 
-interface WithOHLCDataProps {
+export interface WithOHLCDataProps {
     readonly data: IOHLCData[];
-    readonly symbol?: string;
-    readonly interval?: string;
-    readonly displayTimezone?: string;
-    readonly isReplayMode?: boolean;
-    readonly replayPosition?: number;
-    readonly onDataLoaded?: (data: IOHLCData[]) => void;
 }
 
 interface WithOHLCState {

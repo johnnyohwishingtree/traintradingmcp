@@ -47,11 +47,13 @@ export class HoverTextNearMouse extends React.Component<HoverTextNearMouseProps,
 
     public componentDidUpdate(prevProps: HoverTextNearMouseProps) {
         // Only update text size if relevant props changed to prevent infinite loops
-        if (prevProps.text !== this.props.text || 
+        if (
+            prevProps.text !== this.props.text ||
             prevProps.fontSize !== this.props.fontSize ||
             prevProps.fontFamily !== this.props.fontFamily ||
             prevProps.bgWidth !== this.props.bgWidth ||
-            prevProps.bgHeight !== this.props.bgHeight) {
+            prevProps.bgHeight !== this.props.bgHeight
+        ) {
             this.updateTextSize();
         }
     }
@@ -138,7 +140,7 @@ export class HoverTextNearMouse extends React.Component<HoverTextNearMouseProps,
                     const tolerance = 0.1;
                     const widthChanged = Math.abs((this.state.textWidth || 0) - width) > tolerance;
                     const heightChanged = Math.abs((this.state.textHeight || 0) - height) > tolerance;
-                    
+
                     if (widthChanged || heightChanged) {
                         this.setState({
                             textWidth: width,

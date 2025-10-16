@@ -309,24 +309,35 @@ export class EachEquidistantChannel extends React.Component<EachEquidistantChann
 
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
         const { index, onSelect, startXY, endXY, dy } = this.props;
-        
+
         // Use proper hover detection like TrendLine
         const isActuallyHovered = this.checkIfHovered(moreProps);
-        
-        console.log('📊 EachEquidistantChannel clicked, index:', index, 'isActuallyHovered:', isActuallyHovered, 'coordinates:', {
-            startXY, endXY, dy
-        });
-        
-        // Only process the click if this channel is actually being hovered
-        if (onSelect && isActuallyHovered) {
-            const selectionData = [{
-                index,
+
+        console.log(
+            "📊 EachEquidistantChannel clicked, index:",
+            index,
+            "isActuallyHovered:",
+            isActuallyHovered,
+            "coordinates:",
+            {
                 startXY,
                 endXY,
                 dy,
-                selected: true,
-            }];
-            
+            },
+        );
+
+        // Only process the click if this channel is actually being hovered
+        if (onSelect && isActuallyHovered) {
+            const selectionData = [
+                {
+                    index,
+                    startXY,
+                    endXY,
+                    dy,
+                    selected: true,
+                },
+            ];
+
             onSelect(e, selectionData, moreProps);
         }
     };
@@ -343,10 +354,10 @@ export class EachEquidistantChannel extends React.Component<EachEquidistantChann
         // Convert channel coordinates to screen coordinates
         const startScreen = [xScale(startXY[0]), yScale(startXY[1])];
         const endScreen = [xScale(endXY[0]), yScale(endXY[1])];
-        
+
         // Calculate the parallel line offset
         const dyScreen = dy ? yScale(endXY[1] + dy) - yScale(endXY[1]) : 0;
-        
+
         const [mouseX, mouseY] = mouseXY;
 
         // Check if mouse is inside channel area (simplified rectangular check)
@@ -362,13 +373,14 @@ export class EachEquidistantChannel extends React.Component<EachEquidistantChann
 
         // Check if mouse is near channel edges
         const edge1Distance = this.distanceToLineSegment([mouseX, mouseY], startScreen, endScreen);
-        const edge2Distance = this.distanceToLineSegment([mouseX, mouseY], 
-            [startScreen[0], startScreen[1] + dyScreen], 
-            [endScreen[0], endScreen[1] + dyScreen]
+        const edge2Distance = this.distanceToLineSegment(
+            [mouseX, mouseY],
+            [startScreen[0], startScreen[1] + dyScreen],
+            [endScreen[0], endScreen[1] + dyScreen],
         );
-        
+
         const minDistance = Math.min(edge1Distance, edge2Distance);
-        
+
         if (minDistance <= tolerance) {
             console.log(`📊 EachEquidistantChannel[${index}] hover detected on edge, distance: ${minDistance}`);
             return true;
@@ -389,13 +401,13 @@ export class EachEquidistantChannel extends React.Component<EachEquidistantChann
 
         const dot = A * C + B * D;
         const lenSq = C * C + D * D;
-        
+
         if (lenSq === 0) {
             return Math.sqrt(A * A + B * B);
         }
 
         const param = dot / lenSq;
-        
+
         let xx, yy;
         if (param < 0) {
             xx = x1;
@@ -414,26 +426,28 @@ export class EachEquidistantChannel extends React.Component<EachEquidistantChann
     }
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🏁 EachEquidistantChannel handleDragComplete called');
-        
+        console.log("🏁 EachEquidistantChannel handleDragComplete called");
+
         const { onDragComplete, onSelect, index, startXY, endXY, dy } = this.props;
-        
+
         // First call onDragComplete to update the position
         if (onDragComplete !== undefined) {
             onDragComplete(e, moreProps);
         }
-        
+
         // Then select this channel after dragging
         if (onSelect !== undefined) {
-            console.log('  📊 Selecting channel after drag, index:', index);
-            const selectionData = [{
-                index,
-                startXY,
-                endXY,
-                dy,
-                selected: true,
-            }];
-            
+            console.log("  📊 Selecting channel after drag, index:", index);
+            const selectionData = [
+                {
+                    index,
+                    startXY,
+                    endXY,
+                    dy,
+                    selected: true,
+                },
+            ];
+
             // Use a small timeout to ensure drag complete finishes first
             setTimeout(() => {
                 onSelect(e, selectionData, moreProps);
@@ -443,19 +457,19 @@ export class EachEquidistantChannel extends React.Component<EachEquidistantChann
 
     private readonly convertToRgba = (color: string, opacity: number): string => {
         // Handle hex colors like #9c27b0
-        if (color.startsWith('#')) {
+        if (color.startsWith("#")) {
             const hex = color.substring(1);
             const r = parseInt(hex.substring(0, 2), 16);
             const g = parseInt(hex.substring(2, 4), 16);
             const b = parseInt(hex.substring(4, 6), 16);
             return `rgba(${r}, ${g}, ${b}, ${opacity})`;
         }
-        
+
         // Handle rgb colors
-        if (color.startsWith('rgb(')) {
-            return color.replace('rgb(', 'rgba(').replace(')', `, ${opacity})`);
+        if (color.startsWith("rgb(")) {
+            return color.replace("rgb(", "rgba(").replace(")", `, ${opacity})`);
         }
-        
+
         // Handle named colors or other formats - fallback to original
         return color;
     };

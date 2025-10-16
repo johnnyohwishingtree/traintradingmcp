@@ -311,7 +311,7 @@ export class EventCapture extends React.Component<EventCaptureProps, EventCaptur
         const { onContextMenu, onPanEnd } = this.props;
 
         if (!this.ref.current) {
-            console.warn('EventCapture: ref not available, skipping event');
+            console.warn("EventCapture: ref not available, skipping event");
             return;
         }
         const mouseXY = mousePosition(e, this.ref.current.getBoundingClientRect());

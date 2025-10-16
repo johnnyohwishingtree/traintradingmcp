@@ -183,29 +183,31 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
 
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
         const { index, onSelect, x1Value, y1Value, x2Value, y2Value, type } = this.props;
-        
+
         // Use the same hover detection logic as InteractiveStraightLine
         const isActuallyHovered = this.checkIfHovered(moreProps);
-        
-        console.log('📌 EachTrendLine clicked, index:', index, 'isActuallyHovered:', isActuallyHovered, 'coords:', {
+
+        console.log("📌 EachTrendLine clicked, index:", index, "isActuallyHovered:", isActuallyHovered, "coords:", {
             start: [x1Value, y1Value],
-            end: [x2Value, y2Value]
+            end: [x2Value, y2Value],
         });
-        
+
         // Only process the click if this line is actually being hovered
         if (onSelect && isActuallyHovered) {
-            const selectionData = [{
-                index,
-                start: [x1Value, y1Value],
-                end: [x2Value, y2Value],
-                x1Value,
-                y1Value,
-                x2Value,
-                y2Value,
-                selected: true,
-                type: this.props.type,
-            }];
-            
+            const selectionData = [
+                {
+                    index,
+                    start: [x1Value, y1Value],
+                    end: [x2Value, y2Value],
+                    x1Value,
+                    y1Value,
+                    x2Value,
+                    y2Value,
+                    selected: true,
+                    type: this.props.type,
+                },
+            ];
+
             onSelect(e, selectionData, moreProps);
         }
     };
@@ -237,34 +239,36 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
     };
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🏁 EachTrendLine handleDragComplete called');
-        
+        console.log("🏁 EachTrendLine handleDragComplete called");
+
         this.setState({
             anchor: undefined,
         });
 
         const { onDragComplete, onSelect, index, x1Value, y1Value, x2Value, y2Value, type } = this.props;
-        
+
         // First call onDragComplete to update the position
         if (onDragComplete !== undefined) {
             onDragComplete(e, moreProps);
         }
-        
+
         // Then select this line after dragging
         if (onSelect !== undefined) {
-            console.log('  📌 Selecting line after drag, index:', index);
-            const selectionData = [{
-                index,
-                start: [x1Value, y1Value],
-                end: [x2Value, y2Value],
-                x1Value,
-                y1Value,
-                x2Value,
-                y2Value,
-                selected: true,
-                type,
-            }];
-            
+            console.log("  📌 Selecting line after drag, index:", index);
+            const selectionData = [
+                {
+                    index,
+                    start: [x1Value, y1Value],
+                    end: [x2Value, y2Value],
+                    x1Value,
+                    y1Value,
+                    x2Value,
+                    y2Value,
+                    selected: true,
+                    type,
+                },
+            ];
+
             // Use a small timeout to ensure drag complete finishes first
             setTimeout(() => {
                 onSelect(e, selectionData, moreProps);
@@ -355,7 +359,7 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
 
         const dot = A * C + B * D;
         const lenSq = C * C + D * D;
-        
+
         let param = -1;
         if (lenSq !== 0) {
             param = dot / lenSq;
@@ -378,15 +382,18 @@ export class EachTrendLine extends React.Component<EachTrendLineProps, EachTrend
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         const result = distance <= tolerance;
-        
-        console.log('🎯 Line hover check:', {
+
+        console.log("🎯 Line hover check:", {
             index,
             mouseXY: [mouseX, mouseY],
-            lineScreenCoords: [[x1Screen, y1Screen], [x2Screen, y2Screen]],
+            lineScreenCoords: [
+                [x1Screen, y1Screen],
+                [x2Screen, y2Screen],
+            ],
             closestPoint: [xx, yy],
             distance: distance.toFixed(1),
             tolerance,
-            result
+            result,
         });
 
         return result;

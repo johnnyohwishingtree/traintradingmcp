@@ -3,7 +3,7 @@ import { TrendLine, TrendLineProps } from "./TrendLine";
 import { InteractiveStraightLine } from "./components";
 import { isDefined } from "../core";
 
-export interface InfoLineProps extends TrendLineProps {}
+export type InfoLineProps = TrendLineProps;
 
 // InfoLine extends TrendLine but adds info display when selected
 export class InfoLine extends TrendLine {
@@ -30,20 +30,20 @@ export class InfoLine extends TrendLine {
     } {
         const [x1, y1] = line.start;
         const [x2, y2] = line.end;
-        
+
         const dx = x2 - x1;
         const dy = y2 - y1;
-        
+
         const distance = Math.sqrt(dx * dx + dy * dy);
         const priceChange = y2 - y1;
         const percentChange = y1 !== 0 ? (priceChange / y1) * 100 : 0;
-        
+
         return {
             distance,
             priceChange,
             percentChange,
             startPrice: y1,
-            endPrice: y2
+            endPrice: y2,
         };
     }
 
@@ -51,10 +51,10 @@ export class InfoLine extends TrendLine {
     public render(): React.ReactElement {
         const baseRender = super.render();
         const { trends = [] } = this.props;
-        
+
         // Add info overlays for selected trend lines
         const infoOverlays = trends
-            .filter(line => line.selected)
+            .filter((line) => line.selected)
             .map((line, index) => this.renderInfoOverlay(line, index));
 
         return (
@@ -71,7 +71,7 @@ export class InfoLine extends TrendLine {
         const midX = (line.start[0] + line.end[0]) / 2;
         const midY = (line.start[1] + line.end[1]) / 2;
         const { appearance } = this.props;
-        
+
         return (
             <g key={`info-overlay-${index}`}>
                 {/* Info background */}
@@ -85,61 +85,38 @@ export class InfoLine extends TrendLine {
                     strokeWidth={1}
                     rx={5}
                 />
-                
+
                 {/* Title */}
-                <text
-                    x={midX}
-                    y={midY - 30}
-                    fill="white"
-                    fontSize={12}
-                    textAnchor="middle"
-                    fontWeight="bold"
-                >
+                <text x={midX} y={midY - 30} fill="white" fontSize={12} textAnchor="middle" fontWeight="bold">
                     📊 Price Analysis
                 </text>
-                
+
                 {/* Price change info */}
-                <text
-                    x={midX}
-                    y={midY - 10}
-                    fill="white"
-                    fontSize={11}
-                    textAnchor="middle"
-                >
-                    Change: {lineInfo.priceChange > 0 ? '+' : ''}{lineInfo.priceChange.toFixed(2)}
+                <text x={midX} y={midY - 10} fill="white" fontSize={11} textAnchor="middle">
+                    Change: {lineInfo.priceChange > 0 ? "+" : ""}
+                    {lineInfo.priceChange.toFixed(2)}
                 </text>
-                
+
                 {/* Percentage change */}
                 <text
                     x={midX}
                     y={midY + 5}
-                    fill={lineInfo.percentChange >= 0 ? '#4CAF50' : '#F44336'}
+                    fill={lineInfo.percentChange >= 0 ? "#4CAF50" : "#F44336"}
                     fontSize={11}
                     textAnchor="middle"
                     fontWeight="bold"
                 >
-                    {lineInfo.percentChange > 0 ? '+' : ''}{lineInfo.percentChange.toFixed(2)}%
+                    {lineInfo.percentChange > 0 ? "+" : ""}
+                    {lineInfo.percentChange.toFixed(2)}%
                 </text>
-                
+
                 {/* Start and end prices */}
-                <text
-                    x={midX}
-                    y={midY + 20}
-                    fill="#ccc"
-                    fontSize={9}
-                    textAnchor="middle"
-                >
+                <text x={midX} y={midY + 20} fill="#ccc" fontSize={9} textAnchor="middle">
                     {lineInfo.startPrice.toFixed(2)} → {lineInfo.endPrice.toFixed(2)}
                 </text>
-                
+
                 {/* Distance info */}
-                <text
-                    x={midX}
-                    y={midY + 35}
-                    fill="#999"
-                    fontSize={9}
-                    textAnchor="middle"
-                >
+                <text x={midX} y={midY + 35} fill="#999" fontSize={9} textAnchor="middle">
                     Distance: {lineInfo.distance.toFixed(1)}
                 </text>
             </g>

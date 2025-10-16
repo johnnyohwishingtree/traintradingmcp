@@ -1,11 +1,4 @@
-import {
-    first,
-    GenericChartComponent,
-    getAxisCanvas,
-    getStrokeDasharrayCanvas,
-    last,
-    strokeDashTypes,
-} from "../core";
+import { first, GenericChartComponent, getAxisCanvas, getStrokeDasharrayCanvas, last, strokeDashTypes } from "../core";
 import { range as d3Range, zip } from "d3-array";
 import { forceCollide, forceSimulation, forceX } from "d3-force";
 import { ScaleContinuousNumeric } from "d3-scale";

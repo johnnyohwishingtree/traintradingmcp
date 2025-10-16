@@ -281,17 +281,6 @@ export class InteractiveFeaturesManager {
       feature.setSelectedIndices([]);
     }
   }
-
-  // Get all current selections - useful for debugging
-  getCurrentSelections(): Record<string, number[]> {
-    const selections: Record<string, number[]> = {};
-    for (const [type, feature] of this.features) {
-      if (feature.selectedIndices.length > 0) {
-        selections[type] = [...feature.selectedIndices];
-      }
-    }
-    return selections;
-  }
 }
 
 // Factory function to create feature configurations

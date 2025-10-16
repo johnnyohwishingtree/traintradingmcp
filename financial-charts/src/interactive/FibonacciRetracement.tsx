@@ -7,7 +7,7 @@ import { EachFibRetracement } from "./wrapper";
 // MCP Integration Types
 export interface MCPElement {
     readonly id: string;
-    readonly type: 'fibonacci' | 'label';
+    readonly type: "fibonacci" | "label";
     readonly data: any;
     readonly appearance?: any;
     readonly selected?: boolean;
@@ -108,8 +108,8 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
 
     // MCP Integration Methods
     private convertMCPElementsToRetracements(mcpElements: MCPElement[]): any[] {
-        const fibElements = mcpElements.filter(el => el.type === 'fibonacci');
-        return fibElements.map(el => ({
+        const fibElements = mcpElements.filter((el) => el.type === "fibonacci");
+        return fibElements.map((el) => ({
             id: el.id,
             x1: el.data.start[0],
             y1: el.data.start[1],
@@ -117,7 +117,7 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
             y2: el.data.end[1],
             selected: el.selected || false,
             appearance: el.appearance,
-            type: el.data.type || this.props.type
+            type: el.data.type || this.props.type,
         }));
     }
 
@@ -318,10 +318,10 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
             const startY = current.y1;
             const endX = xyValue[0];
             const endY = xyValue[1];
-            
+
             // Complete fibonacci if mouse moved OR if click is at different coordinates
             const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
-            
+
             if (this.mouseMoved || differentPosition) {
                 const fibonacciData = {
                     ...current,
@@ -342,9 +342,9 @@ export class FibonacciRetracement extends React.Component<FibonacciRetracementPr
                         end: [xyValue[0], xyValue[1]],
                         type,
                     };
-                    
-                    console.log('🎯 MCP Fibonacci Create:', { elementId, mcpElementData, appearance });
-                    onMCPCreate('fibonacci', mcpElementData, appearance);
+
+                    console.log("🎯 MCP Fibonacci Create:", { elementId, mcpElementData, appearance });
+                    onMCPCreate("fibonacci", mcpElementData, appearance);
                 } else {
                     // Regular fibonacci completion
                     const newRetracements = retracements.concat(fibonacciData);

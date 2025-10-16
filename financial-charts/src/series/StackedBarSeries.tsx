@@ -2,14 +2,7 @@ import { group, merge } from "d3-array";
 import { ScaleContinuousNumeric } from "d3-scale";
 import { stack as d3Stack } from "d3-shape";
 import * as React from "react";
-import {
-    functor,
-    head,
-    identity,
-    getAxisCanvas,
-    GenericChartComponent,
-    plotDataLengthBarWidth,
-} from "../core";
+import { functor, head, identity, getAxisCanvas, GenericChartComponent, plotDataLengthBarWidth } from "../core";
 
 export interface StackedBarSeriesProps {
     readonly baseAt?:

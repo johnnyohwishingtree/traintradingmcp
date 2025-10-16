@@ -7,7 +7,7 @@ import { InteractiveText } from "./InteractiveText";
 
 export interface MCPElement {
     readonly id: string;
-    readonly type: 'trendline' | 'label';
+    readonly type: "trendline" | "label";
     readonly data: any;
     readonly appearance?: any;
     readonly selected?: boolean;
@@ -16,8 +16,8 @@ export interface MCPElement {
 export interface MCPLabelData {
     readonly position: [number, number]; // [x, y] coordinates
     readonly text: string;
-    readonly direction?: 'up' | 'down' | 'neutral';
-    readonly priority?: 'high' | 'medium' | 'low';
+    readonly direction?: "up" | "down" | "neutral";
+    readonly priority?: "high" | "medium" | "low";
 }
 
 export interface TrendLineProps {
@@ -110,53 +110,55 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
 
     // Convert MCP elements to trends format for native rendering
     private convertMCPElementsToTrends(mcpElements: MCPElement[], appearance: any): any[] {
-        console.log('🔍 convertMCPElementsToTrends called with:', { mcpElements, appearance });
-        
+        console.log("🔍 convertMCPElementsToTrends called with:", { mcpElements, appearance });
+
         if (!mcpElements) {
-            console.log('  ❌ No mcpElements provided, returning []');
+            console.log("  ❌ No mcpElements provided, returning []");
             return [];
         }
-        
-        console.log('  📊 MCP Elements before filtering:', mcpElements.length, mcpElements);
-        
-        const trendlineElements = mcpElements.filter(el => el.type === 'trendline');
-        console.log('  📊 After filtering for trendlines:', trendlineElements.length, trendlineElements);
-        
-        const converted = trendlineElements.map(el => ({
+
+        console.log("  📊 MCP Elements before filtering:", mcpElements.length, mcpElements);
+
+        const trendlineElements = mcpElements.filter((el) => el.type === "trendline");
+        console.log("  📊 After filtering for trendlines:", trendlineElements.length, trendlineElements);
+
+        const converted = trendlineElements.map((el) => ({
             id: el.id,
             start: el.data.start,
             end: el.data.end,
             appearance: el.appearance || appearance,
             type: "LINE",
             selected: el.selected || false,
-            isMCPElement: true // Mark as MCP-managed
+            isMCPElement: true, // Mark as MCP-managed
         }));
-        
-        console.log('  ✅ Converted trends:', converted.length, converted);
+
+        console.log("  ✅ Converted trends:", converted.length, converted);
         return converted;
     }
 
     // Convert MCP label elements to text list for InteractiveText rendering
     private convertMCPElementsToLabels(mcpElements: MCPElement[]): any[] {
-        if (!mcpElements) return [];
-        
-        const labelElements = mcpElements.filter(el => el.type === 'label');
-        console.log('  📊 MCP Labels found:', labelElements.length, labelElements);
-        
-        const converted = labelElements.map(el => ({
+        if (!mcpElements) {
+            return [];
+        }
+
+        const labelElements = mcpElements.filter((el) => el.type === "label");
+        console.log("  📊 MCP Labels found:", labelElements.length, labelElements);
+
+        const converted = labelElements.map((el) => ({
             id: el.id,
             position: el.data.position, // [x, y]
             text: el.data.text,
-            bgFill: el.appearance?.bgFill || '#D3D3D3',
-            bgStroke: el.appearance?.bgStroke || '#000000',
-            textFill: el.appearance?.textFill || '#F10040',
+            bgFill: el.appearance?.bgFill || "#D3D3D3",
+            bgStroke: el.appearance?.bgStroke || "#000000",
+            textFill: el.appearance?.textFill || "#F10040",
             fontSize: el.appearance?.fontSize || 12,
-            fontWeight: el.appearance?.fontWeight || 'normal',
+            fontWeight: el.appearance?.fontWeight || "normal",
             selected: el.selected || false,
-            isMCPElement: true
+            isMCPElement: true,
         }));
-        
-        console.log('  ✅ Converted labels:', converted.length, converted);
+
+        console.log("  ✅ Converted labels:", converted.length, converted);
         return converted;
     }
 
@@ -184,22 +186,26 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
 
         const { current, override } = this.state;
 
-        console.log('🎨 TrendLine render props:', { mcpElements, mcpElementsType: typeof mcpElements, mcpElementsLength: mcpElements?.length });
-        console.log('🔧 DEBUG: About to call convertMCPElementsToTrends with mcpElements:', mcpElements);
+        console.log("🎨 TrendLine render props:", {
+            mcpElements,
+            mcpElementsType: typeof mcpElements,
+            mcpElementsLength: mcpElements?.length,
+        });
+        console.log("🔧 DEBUG: About to call convertMCPElementsToTrends with mcpElements:", mcpElements);
 
         // Merge MCP elements with regular trends for unified rendering
         const mcpTrends = this.convertMCPElementsToTrends(mcpElements, appearance);
         const mcpLabels = this.convertMCPElementsToLabels(mcpElements);
-        
-        console.log('🔧 DEBUG: After conversion - mcpTrends:', mcpTrends.length, 'mcpLabels:', mcpLabels.length);
+
+        console.log("🔧 DEBUG: After conversion - mcpTrends:", mcpTrends.length, "mcpLabels:", mcpLabels.length);
         const allTrends = [...(trends || []), ...mcpTrends];
-        
-        console.log('🎨 TrendLine render:', { 
-            enabled, 
-            regularTrends: (trends || []).length, 
+
+        console.log("🎨 TrendLine render:", {
+            enabled,
+            regularTrends: (trends || []).length,
             mcpTrends: mcpTrends.length,
             mcpLabels: mcpLabels.length,
-            totalTrends: allTrends.length 
+            totalTrends: allTrends.length,
         });
 
         const tempLine =
@@ -278,16 +284,16 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                         onChoosePosition={noop}
                         textList={mcpLabels}
                         defaultText={{
-                            bgFill: '#D3D3D3',
+                            bgFill: "#D3D3D3",
                             bgOpacity: 0.9,
                             bgStrokeWidth: 1,
-                            bgStroke: '#000000',
-                            textFill: '#F10040',
+                            bgStroke: "#000000",
+                            textFill: "#F10040",
                             fontFamily: '-apple-system, system-ui, Roboto, "Helvetica Neue", Ubuntu, sans-serif',
-                            fontWeight: 'normal',
-                            fontStyle: 'normal',
+                            fontWeight: "normal",
+                            fontStyle: "normal",
                             fontSize: 12,
-                            text: 'Label'
+                            text: "Label",
                         }}
                         hoverText={{}}
                     />
@@ -300,9 +306,9 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
         const { current } = this.state;
         const { trends, appearance, type } = this.props;
 
-        console.log('🏁 TrendLine handleEnd called', { current, xyValue, mouseMoved: this.mouseMoved });
+        console.log("🏁 TrendLine handleEnd called", { current, xyValue, mouseMoved: this.mouseMoved });
 
-        // For line completion: 
+        // For line completion:
         // - If we have a current state with start point AND either mouseMoved OR different coordinates, complete it
         // - This allows both drag and click-click interactions to work
         if (isDefined(current) && isDefined(current.start)) {
@@ -310,14 +316,21 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
             const startY = current.start[1];
             const endX = xyValue[0];
             const endY = xyValue[1];
-            
+
             // Complete line if mouse moved OR if click is at different coordinates
             const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
-            
-            console.log('  📏 Distance check:', { startX, startY, endX, endY, differentPosition, mouseMoved: this.mouseMoved });
-            
+
+            console.log("  📏 Distance check:", {
+                startX,
+                startY,
+                endX,
+                endY,
+                differentPosition,
+                mouseMoved: this.mouseMoved,
+            });
+
             if (this.mouseMoved || differentPosition) {
-                console.log('  ✅ Completing trendline!');
+                console.log("  ✅ Completing trendline!");
                 const newTrendlineId = this.generateElementId();
                 const newTrendline = {
                     id: newTrendlineId,
@@ -327,10 +340,7 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                     appearance,
                     type,
                 };
-                const newTrends = [
-                    ...(trends || []).map((d) => ({ ...d, selected: false })),
-                    newTrendline,
-                ];
+                const newTrends = [...(trends || []).map((d) => ({ ...d, selected: false })), newTrendline];
                 this.setState(
                     {
                         current: null,
@@ -338,37 +348,41 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                     },
                     () => {
                         const { onComplete, onMCPCreate } = this.props;
-                        
+
                         // Emit MCP event if handler is provided
                         if (onMCPCreate) {
-                            console.log('  📡 Emitting MCP create event for trendline:', newTrendlineId);
-                            onMCPCreate('trendline', {
-                                start: current.start,
-                                end: xyValue,
-                                id: newTrendlineId
-                            }, appearance);
+                            console.log("  📡 Emitting MCP create event for trendline:", newTrendlineId);
+                            onMCPCreate(
+                                "trendline",
+                                {
+                                    start: current.start,
+                                    end: xyValue,
+                                    id: newTrendlineId,
+                                },
+                                appearance,
+                            );
                         }
-                        
+
                         if (onComplete !== undefined) {
                             onComplete(e, newTrends, moreProps);
                         }
                     },
                 );
             } else {
-                console.log('  ❌ Not completing - no movement detected');
+                console.log("  ❌ Not completing - no movement detected");
             }
         } else {
-            console.log('  ❌ Not completing - no current state or start point');
+            console.log("  ❌ Not completing - no current state or start point");
         }
     };
 
     private readonly handleStart = (e: React.MouseEvent, xyValue: any, moreProps: any) => {
         const { current } = this.state;
-        
-        console.log('🏁 TrendLine handleStart called, current:', current);
+
+        console.log("🏁 TrendLine handleStart called, current:", current);
 
         if (isNotDefined(current) || isNotDefined(current.start)) {
-            console.log('  ⚠️ Setting mouseMoved = false (resetting)');
+            console.log("  ⚠️ Setting mouseMoved = false (resetting)");
             this.mouseMoved = false;
 
             this.setState(
@@ -386,7 +400,11 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                 },
             );
         } else {
-            console.log('  ✅ handleStart condition not met, NOT resetting mouseMoved (current value:', this.mouseMoved, ')');
+            console.log(
+                "  ✅ handleStart condition not met, NOT resetting mouseMoved (current value:",
+                this.mouseMoved,
+                ")",
+            );
         }
     };
 
@@ -404,15 +422,18 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
     };
 
     private readonly handleDragLineComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🎯 handleDragLineComplete called');
+        console.log("🎯 handleDragLineComplete called");
         const { override } = this.state;
-        console.log('  Override state:', override);
-        
+        console.log("  Override state:", override);
+
         if (isDefined(override)) {
             const { trends, mcpElements } = this.props;
-            const allTrends = [...(trends || []), ...this.convertMCPElementsToTrends(mcpElements, this.props.appearance)];
+            const allTrends = [
+                ...(trends || []),
+                ...this.convertMCPElementsToTrends(mcpElements, this.props.appearance),
+            ];
             const modifiedTrend = allTrends[override.index];
-            
+
             const newTrends = (trends || []).map((each, idx) =>
                 idx === override.index
                     ? {
@@ -426,8 +447,8 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                           selected: false,
                       },
             );
-            
-            console.log('  📌 Setting dragged line as selected, index:', override.index);
+
+            console.log("  📌 Setting dragged line as selected, index:", override.index);
 
             this.setState(
                 {
@@ -435,16 +456,16 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                 },
                 () => {
                     const { onComplete, onMCPModify } = this.props;
-                    
+
                     // Emit MCP modify event if the modified trend is MCP-managed and handler exists
                     if (onMCPModify && modifiedTrend && modifiedTrend.isMCPElement) {
-                        console.log('  📡 Emitting MCP modify event for trendline:', modifiedTrend.id);
+                        console.log("  📡 Emitting MCP modify event for trendline:", modifiedTrend.id);
                         onMCPModify(modifiedTrend.id, {
                             start: [override.x1Value, override.y1Value],
-                            end: [override.x2Value, override.y2Value]
+                            end: [override.x2Value, override.y2Value],
                         });
                     }
-                    
+
                     if (onComplete !== undefined) {
                         onComplete(e, newTrends, moreProps);
                     }
@@ -454,7 +475,7 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
     };
 
     private readonly handleDragLine = (_: React.MouseEvent, index: number | undefined, newXYValue: any) => {
-        console.log('📐 handleDragLine called, index:', index, 'new position:', newXYValue);
+        console.log("📐 handleDragLine called, index:", index, "new position:", newXYValue);
         this.setState({
             override: {
                 index,

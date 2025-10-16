@@ -1,15 +1,7 @@
 import { ascending, descending, histogram as d3Histogram, max, merge, rollup, sum, zip } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import * as React from "react";
-import {
-    accumulatingWindow,
-    functor,
-    head,
-    identity,
-    getAxisCanvas,
-    GenericChartComponent,
-    last,
-} from "../core";
+import { accumulatingWindow, functor, head, identity, getAxisCanvas, GenericChartComponent, last } from "../core";
 
 export interface VolumeProfileSeriesProps {
     readonly absoluteChange: (datum: any) => number;

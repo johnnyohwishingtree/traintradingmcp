@@ -32,4 +32,4 @@ export * from "./series";
 export * from "./tooltip";
 
 // Utils exports
-export * from "./utils"; 
+export * from "./utils";

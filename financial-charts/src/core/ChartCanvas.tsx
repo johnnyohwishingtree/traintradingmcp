@@ -1027,7 +1027,7 @@ export class ChartCanvas<TXAxis extends number | Date> extends React.Component<
         chartsToPan: string[],
         e: React.MouseEvent | React.TouchEvent,
     ) => {
-        // Since rescaling now happens in real-time during panning, 
+        // Since rescaling now happens in real-time during panning,
         // we only need to do final cleanup and check for data loading
         const state = this.panHelper(mousePosition, panStartXScale, dxdy, chartsToPan);
         this.hackyWayToStopPanBeyondBounds__plotData = null;

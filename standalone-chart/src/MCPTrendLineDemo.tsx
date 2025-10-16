@@ -22,11 +22,10 @@ import {
     EquidistantChannel,
     MCPElement, // Our new MCP interface
 } from "@slowclap/financial-charts";
-import { IOHLCData } from "./withOHLCData";
+import { IOHLCData, WithOHLCDataProps } from "./withOHLCData";
 import { MCPPatternAnalyzer } from "./MCPPatternAnalysis";
 
-interface MCPTrendLineDemoProps {
-    readonly data: IOHLCData[];
+interface MCPTrendLineDemoProps extends WithOHLCDataProps {
     readonly height: number;
     readonly width: number;
     readonly ratio: number;

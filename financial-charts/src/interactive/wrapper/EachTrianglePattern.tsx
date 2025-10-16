@@ -153,24 +153,35 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
 
     private readonly handleTriangleClick = (e: React.MouseEvent, moreProps: any) => {
         const { index, onSelect, point1, point2, point3 } = this.props;
-        
+
         // Use proper hover detection like TrendLine
         const isActuallyHovered = this.checkIfHovered(moreProps);
-        
-        console.log('🔺 EachTrianglePattern clicked, index:', index, 'isActuallyHovered:', isActuallyHovered, 'coordinates:', {
-            point1, point2, point3
-        });
-        
-        // Only process the click if this triangle is actually being hovered
-        if (onSelect && isActuallyHovered) {
-            const selectionData = [{
-                index,
+
+        console.log(
+            "🔺 EachTrianglePattern clicked, index:",
+            index,
+            "isActuallyHovered:",
+            isActuallyHovered,
+            "coordinates:",
+            {
                 point1,
                 point2,
                 point3,
-                selected: true,
-            }];
-            
+            },
+        );
+
+        // Only process the click if this triangle is actually being hovered
+        if (onSelect && isActuallyHovered) {
+            const selectionData = [
+                {
+                    index,
+                    point1,
+                    point2,
+                    point3,
+                    selected: true,
+                },
+            ];
+
             onSelect(e, selectionData, moreProps);
         }
     };
@@ -193,7 +204,7 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
 
         // Check if point is inside triangle using barycentric coordinates
         const isInsideTriangle = this.pointInTriangle([mouseX, mouseY], p1, p2, p3);
-        
+
         if (isInsideTriangle) {
             console.log(`🔺 EachTrianglePattern[${index}] hover detected inside triangle area`);
             return true;
@@ -203,9 +214,9 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
         const edgeDistance1 = this.distanceToLineSegment([mouseX, mouseY], p1, p2);
         const edgeDistance2 = this.distanceToLineSegment([mouseX, mouseY], p2, p3);
         const edgeDistance3 = this.distanceToLineSegment([mouseX, mouseY], p3, p1);
-        
+
         const minDistance = Math.min(edgeDistance1, edgeDistance2, edgeDistance3);
-        
+
         if (minDistance <= tolerance) {
             console.log(`🔺 EachTrianglePattern[${index}] hover detected on edge, distance: ${minDistance}`);
             return true;
@@ -220,8 +231,10 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
         const [x2, y2] = v2;
         const [x3, y3] = v3;
 
-        const denominator = ((y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3));
-        if (Math.abs(denominator) < 1e-10) return false;
+        const denominator = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
+        if (Math.abs(denominator) < 1e-10) {
+            return false;
+        }
 
         const a = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / denominator;
         const b = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / denominator;
@@ -242,13 +255,13 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
 
         const dot = A * C + B * D;
         const lenSq = C * C + D * D;
-        
+
         if (lenSq === 0) {
             return Math.sqrt(A * A + B * B);
         }
 
         const param = dot / lenSq;
-        
+
         let xx, yy;
         if (param < 0) {
             xx = x1;
@@ -267,26 +280,28 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
     }
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🏁 EachTrianglePattern handleDragComplete called');
-        
+        console.log("🏁 EachTrianglePattern handleDragComplete called");
+
         const { onDragComplete, onSelect, index, point1, point2, point3 } = this.props;
-        
+
         // First call onDragComplete to update the position
         if (onDragComplete !== undefined) {
             onDragComplete(e, moreProps);
         }
-        
+
         // Then select this triangle after dragging
         if (onSelect !== undefined) {
-            console.log('  🔺 Selecting triangle after drag, index:', index);
-            const selectionData = [{
-                index,
-                point1,
-                point2,
-                point3,
-                selected: true,
-            }];
-            
+            console.log("  🔺 Selecting triangle after drag, index:", index);
+            const selectionData = [
+                {
+                    index,
+                    point1,
+                    point2,
+                    point3,
+                    selected: true,
+                },
+            ];
+
             // Use a small timeout to ensure drag complete finishes first
             setTimeout(() => {
                 onSelect(e, selectionData, moreProps);
@@ -302,7 +317,11 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
     private readonly handleTriangleDrag = (e: React.MouseEvent, newTriangleData: any) => {
         const { index, onDrag } = this.props;
 
-        console.log('🔄 EachTrianglePattern.handleTriangleDrag called:', { index, hasOnDrag: !!onDrag, newTriangleData });
+        console.log("🔄 EachTrianglePattern.handleTriangleDrag called:", {
+            index,
+            hasOnDrag: !!onDrag,
+            newTriangleData,
+        });
 
         if (onDrag) {
             // TriangleWithArea passes the new triangle coordinates directly
@@ -366,5 +385,4 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
             });
         }
     };
-
 }

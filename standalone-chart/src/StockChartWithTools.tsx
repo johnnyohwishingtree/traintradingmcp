@@ -42,12 +42,11 @@ import {
     InteractiveYCoordinate,
     InteractiveText,
 } from "@slowclap/financial-charts";
-import { IOHLCData } from "./withOHLCData";
+import { IOHLCData, WithOHLCDataProps } from "./withOHLCData";
 import ResizeHandle from './ResizeHandle';
 import { PineScriptOutput } from './PineScriptEngine';
 
-interface StockChartWithToolsProps {
-    readonly data: IOHLCData[];
+interface StockChartWithToolsProps extends WithOHLCDataProps {
     readonly height: number;
     readonly dateTimeFormat?: string;
     readonly displayTimezone?: string;

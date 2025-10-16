@@ -7,7 +7,7 @@ import { EachTrianglePattern } from "./wrapper";
 // MCP Integration Types
 export interface MCPElement {
     readonly id: string;
-    readonly type: 'triangle' | 'label';
+    readonly type: "triangle" | "label";
     readonly data: any;
     readonly appearance?: any;
     readonly selected?: boolean;
@@ -96,14 +96,14 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
 
     // MCP Integration Methods
     private convertMCPElementsToTriangles(mcpElements: MCPElement[]): any[] {
-        const triangleElements = mcpElements.filter(el => el.type === 'triangle');
-        return triangleElements.map(el => ({
+        const triangleElements = mcpElements.filter((el) => el.type === "triangle");
+        return triangleElements.map((el) => ({
             id: el.id,
             point1: el.data.points[0],
             point2: el.data.points[1],
             point3: el.data.points[2],
             selected: el.selected || false,
-            appearance: el.appearance
+            appearance: el.appearance,
         }));
     }
 
@@ -144,12 +144,12 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
 
                     // Apply override during drag for real-time rendering
                     const isBeingDragged = override && override.index === idx;
-                    const triangleData = isBeingDragged 
+                    const triangleData = isBeingDragged
                         ? {
-                            ...each,
-                            point1: override.point1,
-                            point2: override.point2,
-                            point3: override.point3,
+                              ...each,
+                              point1: override.point1,
+                              point2: override.point2,
+                              point3: override.point3,
                           }
                         : each;
 
@@ -177,16 +177,18 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
                         />
                     );
                 })}
-                
+
                 {/* Current drawing preview using GenericChartComponent */}
                 {isDefined(current) && (
                     <GenericChartComponent
                         canvasToDraw={getMouseCanvas}
-                        canvasDraw={(ctx: CanvasRenderingContext2D, moreProps: any) => this.drawCurrentTriangleOnCanvas(ctx, moreProps, current, appearance)}
+                        canvasDraw={(ctx: CanvasRenderingContext2D, moreProps: any) =>
+                            this.drawCurrentTriangleOnCanvas(ctx, moreProps, current, appearance)
+                        }
                         drawOn={["mousemove", "pan", "drag"]}
                     />
                 )}
-                
+
                 {enabled && (
                     <MouseLocationIndicator
                         enabled={enabled}
@@ -204,9 +206,14 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
         );
     }
 
-    private readonly drawCurrentTriangleOnCanvas = (ctx: CanvasRenderingContext2D, moreProps: any, current: any, appearance: any) => {
+    private readonly drawCurrentTriangleOnCanvas = (
+        ctx: CanvasRenderingContext2D,
+        moreProps: any,
+        current: any,
+        appearance: any,
+    ) => {
         const { point1, point2, point3, tempPoint2, tempPoint3 } = current;
-        
+
         if (!isDefined(point1)) {
             return;
         }
@@ -219,7 +226,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
         // Convert first point to screen coordinates
         const x1 = xScale(point1[0]);
         const y1 = yScale(point1[1]);
-        
+
         // Stage 1: Just point1 - show a dot
         if (isNotDefined(point2) && isNotDefined(tempPoint2)) {
             ctx.fillStyle = appearance.strokeStyle;
@@ -229,13 +236,13 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
             ctx.fill();
             return;
         }
-        
+
         // Stage 2: point1 and tempPoint2 (or point2) - show a line
         const point2Coords = isDefined(point2) ? point2 : tempPoint2;
-        if (isDefined(point2Coords) && (isNotDefined(point3) && isNotDefined(tempPoint3))) {
+        if (isDefined(point2Coords) && isNotDefined(point3) && isNotDefined(tempPoint3)) {
             const x2 = xScale(point2Coords[0]);
             const y2 = yScale(point2Coords[1]);
-            
+
             // Draw line
             ctx.strokeStyle = appearance.strokeStyle;
             ctx.lineWidth = appearance.strokeWidth;
@@ -245,7 +252,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
             ctx.stroke();
-            
+
             // Draw points
             ctx.setLineDash([]);
             ctx.fillStyle = appearance.strokeStyle;
@@ -257,7 +264,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
             ctx.fill();
             return;
         }
-        
+
         // Stage 3: All three points - show triangle preview
         const point3Coords = isDefined(point3) ? point3 : tempPoint3;
         if (isDefined(point2Coords) && isDefined(point3Coords)) {
@@ -265,7 +272,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
             const y2 = yScale(point2Coords[1]);
             const x3 = xScale(point3Coords[0]);
             const y3 = yScale(point3Coords[1]);
-            
+
             // Draw triangle fill
             ctx.fillStyle = appearance.fillStyle;
             ctx.globalAlpha = appearance.fillOpacity * 0.5;
@@ -275,7 +282,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
             ctx.lineTo(x3, y3);
             ctx.closePath();
             ctx.fill();
-            
+
             // Draw triangle outline
             ctx.strokeStyle = appearance.strokeStyle;
             ctx.lineWidth = appearance.strokeWidth;
@@ -287,7 +294,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
             ctx.lineTo(x3, y3);
             ctx.closePath();
             ctx.stroke();
-            
+
             // Draw points
             ctx.setLineDash([]);
             ctx.fillStyle = appearance.strokeStyle;
@@ -305,7 +312,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
         const { current } = this.state;
         const { triangles, appearance } = this.props;
 
-        console.log('🔺 Triangle handleEnd called', { current, xyValue, mouseMoved: this.mouseMoved });
+        console.log("🔺 Triangle handleEnd called", { current, xyValue, mouseMoved: this.mouseMoved });
 
         if (isDefined(current)) {
             if (isNotDefined(current.point2)) {
@@ -315,11 +322,18 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
                 const endX = xyValue[0];
                 const endY = xyValue[1];
                 const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
-                
-                console.log('  📏 Point2 check:', { startX, startY, endX, endY, differentPosition, mouseMoved: this.mouseMoved });
-                
+
+                console.log("  📏 Point2 check:", {
+                    startX,
+                    startY,
+                    endX,
+                    endY,
+                    differentPosition,
+                    mouseMoved: this.mouseMoved,
+                });
+
                 if (this.mouseMoved || differentPosition) {
-                    console.log('  📍 Setting point2');
+                    console.log("  📍 Setting point2");
                     this.setState({
                         current: {
                             ...current,
@@ -327,7 +341,7 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
                         },
                     });
                 } else {
-                    console.log('  ❌ Not setting point2 - no movement detected');
+                    console.log("  ❌ Not setting point2 - no movement detected");
                 }
             } else if (isNotDefined(current.point3)) {
                 // Setting third point - complete the triangle
@@ -336,12 +350,19 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
                 const endX = xyValue[0];
                 const endY = xyValue[1];
                 const differentPosition = Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1;
-                
-                console.log('  📏 Point3 check:', { startX, startY, endX, endY, differentPosition, mouseMoved: this.mouseMoved });
-                
+
+                console.log("  📏 Point3 check:", {
+                    startX,
+                    startY,
+                    endX,
+                    endY,
+                    differentPosition,
+                    mouseMoved: this.mouseMoved,
+                });
+
                 if (this.mouseMoved || differentPosition) {
-                    console.log('  📍 Completing triangle with point3');
-                    
+                    console.log("  📍 Completing triangle with point3");
+
                     const triangleData = {
                         point1: current.point1,
                         point2: current.point2,
@@ -358,26 +379,23 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
                             id: elementId,
                             points: [current.point1, current.point2, xyValue],
                         };
-                        
-                        console.log('🎯 MCP Triangle Create:', { elementId, mcpElementData, appearance });
-                        onMCPCreate('triangle', mcpElementData, appearance);
+
+                        console.log("🎯 MCP Triangle Create:", { elementId, mcpElementData, appearance });
+                        onMCPCreate("triangle", mcpElementData, appearance);
                     } else {
                         // Regular triangle completion
-                        const newTriangles = [
-                            ...triangles.map((d) => ({ ...d, selected: false })),
-                            triangleData,
-                        ];
+                        const newTriangles = [...triangles.map((d) => ({ ...d, selected: false })), triangleData];
                         const { onComplete } = this.props;
                         if (onComplete !== undefined) {
                             onComplete(e, newTriangles, moreProps);
                         }
                     }
-                    
+
                     this.setState({
                         current: null,
                     });
                 } else {
-                    console.log('  ❌ Not completing triangle - no movement detected');
+                    console.log("  ❌ Not completing triangle - no movement detected");
                 }
             }
         }
@@ -385,13 +403,17 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
 
     private readonly handleStart = (e: React.MouseEvent, xyValue: any, moreProps: any) => {
         const { current } = this.state;
-        
-        console.log('🔺 Triangle handleStart called', { current, xyValue, moreProps: moreProps ? 'exists' : 'missing' });
-        console.log('  📍 Raw xyValue coordinates:', xyValue);
-        console.log('  📊 MoreProps keys:', moreProps ? Object.keys(moreProps) : 'N/A');
+
+        console.log("🔺 Triangle handleStart called", {
+            current,
+            xyValue,
+            moreProps: moreProps ? "exists" : "missing",
+        });
+        console.log("  📍 Raw xyValue coordinates:", xyValue);
+        console.log("  📊 MoreProps keys:", moreProps ? Object.keys(moreProps) : "N/A");
 
         if (isNotDefined(current) || isNotDefined(current.point1)) {
-            console.log('  📍 Setting point1');
+            console.log("  📍 Setting point1");
             this.mouseMoved = false;
 
             this.setState(
@@ -414,10 +436,10 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
 
     private readonly handleDrawTriangle = (_: React.MouseEvent, xyValue: any) => {
         const { current } = this.state;
-        
+
         if (isDefined(current)) {
             this.mouseMoved = true;
-            
+
             if (isDefined(current.point1) && isNotDefined(current.point2)) {
                 // Drawing line from point1 to current mouse position
                 this.setState({
@@ -464,7 +486,11 @@ export class TrianglePattern extends React.Component<TrianglePatternProps, Trian
                 () => {
                     const { onDragComplete } = this.props;
                     if (onDragComplete !== undefined) {
-                        console.log('🔺 TrianglePattern calling onDragComplete with:', newTriangles.length, 'triangles');
+                        console.log(
+                            "🔺 TrianglePattern calling onDragComplete with:",
+                            newTriangles.length,
+                            "triangles",
+                        );
                         onDragComplete(e, newTriangles, moreProps);
                     }
                 },

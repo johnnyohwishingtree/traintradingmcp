@@ -25,7 +25,7 @@ interface TriangleWithAreaState {
     dragStartPos?: [number, number];
     originalPoints?: {
         point1: [number, number];
-        point2: [number, number]; 
+        point2: [number, number];
         point3: [number, number];
     };
 }
@@ -139,7 +139,9 @@ export class TriangleWithArea extends React.Component<TriangleWithAreaProps, Tri
 
         // Check if point is inside triangle using barycentric coordinates
         const denom = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
-        if (Math.abs(denom) < 1e-10) return false; // Degenerate triangle
+        if (Math.abs(denom) < 1e-10) {
+            return false;
+        } // Degenerate triangle
 
         const a = ((y2 - y3) * (mouseX - x3) + (x3 - x2) * (mouseY - y3)) / denom;
         const b = ((y3 - y1) * (mouseX - x3) + (x1 - x3) * (mouseY - y3)) / denom;
@@ -151,10 +153,8 @@ export class TriangleWithArea extends React.Component<TriangleWithAreaProps, Tri
         const distanceToEdge1 = this.pointToLineDistance(mouseX, mouseY, x1, y1, x2, y2);
         const distanceToEdge2 = this.pointToLineDistance(mouseX, mouseY, x2, y2, x3, y3);
         const distanceToEdge3 = this.pointToLineDistance(mouseX, mouseY, x3, y3, x1, y1);
-        
-        const nearEdge = distanceToEdge1 <= tolerance || 
-                        distanceToEdge2 <= tolerance || 
-                        distanceToEdge3 <= tolerance;
+
+        const nearEdge = distanceToEdge1 <= tolerance || distanceToEdge2 <= tolerance || distanceToEdge3 <= tolerance;
 
         return isInside || nearEdge;
     };
@@ -167,9 +167,11 @@ export class TriangleWithArea extends React.Component<TriangleWithAreaProps, Tri
 
         const dot = A * C + B * D;
         const lenSq = C * C + D * D;
-        
-        if (lenSq === 0) return Math.sqrt(A * A + B * B);
-        
+
+        if (lenSq === 0) {
+            return Math.sqrt(A * A + B * B);
+        }
+
         let param = dot / lenSq;
         param = Math.max(0, Math.min(1, param));
 
@@ -178,25 +180,29 @@ export class TriangleWithArea extends React.Component<TriangleWithAreaProps, Tri
 
         const dx = px - xx;
         const dy = py - yy;
-        
+
         return Math.sqrt(dx * dx + dy * dy);
     };
 
     private readonly handleDragStart = (e: React.MouseEvent, moreProps: any) => {
         const { point1, point2, point3, onDragStart } = this.props;
-        const { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
-        
+        const {
+            mouseXY,
+            xScale,
+            chartConfig: { yScale },
+        } = moreProps;
+
         // Store drag start position in data coordinates
         const dragStartX = xScale.invert(mouseXY[0]);
         const dragStartY = yScale.invert(mouseXY[1]);
-        
+
         this.setState({
             dragStartPos: [dragStartX, dragStartY],
             originalPoints: {
                 point1: [point1![0], point1![1]],
                 point2: [point2![0], point2![1]],
                 point3: [point3![0], point3![1]],
-            }
+            },
         });
 
         if (onDragStart) {
@@ -207,39 +213,43 @@ export class TriangleWithArea extends React.Component<TriangleWithAreaProps, Tri
     private readonly handleDrag = (e: React.MouseEvent, moreProps: any) => {
         const { onDrag } = this.props;
         const { dragStartPos, originalPoints } = this.state;
-        
+
         if (!dragStartPos || !originalPoints || !onDrag) {
             return;
         }
 
-        const { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
-        
+        const {
+            mouseXY,
+            xScale,
+            chartConfig: { yScale },
+        } = moreProps;
+
         // Calculate current mouse position in data coordinates
         const currentX = xScale.invert(mouseXY[0]);
         const currentY = yScale.invert(mouseXY[1]);
-        
+
         // Calculate delta from start position
         const deltaX = currentX - dragStartPos[0];
         const deltaY = currentY - dragStartPos[1];
-        
+
         // Move all three points by the same delta (optimize object creation)
         const newTriangleData = {
             point1: [originalPoints.point1[0] + deltaX, originalPoints.point1[1] + deltaY],
-            point2: [originalPoints.point2[0] + deltaX, originalPoints.point2[1] + deltaY], 
-            point3: [originalPoints.point3[0] + deltaX, originalPoints.point3[1] + deltaY]
+            point2: [originalPoints.point2[0] + deltaX, originalPoints.point2[1] + deltaY],
+            point3: [originalPoints.point3[0] + deltaX, originalPoints.point3[1] + deltaY],
         };
-        
-        console.log('🔄 TriangleWithArea.handleDrag calling onDrag:', newTriangleData);
+
+        console.log("🔄 TriangleWithArea.handleDrag calling onDrag:", newTriangleData);
         onDrag(e, newTriangleData);
     };
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
         const { onDragComplete } = this.props;
-        
+
         // Clear drag state
         this.setState({
             dragStartPos: undefined,
-            originalPoints: undefined
+            originalPoints: undefined,
         });
 
         if (onDragComplete) {

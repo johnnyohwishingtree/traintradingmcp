@@ -4,7 +4,7 @@ import { EachVerticalLineTrend } from "./wrapper/EachVerticalLineTrend";
 import { getValueFromOverride } from "./utils";
 import { isDefined } from "../core";
 
-export interface VerticalLineProps extends BaseLineProps {}
+export type VerticalLineProps = BaseLineProps;
 
 export class VerticalLine extends BaseLine {
     public static defaultProps = {
@@ -22,21 +22,27 @@ export class VerticalLine extends BaseLine {
 
     // Override to apply vertical constraint: lock X-axis, allow Y movement only
     protected applyConstraints(startPoint: any, endPoint: any): any {
-        if (!startPoint || !endPoint) return endPoint;
+        if (!startPoint || !endPoint) {
+            return endPoint;
+        }
 
         // Keep X coordinate fixed at startPoint, allow Y to change
         return [startPoint[0], endPoint[1]];
     }
 
     // Override rendering to use EachVerticalLineTrend wrapper for proper interaction
-    protected renderLineItem(line: any, index: number, override: any, appearance: any, hoverText: any): React.ReactNode {
+    protected renderLineItem(
+        line: any,
+        index: number,
+        override: any,
+        appearance: any,
+        hoverText: any,
+    ): React.ReactNode {
         const x = line.start[0]; // Fixed X coordinate for vertical line
         const y1 = Math.min(line.start[1], line.end[1]);
         const y2 = Math.max(line.start[1], line.end[1]);
 
-        const eachAppearance = isDefined(line.appearance)
-            ? { ...appearance, ...line.appearance }
-            : appearance;
+        const eachAppearance = isDefined(line.appearance) ? { ...appearance, ...line.appearance } : appearance;
 
         const hoverTextWithDefault = {
             ...VerticalLine.defaultProps.hoverText,

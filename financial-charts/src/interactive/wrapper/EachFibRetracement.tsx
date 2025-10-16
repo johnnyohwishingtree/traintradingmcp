@@ -337,58 +337,69 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
 
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
         const { index, onSelect, x1, y1, x2, y2, type } = this.props;
-        
+
         // Use proper hover detection like TrendLine
         const isActuallyHovered = this.checkIfHovered(moreProps);
-        
-        console.log('📈 EachFibRetracement clicked, index:', index, 'isActuallyHovered:', isActuallyHovered, 'coords:', {
-            start: [x1, y1],
-            end: [x2, y2]
-        });
-        
-        // Only process the click if this fibonacci is actually being hovered
-        if (onSelect && isActuallyHovered) {
-            const selectionData = [{
-                index,
+
+        console.log(
+            "📈 EachFibRetracement clicked, index:",
+            index,
+            "isActuallyHovered:",
+            isActuallyHovered,
+            "coords:",
+            {
                 start: [x1, y1],
                 end: [x2, y2],
-                x1,
-                y1,
-                x2,
-                y2,
-                selected: true,
-                type,
-            }];
-            
+            },
+        );
+
+        // Only process the click if this fibonacci is actually being hovered
+        if (onSelect && isActuallyHovered) {
+            const selectionData = [
+                {
+                    index,
+                    start: [x1, y1],
+                    end: [x2, y2],
+                    x1,
+                    y1,
+                    x2,
+                    y2,
+                    selected: true,
+                    type,
+                },
+            ];
+
             onSelect(e, selectionData, moreProps);
         }
     };
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🏁 EachFibRetracement handleDragComplete called');
-        
+        console.log("🏁 EachFibRetracement handleDragComplete called");
+
         const { onDragComplete, onSelect, index, x1, y1, x2, y2, type } = this.props;
-        
+
         // First call onDragComplete to update the position
         if (onDragComplete !== undefined) {
             onDragComplete(e, moreProps);
         }
-        
+
         // Then select this fibonacci after dragging
         if (onSelect !== undefined) {
-            console.log('  📈 Selecting fibonacci after drag, index:', index);
-            const selectionData = [{
-                index,
-                start: [x1, y1],
-                end: [x2, y2],
-                x1,
-                y1,
-                x2,
-                y2,
-                selected: true,
-                type,
-            }];
-            
+            console.log("  📈 Selecting fibonacci after drag, index:", index);
+            const selectionData = [
+                {
+                    index,
+                    start: [x1, y1],
+                    end: [x2, y2],
+                    x1,
+                    y1,
+                    x2,
+                    y2,
+                    selected: true,
+                    type,
+                },
+            ];
+
             // Use a small timeout to ensure drag complete finishes first
             setTimeout(() => {
                 onSelect(e, selectionData, moreProps);
@@ -407,7 +418,7 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
 
         // Check if mouse is near any of the fibonacci lines
         const lines = helper({ x1, y1, x2, y2 });
-        
+
         for (const line of lines) {
             // Convert line coordinates to screen coordinates
             const x1Screen = xScale(line.x1);
@@ -426,7 +437,9 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
                 // Calculate more precise distance to the horizontal line
                 const distance = Math.abs(mouseY - yScreen);
                 if (distance <= tolerance) {
-                    console.log(`📈 EachFibRetracement[${index}] hover detected on ${line.percent}% line, distance: ${distance}`);
+                    console.log(
+                        `📈 EachFibRetracement[${index}] hover detected on ${line.percent}% line, distance: ${distance}`,
+                    );
                     return true;
                 }
             }

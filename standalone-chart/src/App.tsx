@@ -12,30 +12,23 @@ import ChartIndicatorsPanel from './ChartIndicatorsPanel';
 import IndicatorSettingsPanel from './IndicatorSettingsPanel';
 import { withOHLCData } from './withOHLCData';
 import { pineEngine, PineScriptOutput } from './PineScriptEngine';
-import { 
-  interactiveFeaturesManager, 
+import {
+  interactiveFeaturesManager,
   createSimpleLineFeature,
   createComplexAreaFeature,
-  HistoryState 
+  HistoryState as ImportedHistoryState
 } from './InteractiveFeaturesManager';
 import './App.css';
 import './PineScriptImporter.css';
 import './ChartIndicatorsPanel.css';
 import './IndicatorSettingsPanel.css';
 
-const ChartWithData = withOHLCData()(StockChartWithTools);
-const MCPDemoWithData = withOHLCData()(MCPTrendLineDemo);
+const ChartWithData = withOHLCData()<any>(StockChartWithTools);
+const MCPDemoWithData = withOHLCData()<any>(MCPTrendLineDemo);
 
-// Define the history state interface
-interface HistoryState {
-  trendLines: any[];
-  trendChannels: any[];
-  fibonacciRetracements: any[];
-  trianglePatterns: any[];
+// Extend the imported history state interface with our additional properties
+interface HistoryState extends ImportedHistoryState {
   labels: any[];
-  horizontalLines?: any[];
-  horizontalRays?: any[];
-  verticalLines?: any[];
 }
 
 const App = () => {
@@ -433,8 +426,9 @@ const App = () => {
       horizontalRays,
       verticalLines
     };
-    
-    const previousCount = currentState[getStateKey(featureType)].length;
+
+    const stateKey = getStateKey(featureType);
+    const previousCount = stateKey && currentState[stateKey] ? (currentState[stateKey] as any[]).length : 0;
     
     const selectedIndices = interactiveFeaturesManager.handleCompletion(
       featureType,
@@ -476,7 +470,7 @@ const App = () => {
   };
 
   // Helper function to get the correct state key for each feature type
-  const getStateKey = (featureType: string): keyof HistoryState => {
+  const getStateKey = (featureType: string): keyof HistoryState | undefined => {
     switch (featureType) {
       case 'trendline': return 'trendLines';
       case 'trendchannel': return 'trendChannels';
@@ -485,7 +479,8 @@ const App = () => {
       case 'horizontalline': return 'horizontalLines';
       case 'horizontalray': return 'horizontalRays';
       case 'verticalline': return 'verticalLines';
-      default: throw new Error(`Unknown feature type: ${featureType}`);
+      case 'label': return 'labels';
+      default: return undefined;
     }
   };
 

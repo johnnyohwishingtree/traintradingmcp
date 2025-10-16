@@ -137,7 +137,7 @@ export class ChannelWithArea extends React.Component<ChannelWithAreaProps> {
                     xScale,
                     yScale,
                 });
-                
+
                 return line1Hovering || line2Hovering || areaHovering;
             }
         }
@@ -158,14 +158,14 @@ function isHoveringOverArea({ line1, line2, mouseXY, xScale, yScale }: any) {
     const y1_line1 = line1.y1;
     const x2 = line1.x2;
     const y2_line1 = line1.y2;
-    
+
     const y1_line2 = line2.y1;
     const y2_line2 = line2.y2;
 
     // Check if mouse X is within the horizontal bounds of the channel
     const xMin = Math.min(x1, x2);
     const xMax = Math.max(x1, x2);
-    
+
     if (mouseX < xMin || mouseX > xMax) {
         return false;
     }
@@ -179,7 +179,7 @@ function isHoveringOverArea({ line1, line2, mouseXY, xScale, yScale }: any) {
     // Check if mouse Y is between the two lines
     const yMin = Math.min(yOnLine1, yOnLine2);
     const yMax = Math.max(yOnLine1, yOnLine2);
-    
+
     return mouseY >= yMin && mouseY <= yMax;
 }
 

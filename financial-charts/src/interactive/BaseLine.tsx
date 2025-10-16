@@ -13,7 +13,7 @@ export interface BaseLineProps extends InteractiveBaseProps {
         | "LINE"; // extends between the set bounds
     readonly trends?: any[]; // Use trends instead of lines for compatibility
     readonly lines?: any[]; // Keep for backward compatibility
-    readonly appearance: InteractiveBaseProps['appearance'] & {
+    readonly appearance: InteractiveBaseProps["appearance"] & {
         readonly strokeDasharray: strokeDashTypes;
         readonly r?: number;
     };
@@ -100,11 +100,17 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
     }
 
     // Template method that child classes can override to render line items differently
-    protected renderLineItem(line: any, index: number, override: any, appearance: any, hoverText: any): React.ReactNode {
+    protected renderLineItem(
+        line: any,
+        index: number,
+        override: any,
+        appearance: any,
+        _hoverText: any,
+    ): React.ReactNode {
         // Default implementation: single control point in middle
         const midX = (line.start[0] + line.end[0]) / 2;
         const midY = (line.start[1] + line.end[1]) / 2;
-        
+
         return (
             <g key={index}>
                 <InteractiveStraightLine
@@ -140,7 +146,7 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
 
     protected readonly handleStart = (e: React.MouseEvent, xyValue: any, moreProps: any) => {
         const { current } = this.state;
-        
+
         if (isNotDefined(current) || isNotDefined(current.start)) {
             this.mouseMoved = false;
 
@@ -169,7 +175,7 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
         if (isDefined(current) && isDefined(current.start)) {
             // Apply any constraints from child classes
             const constrainedEndValue = this.applyConstraints(current.start, xyValue);
-            
+
             const newLines = [
                 ...allLines.map((d) => ({ ...d, selected: false })),
                 {
@@ -180,7 +186,7 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
                     type,
                 },
             ];
-            
+
             this.setState(
                 {
                     current: null,
@@ -199,10 +205,10 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
         const { current } = this.state;
         if (isDefined(current) && isDefined(current.start)) {
             this.mouseMoved = true;
-            
+
             // Apply constraints during drawing
             const constrainedValue = this.applyConstraints(current.start, xyValue);
-            
+
             this.setState({
                 current: {
                     start: current.start,
@@ -218,42 +224,48 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
     }
 
     protected readonly handleLineClick = (e: React.MouseEvent, index: number, moreProps: any) => {
-        console.log('📌 Line clicked, index:', index);
+        console.log("📌 Line clicked, index:", index);
         const allLines = this.props.trends || this.props.lines || [];
         const { onSelect } = this.props;
-        
+
         if (onSelect) {
             // Don't manage state internally - send selection to parent
-            const selectionData = [{ 
-                index, 
-                start: allLines[index].start, 
-                end: allLines[index].end,
-                selected: true 
-            }];
+            const selectionData = [
+                {
+                    index,
+                    start: allLines[index].start,
+                    end: allLines[index].end,
+                    selected: true,
+                },
+            ];
             onSelect(e, selectionData, moreProps);
         }
     };
 
     protected readonly handleControlPointDragStart = (e: React.MouseEvent, index: number) => {
         e.stopPropagation();
-        console.log('🖱️ Control point drag start, index:', index);
-        
+        console.log("🖱️ Control point drag start, index:", index);
+
         // Implementation for control point dragging
         const { lines } = this.props;
-        if (!lines || !lines[index]) return;
+        if (!lines || !lines[index]) {
+            return;
+        }
         const line = lines[index];
-        
+
         const handleDrag = (dragEvent: MouseEvent) => {
             // Get proper coordinates - this would need coordinate conversion
-            const rect = (e.target as Element).closest('svg')?.getBoundingClientRect();
-            if (!rect) return;
-            
+            const rect = (e.target as Element).closest("svg")?.getBoundingClientRect();
+            if (!rect) {
+                return;
+            }
+
             const newX = dragEvent.clientX - rect.left;
             const newY = dragEvent.clientY - rect.top;
-            
+
             // Apply constraints from child classes
             const constrainedPoint = this.applyConstraints(line.start, [newX, newY]);
-            
+
             this.setState({
                 override: {
                     index,
@@ -266,13 +278,13 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
         };
 
         const handleDragEnd = () => {
-            document.removeEventListener('mousemove', handleDrag);
-            document.removeEventListener('mouseup', handleDragEnd);
+            document.removeEventListener("mousemove", handleDrag);
+            document.removeEventListener("mouseup", handleDragEnd);
             this.handleDragComplete(e as any, {} as any);
         };
 
-        document.addEventListener('mousemove', handleDrag);
-        document.addEventListener('mouseup', handleDragEnd);
+        document.addEventListener("mousemove", handleDrag);
+        document.addEventListener("mouseup", handleDragEnd);
     };
 
     // Implement abstract method from InteractiveBase
@@ -295,18 +307,19 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
 
     // Drag handlers required by wrapper components
     protected readonly handleDragLine = (e: React.MouseEvent, index: number | undefined, moreProps: any) => {
-        const allLines = this.props.trends || this.props.lines || [];
+        const _allLines = this.props.trends || this.props.lines || [];
 
         if (index !== undefined) {
             // Check if moreProps contains coordinate updates from wrapper components
             // (e.g., EachHorizontalLineTrend passes { x1Value, y1Value, x2Value, y2Value })
-            const hasCoordinates = typeof moreProps === 'object' && moreProps !== null &&
-                                 ('x1Value' in moreProps || 'y1Value' in moreProps ||
-                                  'x2Value' in moreProps || 'y2Value' in moreProps);
+            const hasCoordinates =
+                typeof moreProps === "object" &&
+                moreProps !== null &&
+                ("x1Value" in moreProps || "y1Value" in moreProps || "x2Value" in moreProps || "y2Value" in moreProps);
 
             if (hasCoordinates) {
                 // Wrapper component is providing new coordinates - use them
-                console.log('🖱️ Line drag with coordinates, index:', index, 'coords:', {
+                console.log("🖱️ Line drag with coordinates, index:", index, "coords:", {
                     x1: moreProps.x1Value,
                     y1: moreProps.y1Value,
                     x2: moreProps.x2Value,
@@ -324,7 +337,7 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
                 } as Partial<BaseLineState>);
             } else {
                 // Legacy behavior - just set index
-                console.log('🖱️ Line drag (legacy), index:', index);
+                console.log("🖱️ Line drag (legacy), index:", index);
                 this.setState({
                     override: {
                         index,
@@ -335,7 +348,7 @@ export class BaseLine extends InteractiveBase<BaseLineProps, BaseLineState> {
     };
 
     protected readonly handleDragLineComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🏁 Line drag complete');
+        console.log("🏁 Line drag complete");
         this.handleDragComplete(e, moreProps);
     };
 }

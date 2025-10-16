@@ -117,8 +117,6 @@ export class GenericComponent extends React.Component<GenericComponentProps, Gen
         };
     }
 
-
-
     public updateMoreProps(moreProps: any) {
         Object.keys(moreProps).forEach((key) => {
             this.moreProps[key] = moreProps[key];

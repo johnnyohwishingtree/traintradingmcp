@@ -27,9 +27,10 @@ export interface InteractiveBaseState {
     override?: any;
 }
 
-export abstract class InteractiveBase<TProps extends InteractiveBaseProps, TState extends InteractiveBaseState> 
-    extends React.Component<TProps, TState> {
-    
+export abstract class InteractiveBase<
+    TProps extends InteractiveBaseProps,
+    TState extends InteractiveBaseState,
+> extends React.Component<TProps, TState> {
     public static defaultProps = {
         onStart: noop,
         onSelect: noop,
@@ -66,7 +67,7 @@ export abstract class InteractiveBase<TProps extends InteractiveBaseProps, TStat
         this.terminate = terminate.bind(this);
         this.saveNodeType = saveNodeType.bind(this);
         this.getSelectionState = isHoverForInteractiveType(this.getInteractiveType()).bind(this);
-        
+
         this.state = {} as TState;
     }
 
@@ -77,19 +78,16 @@ export abstract class InteractiveBase<TProps extends InteractiveBaseProps, TStat
     // Common drag handling that can be overridden
     protected readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
         const { override } = this.state;
-        
+
         if (override) {
             const newItems = this.updateItemsAfterDrag(override);
-            
-            this.setState(
-                { override: null } as Pick<TState, keyof TState>,
-                () => {
-                    const { onComplete } = this.props;
-                    if (onComplete !== undefined) {
-                        onComplete(e, newItems, moreProps);
-                    }
-                },
-            );
+
+            this.setState({ override: null } as Pick<TState, keyof TState>, () => {
+                const { onComplete } = this.props;
+                if (onComplete !== undefined) {
+                    onComplete(e, newItems, moreProps);
+                }
+            });
         }
     };
 

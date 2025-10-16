@@ -98,7 +98,7 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
 
         // Debug logging
         if (selected) {
-            console.log('🎯 EachVerticalLineTrend rendering SELECTED:', {
+            console.log("🎯 EachVerticalLineTrend rendering SELECTED:", {
                 type,
                 selected,
                 hover,
@@ -107,7 +107,7 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
                 y1Value,
                 y2Value,
                 x1Value,
-                showCircle: selected || hover
+                showCircle: selected || hover,
             });
         }
 
@@ -178,22 +178,24 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
 
     private readonly handleClick = (e: React.MouseEvent, moreProps: any) => {
         const { index, onSelect, x1Value, y1Value, x2Value, y2Value } = this.props;
-        
-        console.log('📌 EachVerticalLineTrend clicked, index:', index);
-        
+
+        console.log("📌 EachVerticalLineTrend clicked, index:", index);
+
         if (onSelect) {
-            const selectionData = [{
-                index,
-                start: [x1Value, y1Value],
-                end: [x2Value, y2Value],
-                selected: true,
-            }];
+            const selectionData = [
+                {
+                    index,
+                    start: [x1Value, y1Value],
+                    end: [x2Value, y2Value],
+                    selected: true,
+                },
+            ];
             onSelect(e, selectionData, moreProps);
         }
     };
 
     private readonly handleDragStart = () => {
-        console.log('🖱️ Vertical line drag start');
+        console.log("🖱️ Vertical line drag start");
     };
 
     private readonly handleLineDrag = (e: React.MouseEvent, moreProps: any) => {
@@ -223,7 +225,11 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
         const { index, onDrag, y1Value, y2Value } = this.props;
 
         // Extract mouseXY, xScale, and yScale from moreProps
-        const { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
+        const {
+            mouseXY,
+            xScale,
+            chartConfig: { yScale },
+        } = moreProps;
 
         // Convert screen coordinates to data values
         const newXValue = xScale.invert(mouseXY[0]);
@@ -244,7 +250,7 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
     };
 
     private readonly handleMidpointDragStart = () => {
-        console.log('🖱️ Vertical line midpoint drag start');
+        console.log("🖱️ Vertical line midpoint drag start");
     };
 
     private readonly handleMidpointDrag = (e: React.MouseEvent, moreProps: any) => {
@@ -261,7 +267,7 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
     };
 
     private readonly handleControlPointDragStart = () => {
-        console.log('🖱️ Control point drag start');
+        console.log("🖱️ Control point drag start");
     };
 
     private readonly handleControlPointDrag = (e: React.MouseEvent, moreProps: any) => {
@@ -278,7 +284,7 @@ export class EachVerticalLineTrend extends React.Component<EachVerticalLineTrend
     };
 
     private readonly handleDragComplete = (e: React.MouseEvent, moreProps: any) => {
-        console.log('🏁 Vertical line drag complete');
+        console.log("🏁 Vertical line drag complete");
         const { onDragComplete } = this.props;
         if (onDragComplete) {
             onDragComplete(e, moreProps);

@@ -4,7 +4,7 @@ import { EachHorizontalLineTrend } from "./wrapper/EachHorizontalLineTrend";
 import { getValueFromOverride } from "./utils";
 import { isDefined } from "../core";
 
-export interface HorizontalLineProps extends BaseLineProps {}
+export type HorizontalLineProps = BaseLineProps;
 
 export class HorizontalLine extends BaseLine {
     public static defaultProps = {
@@ -22,27 +22,33 @@ export class HorizontalLine extends BaseLine {
 
     // Override to apply horizontal constraint: lock Y-axis, allow X movement only
     protected applyConstraints(startPoint: any, endPoint: any): any {
-        if (!startPoint || !endPoint) return endPoint;
-        
+        if (!startPoint || !endPoint) {
+            return endPoint;
+        }
+
         // Keep Y coordinate fixed at startPoint, allow X to change
         return [endPoint[0], startPoint[1]];
     }
 
     // Override rendering to use EachHorizontalLineTrend wrapper for proper interaction
-    protected renderLineItem(line: any, index: number, override: any, appearance: any, hoverText: any): React.ReactNode {
+    protected renderLineItem(
+        line: any,
+        index: number,
+        override: any,
+        appearance: any,
+        hoverText: any,
+    ): React.ReactNode {
         const y = line.start[1]; // Fixed Y coordinate for horizontal line
         const x1 = Math.min(line.start[0], line.end[0]);
         const x2 = Math.max(line.start[0], line.end[0]);
-        
-        const eachAppearance = isDefined(line.appearance)
-            ? { ...appearance, ...line.appearance }
-            : appearance;
+
+        const eachAppearance = isDefined(line.appearance) ? { ...appearance, ...line.appearance } : appearance;
 
         const hoverTextWithDefault = {
             ...HorizontalLine.defaultProps.hoverText,
             ...hoverText,
         };
-        
+
         return (
             <EachHorizontalLineTrend
                 key={index}
@@ -82,7 +88,7 @@ export class HorizontalLine extends BaseLine {
             // For horizontal infinite lines, complete immediately on first click
             const x = current.start[0]; // X coordinate from click
             const y = current.start[1]; // Fixed Y coordinate
-            
+
             const newLines = [
                 ...allLines.map((d) => ({ ...d, selected: false })),
                 {
@@ -93,7 +99,7 @@ export class HorizontalLine extends BaseLine {
                     type: "XLINE",
                 },
             ];
-            
+
             this.setState(
                 {
                     current: null,
