@@ -5,6 +5,7 @@ import { isHover, saveNodeType } from "../utils";
 import { ClickableCircle, HoverTextNearMouse, InteractiveStraightLine, generateLine, Text } from "../components";
 import { getNewXY } from "./EachTrendLine";
 import { InteractiveBo } from "./InteractiveBo";
+import { interactiveFeaturesManager } from "../../InteractiveFeaturesManager";
 
 export interface EachFibRetracementProps {
     readonly x1: any;
@@ -334,6 +335,38 @@ export class EachFibRetracement extends React.Component<EachFibRetracementProps,
     // ✅ REFACTORED: Use InteractiveBo.handleHover
     private readonly handleHover = (_: React.MouseEvent, moreProps: any) => {
         InteractiveBo.handleHover(this, moreProps);
+
+        // Report hover to features manager if selected (for contextual text overlay)
+        const { selected, index, x1, x2, y1, y2 } = this.props;
+        if (selected && moreProps.hovering && typeof index === 'number') {
+            const { xScale, chartConfig: { yScale } } = moreProps;
+
+            // Calculate screen bounds
+            const screenX1 = xScale(x1);
+            const screenX2 = xScale(x2);
+            const screenY1 = yScale(y1);
+            const screenY2 = yScale(y2);
+
+            const left = Math.min(screenX1, screenX2);
+            const top = Math.min(screenY1, screenY2);
+            const right = Math.max(screenX1, screenX2);
+            const bottom = Math.max(screenY1, screenY2);
+
+            const bounds = {
+                left,
+                top,
+                right,
+                bottom,
+                width: right - left,
+                height: bottom - top,
+                x: left,
+                y: top,
+            } as DOMRect;
+
+            interactiveFeaturesManager.setHoveredComponent('fibonacci', index, bounds);
+        } else if (!moreProps.hovering) {
+            interactiveFeaturesManager.clearHoveredComponent();
+        }
     };
 
     // ✅ REFACTORED: Use InteractiveBo.handleClick

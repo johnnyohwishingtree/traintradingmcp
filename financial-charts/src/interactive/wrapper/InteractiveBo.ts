@@ -184,6 +184,20 @@ export class InteractiveBo {
         // Calculate distance
         const distance = this.distanceToLineSegment(mouseXY, [x1Screen, y1Screen], [x2Screen, y2Screen]);
 
+        // Debug logging
+        console.log("🔍 isHoveringLine check:", {
+            mouseXY,
+            lineStart,
+            lineEnd,
+            screenCoords: {
+                start: [x1Screen, y1Screen],
+                end: [x2Screen, y2Screen]
+            },
+            distance,
+            tolerance,
+            isHovering: distance <= tolerance
+        });
+
         return distance <= tolerance;
     }
 

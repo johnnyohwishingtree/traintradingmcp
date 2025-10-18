@@ -1,96 +1,127 @@
-# Claude Development Guidelines
+# Standalone Chart Testing Guidelines
 
-## Testing Strategy for Playwright Tests
+This file contains specific testing patterns for the standalone-chart application.
 
-### 1. Always Add `data-testid` Attributes to Interactive Components
-When creating new UI components, immediately add `data-testid` attributes:
-```tsx
-<button className="chart-type-button" data-testid="chart-type-button">
-<div className="indicators-panel" data-testid="indicators-panel">
-<input className="date-input" data-testid="start-date-input">
-```
+**See main [CLAUDE.md](../CLAUDE.md) for complete development guidelines.**
 
-### 2. Use `data-testid` Selectors in Tests (Not Class Names)
-```typescript
-// ✅ GOOD - Reliable and explicit
-await page.click('[data-testid="chart-type-button"]');
-await expect(page.locator('[data-testid="indicators-panel"]')).toBeVisible();
+## Quick Testing Commands
 
-// ❌ BAD - Fragile and can break with styling changes
-await page.click('.chart-type-button');
-await page.locator('.indicators-panel');
-```
-
-### 3. Create Dedicated Test Elements When Needed
-For tests that verify specific data (like decimal precision), add dedicated test areas:
-```tsx
-<div data-testid="price-info-area">
-  Symbol: {symbol} | Last Price: ${price} | Range: ${low} - ${high}
-</div>
-```
-
-### 4. Handle Click Interactions Defensively
-When elements might be overlapped or intercepted:
-```typescript
-// Use force when needed
-await page.click('[data-testid="element"]', { force: true });
-
-// Or click on guaranteed safe areas
-await page.click('[data-testid="price-info-area"]'); // Instead of overlapped areas
-```
-
-### 5. Wait for Elements Properly
-```typescript
-// Always wait for the main container first
-await page.waitForSelector('[data-testid="main-chart-container"]', { timeout: 10000 });
-await page.waitForTimeout(2000); // Allow render time
-
-// Then verify elements are visible before interaction
-await expect(element).toBeVisible();
-```
-
-### 6. Test Patterns to Follow
-
-#### Component Creation Checklist:
-- [ ] Add `data-testid` to the component
-- [ ] Add `data-testid` to key child elements (buttons, inputs, panels)
-- [ ] Create test-friendly display areas if the component shows dynamic data
-
-#### Test Writing Checklist:
-- [ ] Use `data-testid` selectors exclusively
-- [ ] Wait for main container to load first
-- [ ] Verify element visibility before interaction
-- [ ] Use flexible assertions (e.g., `toBeGreaterThan(0)` not exact counts)
-- [ ] Handle overlapping elements with `force: true` or alternative targets
-
-### 7. Naming Convention for Test IDs
-```
-main-chart-container     // Main containers
-chart-type-button        // Buttons
-indicators-panel         // Panels/overlays
-start-date-input        // Input fields
-price-info-area         // Display areas
-indicator-{key}         // Dynamic items (e.g., indicator-sma50)
-```
-
-### 8. Quick Reference Commands
-
-Run specific test:
 ```bash
-npx playwright test tests/chart-type-test.spec.js --project=chromium
+# Run all Playwright tests
+npx playwright test
+
+# Run specific test
+npx playwright test tests/[test-name].spec.js
+
+# Debug mode (headed browser)
+npx playwright test --headed --debug
+
+# Show test report
+npx playwright show-report
 ```
 
-Run with shorter timeout for faster feedback:
-```bash
-npx playwright test --timeout=20000
+## data-testid Naming Convention
+
+All interactive components in standalone-chart should use these test IDs:
+
+```
+main-chart-container     // Main chart canvas
+chart-type-button        // Chart type selector button
+indicators-panel         // Indicators overlay panel
+start-date-input         // Date range start input
+end-date-input           // Date range end input
+price-info-area          // Price information display
+trend-line-button        // TrendLine drawing tool button
+cursor-button            // Selection tool button
 ```
 
-Debug failing test:
-```bash
-npx playwright test --headed --timeout=30000
+## Test Structure
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Feature Name', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:3000');
+    // Always wait for main chart container
+    await page.waitForSelector('[data-testid="main-chart-container"]', {
+      timeout: 10000
+    });
+  });
+
+  test('should do expected behavior', async ({ page }) => {
+    // Test implementation
+  });
+});
 ```
 
-## Key Principle
-**Make the implementation test-friendly, don't make tests fight the implementation.**
+## Common Test Patterns
 
-Adding `data-testid` attributes takes seconds but saves hours of debugging flaky tests.
+### Drawing a Trendline
+```typescript
+// 1. Activate trendline mode
+await page.click('[data-testid="trend-line-button"]');
+
+// 2. Draw the line
+const chart = page.locator('[data-testid="main-chart-container"]');
+const box = await chart.boundingBox();
+
+await page.mouse.click(box.x + 200, box.y + 300); // First point
+await page.mouse.move(box.x + 400, box.y + 200);  // Second point
+await page.mouse.click(box.x + 400, box.y + 200);
+
+// 3. Wait for render
+await page.waitForTimeout(300);
+
+// 4. Verify with screenshot
+await page.screenshot({
+  path: 'test-results/trendline-drawn.png'
+});
+```
+
+### Selecting an Indicator
+```typescript
+// 1. Switch to cursor mode
+await page.click('[data-testid="cursor-button"]');
+
+// 2. Click on indicator
+await page.mouse.click(indicatorX, indicatorY);
+
+// 3. Verify selection state (control points visible)
+await page.screenshot({
+  path: 'test-results/indicator-selected.png'
+});
+```
+
+## Debug Chrome MCP Integration
+
+When tests fail, use Chrome MCP to inspect the actual browser state:
+
+```javascript
+// Check if element exists
+mcp__chrome-devtools__evaluate_script({
+  function: `() => {
+    const el = document.querySelector('[data-testid="trend-line-button"]');
+    return {
+      exists: !!el,
+      visible: el?.offsetParent !== null,
+      rect: el?.getBoundingClientRect()
+    };
+  }`
+})
+
+// Check for console errors
+mcp__chrome-devtools__list_console_messages
+
+// Take screenshot
+mcp__chrome-devtools__take_screenshot
+```
+
+## Remember
+
+- **Always use data-testid selectors** - Never CSS classes
+- **Wait for main container** before any interactions
+- **Take screenshots** at key steps for debugging
+- **Use Chrome MCP** when tests fail to see actual browser state
+
+See [../CLAUDE.md](../CLAUDE.md) for complete debugging workflow.

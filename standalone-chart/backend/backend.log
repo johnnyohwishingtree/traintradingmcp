@@ -1,0 +1,58 @@
+🏭 Database Factory: Creating POSTGRES database connection
+
+🚀 Chart Data Backend Server
+📡 Server running on http://localhost:3001
+📊 Database: PostgreSQL with Yahoo Finance cache
+💾 Data Source: Yahoo Finance (cached)
+
+API Endpoints:
+  GET  /health                    - Health check
+  GET  /api/data/:symbol/:interval - Get OHLC data
+  GET  /api/search/:query         - Search symbols
+  GET  /api/symbols               - List all symbols
+
+✅ Ready to serve cached market data!
+✅ Connected to PostgreSQL database
+🔌 PostgreSQL connection test successful: 2025-10-16T20:24:02.012Z
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+📊 API Request: SNOW@1day (limit: 99999)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Connected to PostgreSQL database
+✅ Connected to PostgreSQL database
+✅ Connected to PostgreSQL database
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Connected to PostgreSQL database
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)
+📊 API Request: SNOW@1day (limit: 99999)
+✅ Returning 1278 data points for SNOW@1day (cached, fresh)

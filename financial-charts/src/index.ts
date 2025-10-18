@@ -21,6 +21,7 @@ export * from "./indicators";
 
 // Interactive exports
 export * from "./interactive";
+export * from "./InteractiveFeaturesManager";
 
 // Scales exports
 export * from "./scales";

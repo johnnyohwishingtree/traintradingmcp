@@ -1,3 +1,4 @@
+export * from "./AddTextButton";
 export * from "./ChannelWithArea";
 export * from "./ClickableCircle";
 export * from "./ClickableShape";

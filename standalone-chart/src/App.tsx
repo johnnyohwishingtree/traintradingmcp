@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import StockChartWithTools from './StockChartWithTools';
 import MCPTrendLineDemo from './MCPTrendLineDemo';
 import DrawingToolbar from './DrawingToolbar';
@@ -10,6 +10,7 @@ import SettingsPanel from './SettingsPanel';
 import PineScriptImporter from './PineScriptImporter';
 import ChartIndicatorsPanel from './ChartIndicatorsPanel';
 import IndicatorSettingsPanel from './IndicatorSettingsPanel';
+import ContextualTextOverlay from './ContextualTextOverlay';
 import { withOHLCData } from './withOHLCData';
 import { pineEngine, PineScriptOutput } from './PineScriptEngine';
 import {
@@ -17,7 +18,7 @@ import {
   createSimpleLineFeature,
   createComplexAreaFeature,
   HistoryState as ImportedHistoryState
-} from './InteractiveFeaturesManager';
+} from '@slowclap/financial-charts';
 import {
   InteractiveElementBO,
   InteractiveElementFactory,
@@ -355,6 +356,43 @@ const App = () => {
   const [volumeHeight, setVolumeHeight] = useState(150);
   const [yAxisPadding, setYAxisPadding] = useState(0.1); // 10% padding by default
 
+  // Contextual text overlay - track hovered component
+  const [hoveredComponent, setHoveredComponent] = useState<{
+    type: string;
+    index: number;
+    bounds: DOMRect;
+  } | null>(null);
+
+  // Poll InteractiveFeaturesManager for hovered component
+  useEffect(() => {
+    const pollInterval = setInterval(() => {
+      const hovered = interactiveFeaturesManager.getHoveredComponent();
+
+      if (hovered) {
+        setHoveredComponent(hovered);
+      } else {
+        // Delay clearing hover state to allow mouse movement to the overlay
+        // Check if mouse is currently over the overlay element
+        const overlayElement = document.querySelector('.contextual-text-overlay');
+        const isOverOverlay = overlayElement && overlayElement.matches(':hover');
+
+        if (!isOverOverlay) {
+          // Only clear if not hovering over the overlay
+          setTimeout(() => {
+            // Double-check after a brief delay
+            const stillHovered = interactiveFeaturesManager.getHoveredComponent();
+            const stillOverOverlay = overlayElement && overlayElement.matches(':hover');
+            if (!stillHovered && !stillOverOverlay) {
+              setHoveredComponent(null);
+            }
+          }, 150); // 150ms grace period
+        }
+      }
+    }, 100); // Poll every 100ms for responsive UI
+
+    return () => clearInterval(pollInterval);
+  }, []);
+
 
 
   // Debug effect to track trendLines changes
@@ -384,26 +422,16 @@ const App = () => {
   }, [historyIndex]);
 
   // Undo function
+  // ✅ AUTOMATIC: restoreFromHistory() handles all registered features
   const undo = useCallback(() => {
     if (historyIndex > 0) {
       console.log('↶ Undo: Moving from history index', historyIndex, 'to', historyIndex - 1);
       const prevState = history[historyIndex - 1];
-      setTrendLines(prevState.trendLines);
-      setTrendChannels(prevState.trendChannels);
-      setFibonacciRetracements(prevState.fibonacciRetracements);
-      setTrianglePatterns(prevState.trianglePatterns);
-      setHorizontalLines(prevState.horizontalLines);
-      setHorizontalRays(prevState.horizontalRays);
-      setVerticalLines(prevState.verticalLines);
+
+      // Automatically restore all features (no manual updates needed when adding new features!)
+      interactiveFeaturesManager.restoreFromHistory(prevState);
+
       setHistoryIndex(historyIndex - 1);
-      // Clear selections when undoing
-      setSelectedTrendLines([]);
-      setSelectedChannels([]);
-      setSelectedFibs([]);
-      setSelectedTriangles([]);
-      setSelectedHorizontalLines([]);
-      setSelectedHorizontalRays([]);
-      setSelectedVerticalLines([]);
       setLastSelectedObject(null);
     } else {
       console.log('↶ Cannot undo: Already at the beginning of history');
@@ -411,26 +439,16 @@ const App = () => {
   }, [history, historyIndex]);
 
   // Redo function
+  // ✅ AUTOMATIC: restoreFromHistory() handles all registered features
   const redo = useCallback(() => {
     if (historyIndex < history.length - 1) {
       console.log('↷ Redo: Moving from history index', historyIndex, 'to', historyIndex + 1);
       const nextState = history[historyIndex + 1];
-      setTrendLines(nextState.trendLines);
-      setTrendChannels(nextState.trendChannels);
-      setFibonacciRetracements(nextState.fibonacciRetracements);
-      setTrianglePatterns(nextState.trianglePatterns);
-      setHorizontalLines(nextState.horizontalLines);
-      setHorizontalRays(nextState.horizontalRays);
-      setVerticalLines(nextState.verticalLines);
+
+      // Automatically restore all features (no manual updates needed when adding new features!)
+      interactiveFeaturesManager.restoreFromHistory(nextState);
+
       setHistoryIndex(historyIndex + 1);
-      // Clear selections when redoing
-      setSelectedTrendLines([]);
-      setSelectedChannels([]);
-      setSelectedFibs([]);
-      setSelectedTriangles([]);
-      setSelectedHorizontalLines([]);
-      setSelectedHorizontalRays([]);
-      setSelectedVerticalLines([]);
       setLastSelectedObject(null);
     } else {
       console.log('↷ Cannot redo: Already at the end of history');
@@ -1186,6 +1204,168 @@ const App = () => {
     handleFeatureSelection('verticalline', interactives);
   };
 
+  // Inline editing state - track which trendline is being edited
+  const [editingTrendline, setEditingTrendline] = useState<{index: number; position: [number, number]} | null>(null);
+  const editingInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Handle "Add text" button click - set trendline text and open inline editor
+  const handleAddTextButtonClick = useCallback((e: React.MouseEvent, componentType: string, componentIndex: number) => {
+    console.log(`📝 Add text button clicked for ${componentType}[${componentIndex}]`);
+
+    // Currently only support trendlines
+    if (componentType === 'trendline') {
+      const trendline = trendLines[componentIndex];
+      if (trendline) {
+        // Set default text on the trendline
+        const updatedTrendLines = [...trendLines];
+        updatedTrendLines[componentIndex] = {
+          ...updatedTrendLines[componentIndex],
+          text: 'Text'
+        };
+        setTrendLines(updatedTrendLines);
+
+        // Calculate position for inline editor
+        const position: [number, number] = [
+          (trendline.start[0] + trendline.end[0]) / 2,
+          (trendline.start[1] + trendline.end[1]) / 2
+        ];
+
+        // Open inline editor immediately
+        setEditingTrendline({ index: componentIndex, position });
+      }
+    }
+  }, [trendLines]);
+
+  // Handle inline text editing - save changes
+  const handleInlineTextSave = useCallback((newText: string) => {
+    if (editingTrendline && newText.trim()) {
+      const updatedTrendLines = [...trendLines];
+      if (updatedTrendLines[editingTrendline.index]) {
+        updatedTrendLines[editingTrendline.index] = {
+          ...updatedTrendLines[editingTrendline.index],
+          text: newText.trim()
+        };
+        setTrendLines(updatedTrendLines);
+
+        // Save to history
+        const newState: HistoryState = {
+          trendLines: updatedTrendLines,
+          trendChannels,
+          fibonacciRetracements,
+          trianglePatterns,
+          labels,
+          horizontalLines,
+          horizontalRays,
+          verticalLines
+        };
+        saveToHistory(newState);
+
+        console.log(`✅ Trendline text updated to "${newText.trim()}"`);
+      }
+    }
+    setEditingTrendline(null);
+  }, [editingTrendline, trendLines, trendChannels, fibonacciRetracements, trianglePatterns, labels, horizontalLines, horizontalRays, verticalLines, saveToHistory]);
+
+  // Handle inline text editing - cancel changes
+  const handleInlineTextCancel = useCallback(() => {
+    console.log('❌ Inline editing cancelled');
+    setEditingTrendline(null);
+  }, []);
+
+  // Auto-focus the input when editing starts
+  React.useEffect(() => {
+    if (editingTrendline && editingInputRef.current) {
+      editingInputRef.current.focus();
+      editingInputRef.current.select(); // Select all text for easy replacement
+    }
+  }, [editingTrendline]);
+
+  // Handle text addition from contextual overlay
+  const handleTextAdd = useCallback((componentType: string, componentIndex: number, text: string) => {
+    console.log(`📝 Adding text "${text}" to ${componentType}[${componentIndex}]`);
+
+    // Find the component to get its position
+    let targetComponent: any = null;
+    let position: [number, number] | null = null;
+
+    switch (componentType) {
+      case 'trendline':
+        targetComponent = trendLines[componentIndex];
+        if (targetComponent) {
+          // Place text at midpoint of line
+          position = [
+            (targetComponent.start[0] + targetComponent.end[0]) / 2,
+            (targetComponent.start[1] + targetComponent.end[1]) / 2
+          ];
+        }
+        break;
+      case 'fibonacci':
+        targetComponent = fibonacciRetracements[componentIndex];
+        if (targetComponent) {
+          position = [(targetComponent.x1 + targetComponent.x2) / 2, targetComponent.y1];
+        }
+        break;
+      case 'triangle':
+        targetComponent = trianglePatterns[componentIndex];
+        if (targetComponent) {
+          position = [(targetComponent.start[0] + targetComponent.end[0]) / 2, targetComponent.start[1]];
+        }
+        break;
+      case 'trendchannel':
+        targetComponent = trendChannels[componentIndex];
+        if (targetComponent) {
+          position = [(targetComponent.start[0] + targetComponent.end[0]) / 2, targetComponent.start[1]];
+        }
+        break;
+      case 'horizontalline':
+      case 'horizontalray':
+        const horizontalComponent = componentType === 'horizontalline' ? horizontalLines[componentIndex] : horizontalRays[componentIndex];
+        if (horizontalComponent) {
+          position = [(horizontalComponent.start[0] + horizontalComponent.end[0]) / 2, horizontalComponent.start[1]];
+        }
+        break;
+      case 'verticalline':
+        targetComponent = verticalLines[componentIndex];
+        if (targetComponent) {
+          position = [targetComponent.start[0], (targetComponent.start[1] + targetComponent.end[1]) / 2];
+        }
+        break;
+    }
+
+    if (position) {
+      const newLabel = {
+        position,
+        text,
+        bgFill: '#FFFFFF',           // Background fill (white)
+        bgStroke: '#2962FF',          // Background stroke (blue)
+        bgStrokeWidth: 1,             // Background stroke width
+        textFill: '#000000',          // Text color (black for visibility)
+        fontFamily: '-apple-system, system-ui, Roboto, "Helvetica Neue", Ubuntu, sans-serif',
+        fontSize: 12,
+        fontStyle: 'normal',
+        fontWeight: 'normal'
+      };
+
+      const newLabels = [...labels, newLabel];
+      setLabels(newLabels);
+
+      // Save to history
+      const newState: HistoryState = {
+        trendLines,
+        trendChannels,
+        fibonacciRetracements,
+        trianglePatterns,
+        labels: newLabels,
+        horizontalLines,
+        horizontalRays,
+        verticalLines
+      };
+      saveToHistory(newState);
+
+      console.log(`✅ Text label added at position`, position);
+    }
+  }, [trendLines, fibonacciRetracements, trianglePatterns, trendChannels, horizontalLines, horizontalRays, verticalLines, labels, saveToHistory]);
+
 
 
 
@@ -1472,6 +1652,7 @@ const App = () => {
           onHorizontalLineSelect={handleHorizontalLineSelect}
           onHorizontalRaySelect={handleHorizontalRaySelect}
           onVerticalLineSelect={handleVerticalLineSelect}
+          onAddText={handleAddTextButtonClick}
           onDeselectAll={handleDeselectAll}
           onRefresh={handleRefresh}
           isReplayMode={isReplayMode}
@@ -1493,7 +1674,71 @@ const App = () => {
           importedIndicators={importedIndicators.filter(ind => ind.enabled)}
         />
       </div>
-      
+
+      {/* Contextual Text Overlay - DISABLED: Using canvas-based AddTextButton instead */}
+      {/* <ContextualTextOverlay
+        selectedComponent={hoveredComponent}
+        onTextAdd={handleTextAdd}
+      /> */}
+
+      {/* Inline Text Editor Overlay */}
+      {editingTrendline && trendLines[editingTrendline.index] && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: '#FFFFFF',
+            border: '2px solid #2962FF',
+            borderRadius: '4px',
+            padding: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            zIndex: 10000,
+            minWidth: '250px'
+          }}
+          data-testid="inline-text-editor"
+        >
+          <div style={{ marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#333' }}>
+            Edit TrendLine Text
+          </div>
+          <input
+            ref={editingInputRef}
+            type="text"
+            defaultValue={trendLines[editingTrendline.index].text || ''}
+            style={{
+              width: '100%',
+              padding: '8px',
+              border: '1px solid #ccc',
+              borderRadius: '3px',
+              fontSize: '13px',
+              fontFamily: '-apple-system, system-ui, Roboto, "Helvetica Neue", Ubuntu, sans-serif',
+              outline: 'none',
+              marginBottom: '10px'
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleInlineTextSave(e.currentTarget.value);
+              } else if (e.key === 'Escape') {
+                handleInlineTextCancel();
+              }
+            }}
+            onBlur={(e) => {
+              // Save on blur if there's text
+              if (e.currentTarget.value.trim()) {
+                handleInlineTextSave(e.currentTarget.value);
+              } else {
+                handleInlineTextCancel();
+              }
+            }}
+            data-testid="inline-text-input"
+          />
+          <div style={{ fontSize: '11px', color: '#666', textAlign: 'center' }}>
+            Press Enter to save, Escape to cancel
+          </div>
+        </div>
+      )}
+
       {/* Replay Controls Overlay */}
       {isReplayMode && (
         <ReplayControls

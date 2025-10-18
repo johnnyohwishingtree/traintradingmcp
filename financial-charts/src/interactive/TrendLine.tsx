@@ -28,6 +28,7 @@ export interface TrendLineProps {
     readonly onStart: (e: React.MouseEvent, moreProps: any) => void;
     readonly onComplete?: (e: React.MouseEvent, newTrends: any[], moreProps: any) => void;
     readonly onSelect?: (e: React.MouseEvent, interactives: any[], moreProps: any) => void;
+    readonly onAddText?: (e: React.MouseEvent, componentType: string, componentIndex: number) => void;
     readonly currentPositionStroke?: string;
     readonly currentPositionStrokeWidth?: number;
     readonly currentPositionstrokeOpacity?: number;
@@ -240,6 +241,7 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                             index={idx}
                             type={each.type}
                             selected={each.selected}
+                            text={each.text}
                             x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
                             y1Value={getValueFromOverride(override, idx, "y1Value", each.start[1])}
                             x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
@@ -256,6 +258,7 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                             onSelect={this.props.onSelect}
                             onDrag={this.handleDragLine}
                             onDragComplete={this.handleDragLineComplete}
+                            onAddTextClick={this.handleAddTextClick}
                             edgeInteractiveCursor="react-financial-charts-move-cursor"
                             lineInteractiveCursor="react-financial-charts-move-cursor"
                         />
@@ -482,5 +485,13 @@ export class TrendLine extends React.Component<TrendLineProps, TrendLineState> {
                 ...newXYValue,
             },
         });
+    };
+
+    private readonly handleAddTextClick = (e: React.MouseEvent, index: number | undefined) => {
+        const { onAddText } = this.props;
+        if (onAddText && typeof index === 'number') {
+            console.log('📝 TrendLine Add text button clicked for index', index);
+            onAddText(e, 'trendline', index);
+        }
     };
 }

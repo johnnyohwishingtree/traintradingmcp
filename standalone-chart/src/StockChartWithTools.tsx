@@ -61,24 +61,23 @@ interface StockChartWithToolsProps extends WithOHLCDataProps {
     readonly trendChannels?: any[];
     readonly fibonacciRetracements?: any[];
     readonly trianglePatterns?: any[];
-    readonly labels?: any[];
     readonly horizontalLines?: any[];
     readonly horizontalRays?: any[];
     readonly verticalLines?: any[];
+    readonly labels?: any[];
     readonly selectedTrendLines?: number[];
     readonly selectedChannels?: number[];
     readonly selectedFibs?: number[];
     readonly selectedTriangles?: number[];
-    readonly selectedLabels?: number[];
     readonly selectedHorizontalLines?: number[];
     readonly selectedHorizontalRays?: number[];
     readonly selectedVerticalLines?: number[];
+    readonly selectedLabels?: number[];
     readonly onTrendLineComplete?: (trendLines: any[]) => void;
     readonly onTrendChannelComplete?: (channels: any[]) => void;
     readonly onFibonacciComplete?: (fibs: any[]) => void;
     readonly onRefresh?: () => void;
     readonly onTriangleComplete?: (triangles: any[]) => void;
-    readonly onLabelComplete?: (labels: any[]) => void;
     readonly onHorizontalLineComplete?: (lines: any[]) => void;
     readonly onHorizontalRayComplete?: (rays: any[]) => void;
     readonly onVerticalLineComplete?: (lines: any[]) => void;
@@ -86,10 +85,12 @@ interface StockChartWithToolsProps extends WithOHLCDataProps {
     readonly onTrendChannelSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onFibonacciSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onTriangleSelect?: (e: React.MouseEvent, interactives: any[]) => void;
-    readonly onLabelSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onHorizontalLineSelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onHorizontalRaySelect?: (e: React.MouseEvent, interactives: any[]) => void;
     readonly onVerticalLineSelect?: (e: React.MouseEvent, interactives: any[]) => void;
+    readonly onLabelComplete?: (labels: any[]) => void;
+    readonly onLabelSelect?: (e: React.MouseEvent, interactives: any[]) => void;
+    readonly onAddText?: (e: React.MouseEvent, componentType: string, componentIndex: number) => void;
     readonly onDeselectAll?: () => void;
     readonly isReplayMode?: boolean;
     readonly replayPosition?: number;
@@ -442,22 +443,18 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
             trendChannels = [],
             fibonacciRetracements = [],
             trianglePatterns = [],
-            labels = [],
             selectedTrendLines = [],
             selectedChannels = [],
             selectedFibs = [],
             selectedTriangles = [],
-            selectedLabels = [],
             onTrendLineComplete,
             onTrendChannelComplete,
             onFibonacciComplete,
             onTriangleComplete,
-            onLabelComplete,
             onTrendLineSelect,
             onTrendChannelSelect,
             onFibonacciSelect,
             onTriangleSelect,
-            onLabelSelect,
             onDeselectAll,
             enabledIndicators = {
                 ema10: false,
@@ -623,11 +620,31 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                             return;
                         }
 
-                        // Clear all selections when clicking on empty chart area using unified handler
-                        if (onDeselectAll) {
-                            console.log('📊 Empty chart area clicked - calling unified deselect');
-                            onDeselectAll();
-                        }
+                        // IMPORTANT: Don't deselect if we clicked on an interactive component
+                        // The interactive components will handle their own selection/deselection
+                        // Only deselect if we clicked on truly empty chart area
+                        //
+                        // Note: This is a simplified check. In reality, the interactive components
+                        // should call e.stopPropagation() in their onClick handlers to prevent this
+                        // from firing. However, since we're getting "Empty chart area clicked" logs
+                        // even when clicking on trendlines, we'll add a delay to give interactive
+                        // components a chance to handle the click first.
+
+                        // Use setTimeout to let interactive component clicks process first
+                        setTimeout(() => {
+                            // Check if any component was actually selected in the meantime
+                            const hasSelection =
+                                (selectedTrendLines && selectedTrendLines.length > 0) ||
+                                (selectedChannels && selectedChannels.length > 0) ||
+                                (selectedFibs && selectedFibs.length > 0) ||
+                                (selectedTriangles && selectedTriangles.length > 0);
+
+                            // Only deselect if nothing got selected
+                            if (!hasSelection && onDeselectAll) {
+                                console.log('📊 Empty chart area clicked - calling unified deselect');
+                                onDeselectAll();
+                            }
+                        }, 0);
                     }}
                 >
                     {/* Volume Chart - Conditionally Rendered */}
@@ -812,61 +829,6 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                             currentPositionRadius={4}
                         />
 
-                        {/* Label Component - Single point text annotations using InteractiveText */}
-                        <InteractiveText
-                            enabled={currentTool === 'label'}
-                            textList={labels?.map((label, index) => ({
-                                ...label,
-                                position: [label.x, label.y],
-                                text: label.text || "Label",
-                                selected: selectedLabels.includes(index)
-                            }))}
-                            onChoosePosition={(e: any, newText: any, moreProps: any) => {
-                                if (onLabelComplete) {
-                                    const newLabel = {
-                                        x: newText.position[0],
-                                        y: newText.position[1],
-                                        text: newText.text,
-                                        selected: true
-                                    };
-                                    onLabelComplete([
-                                        ...labels.map(l => ({ ...l, selected: false })),
-                                        newLabel
-                                    ]);
-                                }
-                            }}
-                            onSelect={onLabelSelect || (() => {})}
-                            onDragComplete={(e: any, newTextList: any[], moreProps: any) => {
-                                if (onLabelComplete && newTextList.length > 0) {
-                                    const newLabels = newTextList.map(text => ({
-                                        x: text.position[0],
-                                        y: text.position[1],
-                                        text: text.text,
-                                        selected: text.selected
-                                    }));
-                                    onLabelComplete(newLabels);
-                                }
-                            }}
-                            defaultText={{
-                                bgFill: "#ffffff",
-                                bgOpacity: 0.9,
-                                bgStrokeWidth: 1,
-                                bgStroke: "#666666",
-                                textFill: "#000000",
-                                fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
-                                fontSize: 12,
-                                fontStyle: "normal",
-                                fontWeight: "normal",
-                                text: "Label",
-                            }}
-                            hoverText={{
-                                enable: true,
-                                bgHeight: "auto",
-                                bgWidth: "auto",
-                                text: "Click to place label",
-                            }}
-                        />
-
                         {/* Trend Channel Component - Standalone like Triangle */}
                         <EquidistantChannel
                             enabled={enableTrendChannel}
@@ -935,13 +897,14 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                                 }
                             }}
                             onSelect={onTrendLineSelect}
+                            onAddText={this.props.onAddText}
                             trends={trendLines.filter(trend =>
                                 // Only include regular trend lines, not channel data or horizontal rays
                                 // Horizontal rays have identical Y coordinates (start[1] === end[1])
                                 !trend.channelType && !(trend.start?.[1] === trend.end?.[1])
                             ).map((trend, index) => ({
                                 ...trend,
-                                selected: selectedTrendLines.includes(index)
+                                selected: trend.selected !== undefined ? trend.selected : selectedTrendLines.includes(index)
                             }))}
                             hoverText={{
                                 enable: true,
@@ -1113,8 +1076,43 @@ class StockChartWithTools extends React.Component<StockChartWithToolsProps, Stoc
                             currentPositionRadius={4}
                         />
 
+                        {/* InteractiveText for displaying labels */}
+                        <InteractiveText
+                            enabled={false} // Never enable drawing mode - labels are created programmatically
+                            onChoosePosition={() => {}} // Required prop but not used since enabled=false
+                            defaultText={{
+                                bgFill: "#FFFFFF",
+                                bgOpacity: 1,
+                                bgStrokeWidth: 1,
+                                bgStroke: "#2962FF",
+                                textFill: "#000000",
+                                fontFamily: "-apple-system, system-ui, Roboto, 'Helvetica Neue', Ubuntu, sans-serif",
+                                fontWeight: "normal",
+                                fontStyle: "normal",
+                                fontSize: 12,
+                                text: ""
+                            }}
+                            hoverText={{
+                                enable: true,
+                                bgHeight: "auto",
+                                bgWidth: "auto",
+                                text: "Click to select label",
+                                selectedText: "Label selected"
+                            }}
+                            textList={(this.props.labels || []).map((label, index) => ({
+                                ...label,
+                                selected: (this.props.selectedLabels || []).includes(index)
+                            }))}
+                            onDragComplete={(e: any, newLabels: any[], moreProps: any) => {
+                                if (this.props.onLabelComplete && newLabels.length > 0) {
+                                    this.props.onLabelComplete(newLabels);
+                                }
+                            }}
+                            onSelect={this.props.onLabelSelect}
+                        />
+
                         {/* Persistent display handled in renderLineTools default case */}
-                        
+
                         <MouseCoordinateY 
                             rectWidth={80} 
                             displayFormat={this.preciseDisplayFormat}
