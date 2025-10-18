@@ -5,6 +5,7 @@ import { getXValue } from "../../core/utils/ChartDataUtil";
 import { isHover, saveNodeType } from "../utils";
 import { ClickableCircle, HoverTextNearMouse, InteractiveStraightLine, isHovering } from "../components";
 import { InteractiveBo } from "./InteractiveBo";
+import { interactiveFeaturesManager } from "../../InteractiveFeaturesManager";
 
 export interface EachHorizontalLineTrendProps {
     readonly x1Value: any;
@@ -165,6 +166,35 @@ export class EachHorizontalLineTrend extends React.Component<
     // ✅ REFACTORED: Use InteractiveBo.handleHover
     private readonly handleHover = (_: React.MouseEvent, moreProps: any) => {
         InteractiveBo.handleHover(this, moreProps);
+
+        // Report hover to features manager if selected (for contextual text overlay)
+        const { selected, index, x1Value, x2Value, y1Value } = this.props;
+        if (selected && moreProps.hovering && typeof index === 'number') {
+            const { xScale, chartConfig: { yScale } } = moreProps;
+
+            // Calculate screen bounds for horizontal line
+            const screenX1 = xScale(x1Value);
+            const screenX2 = xScale(x2Value);
+            const screenY = yScale(y1Value);
+
+            const left = Math.min(screenX1, screenX2);
+            const right = Math.max(screenX1, screenX2);
+
+            const bounds = {
+                left,
+                top: screenY - 10,
+                right,
+                bottom: screenY + 10,
+                width: right - left,
+                height: 20,
+                x: left,
+                y: screenY - 10,
+            } as DOMRect;
+
+            interactiveFeaturesManager.setHoveredComponent('horizontalline', index, bounds);
+        } else if (!moreProps.hovering) {
+            interactiveFeaturesManager.clearHoveredComponent();
+        }
     };
 
     // ✅ REFACTORED: Use InteractiveBo.handleClick

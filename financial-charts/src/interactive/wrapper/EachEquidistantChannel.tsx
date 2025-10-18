@@ -3,6 +3,7 @@ import { isDefined, noop } from "../../core";
 import { getXValue } from "../../core/utils/ChartDataUtil";
 import { isHover, saveNodeType } from "../utils";
 import { ChannelWithArea, ClickableCircle, HoverTextNearMouse } from "../components";
+import { interactiveFeaturesManager } from "../../InteractiveFeaturesManager";
 
 export interface EachEquidistantChannelProps {
     readonly startXY: number[];
@@ -304,6 +305,37 @@ export class EachEquidistantChannel extends React.Component<EachEquidistantChann
             this.setState({
                 hover: moreProps.hovering,
             });
+        }
+
+        // Report hover to features manager if selected (for contextual text overlay)
+        const { selected, index, startXY, endXY, dy } = this.props;
+        if (selected && moreProps.hovering && typeof index === 'number') {
+            const { xScale, chartConfig: { yScale } } = moreProps;
+
+            // Calculate screen bounds for channel
+            const startScreen = [xScale(startXY[0]), yScale(startXY[1])];
+            const endScreen = [xScale(endXY[0]), yScale(endXY[1])];
+            const dyScreen = dy ? yScale(endXY[1] + dy) - yScale(endXY[1]) : 0;
+
+            const left = Math.min(startScreen[0], endScreen[0]);
+            const right = Math.max(startScreen[0], endScreen[0]);
+            const top = Math.min(startScreen[1], endScreen[1] + dyScreen);
+            const bottom = Math.max(startScreen[1], endScreen[1] + dyScreen);
+
+            const bounds = {
+                left,
+                top,
+                right,
+                bottom,
+                width: right - left,
+                height: bottom - top,
+                x: left,
+                y: top,
+            } as DOMRect;
+
+            interactiveFeaturesManager.setHoveredComponent('trendchannel', index, bounds);
+        } else if (!moreProps.hovering) {
+            interactiveFeaturesManager.clearHoveredComponent();
         }
     };
 

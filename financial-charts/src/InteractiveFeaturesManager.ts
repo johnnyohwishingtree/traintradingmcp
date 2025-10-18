@@ -48,8 +48,15 @@ export interface HistoryState {
   verticalLines?: any[];
 }
 
+export interface HoveredComponent {
+  type: string;
+  index: number;
+  bounds: DOMRect;
+}
+
 export class InteractiveFeaturesManager {
   private features: Map<string, InteractiveFeature<any>> = new Map();
+  private hoveredComponent: HoveredComponent | null = null;
 
   // Register a feature (called during component initialization)
   registerFeature<T>(feature: InteractiveFeature<T>) {
@@ -225,8 +232,28 @@ export class InteractiveFeaturesManager {
     return selectedIndices;
   }
 
+  /**
+   * Get the history state key for a feature type
+   * Centralizes the mapping between feature types and history keys
+   *
+   * ⚠️ WHEN ADDING A NEW FEATURE: Add one line here to enable undo/redo/delete
+   */
+  private getStateKey(featureType: string): keyof HistoryState | undefined {
+    switch (featureType) {
+      case 'trendline': return 'trendLines';
+      case 'trendchannel': return 'trendChannels';
+      case 'fibonacci': return 'fibonacciRetracements';
+      case 'triangle': return 'trianglePatterns';
+      case 'horizontalline': return 'horizontalLines';
+      case 'horizontalray': return 'horizontalRays';
+      case 'verticalline': return 'verticalLines';
+      default: return undefined;
+    }
+  }
+
   // Build history state with updated feature data
   private buildHistoryState(currentState: HistoryState, updatedFeature: string, newItems: any[]): HistoryState {
+    // Copy current state
     const newState: HistoryState = {
       trendLines: currentState.trendLines,
       trendChannels: currentState.trendChannels,
@@ -237,32 +264,58 @@ export class InteractiveFeaturesManager {
       verticalLines: currentState.verticalLines || []
     };
 
-    // Update the specific feature's data
-    switch (updatedFeature) {
-      case 'trendline':
-        newState.trendLines = newItems;
-        break;
-      case 'trendchannel':
-        newState.trendChannels = newItems;
-        break;
-      case 'fibonacci':
-        newState.fibonacciRetracements = newItems;
-        break;
-      case 'triangle':
-        newState.trianglePatterns = newItems;
-        break;
-      case 'horizontalline':
-        newState.horizontalLines = newItems;
-        break;
-      case 'horizontalray':
-        newState.horizontalRays = newItems;
-        break;
-      case 'verticalline':
-        newState.verticalLines = newItems;
-        break;
+    // Update the specific feature's data using centralized mapping
+    const stateKey = this.getStateKey(updatedFeature);
+    if (stateKey) {
+      (newState as any)[stateKey] = newItems;
+    } else {
+      console.warn(`⚠️ No state key mapping for feature type: ${updatedFeature}`);
     }
 
     return newState;
+  }
+
+  /**
+   * Restore all features from a history state
+   * This replaces the manual restoration in undo/redo functions
+   *
+   * ✅ AUTOMATIC: Works for all registered features, no updates needed when adding new features
+   */
+  restoreFromHistory(historyState: HistoryState): void {
+    console.log('⏪ Restoring features from history...');
+
+    for (const [featureType, feature] of this.features) {
+      const stateKey = this.getStateKey(featureType);
+      if (stateKey && historyState[stateKey]) {
+        console.log(`  ${feature.logPrefix} Restoring ${feature.displayName}: ${historyState[stateKey].length} items`);
+        feature.setItems(historyState[stateKey]);
+        feature.setSelectedIndices([]); // Clear selections when restoring
+      }
+    }
+  }
+
+  /**
+   * Generate initial empty history state from registered features
+   * This ensures history state always includes all registered features
+   *
+   * ✅ AUTOMATIC: Works for all registered features, no updates needed when adding new features
+   */
+  getInitialHistoryState(): HistoryState {
+    console.log('🏗️ Generating initial history state from registered features...');
+
+    const initialState: any = {
+      labels: [] // Special case for labels (not yet using InteractiveFeaturesManager)
+    };
+
+    for (const [featureType, feature] of this.features) {
+      const stateKey = this.getStateKey(featureType);
+      if (stateKey) {
+        initialState[stateKey] = [];
+        console.log(`  ${feature.logPrefix} Added ${stateKey}: []`);
+      }
+    }
+
+    return initialState as HistoryState;
   }
 
   // Get feature by type
@@ -280,6 +333,36 @@ export class InteractiveFeaturesManager {
     for (const feature of this.features.values()) {
       feature.setSelectedIndices([]);
     }
+  }
+
+  // ===== HOVER TRACKING FOR CONTEXTUAL TEXT FEATURE =====
+
+  /**
+   * Set the currently hovered component
+   * Called by wrapper components when mouse hovers over a selected component
+   */
+  setHoveredComponent(type: string, index: number, bounds: DOMRect): void {
+    this.hoveredComponent = { type, index, bounds };
+    console.log(`🎯 Hover set: ${type}[${index}] at`, bounds);
+  }
+
+  /**
+   * Clear the currently hovered component
+   * Called when mouse leaves a component
+   */
+  clearHoveredComponent(): void {
+    if (this.hoveredComponent) {
+      console.log(`🎯 Hover cleared: ${this.hoveredComponent.type}[${this.hoveredComponent.index}]`);
+    }
+    this.hoveredComponent = null;
+  }
+
+  /**
+   * Get the currently hovered component
+   * Used by the contextual text overlay to position itself
+   */
+  getHoveredComponent(): HoveredComponent | null {
+    return this.hoveredComponent;
   }
 }
 

@@ -182,7 +182,7 @@ const DrawingToolbar: React.FC<DrawingToolbarProps> = ({ currentTool, onToolSele
     { id: 'trendchannel', icon: <TrendChannelIcon />, title: 'Trend Channel - Draw parallel trend lines' },
     { id: 'fibonacci', icon: <FibonacciIcon />, title: 'Fibonacci Retracement - Draw Fibonacci retracement levels' },
     { id: 'patterns', icon: <TrianglePatternIcon />, title: 'Triangle Pattern - Draw triangle chart patterns' },
-    { id: 'label', icon: <LabelIcon />, title: 'Label - Add text annotations with anchor point' },
+    // ❌ REMOVED: Label tool - now contextual to selected components (hover to add text)
   ];
 
   // Close dropdown when clicking outside

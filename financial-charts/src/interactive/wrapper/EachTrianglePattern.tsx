@@ -3,6 +3,7 @@ import { isDefined, noop } from "../../core";
 import { ClickableCircle, HoverTextNearMouse, TriangleWithArea } from "../components";
 import { getNewXY } from "./EachTrendLine";
 import { InteractiveBo } from "./InteractiveBo";
+import { interactiveFeaturesManager } from "../../InteractiveFeaturesManager";
 
 interface EachTrianglePatternProps {
     readonly index: number;
@@ -150,6 +151,38 @@ export class EachTrianglePattern extends React.Component<EachTrianglePatternProp
     // ✅ REFACTORED: Use InteractiveBo.handleHover
     private readonly handleHover = (e: React.MouseEvent, moreProps: any) => {
         InteractiveBo.handleHover(this, moreProps);
+
+        // Report hover to features manager if selected (for contextual text overlay)
+        const { selected, index, point1, point2, point3 } = this.props;
+        if (selected && moreProps.hovering && typeof index === 'number') {
+            const { xScale, chartConfig: { yScale } } = moreProps;
+
+            // Calculate screen positions for all three points
+            const p1 = [xScale(point1[0]), yScale(point1[1])];
+            const p2 = [xScale(point2[0]), yScale(point2[1])];
+            const p3 = [xScale(point3[0]), yScale(point3[1])];
+
+            // Calculate bounding box
+            const left = Math.min(p1[0], p2[0], p3[0]);
+            const top = Math.min(p1[1], p2[1], p3[1]);
+            const right = Math.max(p1[0], p2[0], p3[0]);
+            const bottom = Math.max(p1[1], p2[1], p3[1]);
+
+            const bounds = {
+                left,
+                top,
+                right,
+                bottom,
+                width: right - left,
+                height: bottom - top,
+                x: left,
+                y: top,
+            } as DOMRect;
+
+            interactiveFeaturesManager.setHoveredComponent('triangle', index, bounds);
+        } else if (!moreProps.hovering) {
+            interactiveFeaturesManager.clearHoveredComponent();
+        }
     };
 
     // ✅ REFACTORED: Use InteractiveBo.handleClick
